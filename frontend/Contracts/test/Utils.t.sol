@@ -9,6 +9,8 @@ import {SafeProxy} from "../src/proxies/SafeProxy.sol";
 import {SafeProxyFactory} from "../src/proxies/SafeProxyFactory.sol";
 import {CompatibilityFallbackHandler} from "../src/handler/CompatibilityFallbackHandler.sol";
 
+import {ERC20Mock} from "./mocks/ERC20Mock.sol";
+
 abstract contract UtilsTest is Test {
     /*
      The Safe proxy factory contract provides a simple way to create a new proxy contract pointing to a 
@@ -22,7 +24,10 @@ abstract contract UtilsTest is Test {
     CompatibilityFallbackHandler fallbackHandler; // used inside safe if someone unintended behaviour happens
 
     SingletonFactory singletonFactory;
+
     // deploy proxyFactory , and call deployProxy  function to intialize new proxy for user
+
+    ERC20Mock safeToken;
 
     function setUp() public virtual {
         //  1. Singleton Factory deployment
@@ -68,5 +73,7 @@ abstract contract UtilsTest is Test {
         fallbackHandler = CompatibilityFallbackHandler(
             payable(fallbackHandlerAddress)
         );
+
+        safeToken = new ERC20Mock();
     }
 }
