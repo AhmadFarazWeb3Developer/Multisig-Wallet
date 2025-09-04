@@ -1,0 +1,6 @@
+[submodule "frontend/Contracts/lib/forge-std"]
+	path = frontend/Contracts/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "frontend/Contracts/lib/safe-contracts"]
+	path = frontend/Contracts/lib/safe-contracts
+	url = https://github.com/safe-global/safe-contracts
