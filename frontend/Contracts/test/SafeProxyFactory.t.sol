@@ -5,6 +5,7 @@ import {Test, console} from "forge-std/Test.sol";
 import {UtilsTest} from "./Utils.t.sol";
 import {Safe} from "../src/Safe.sol";
 import {Enum} from "../src/libraries/Enum.sol";
+import {SimpleGuard} from "../src/SimpleGuard.sol";
 
 contract SafeProxyFactoryTest is UtilsTest {
     address[] listOfOwners;
@@ -232,6 +233,123 @@ contract SafeProxyFactoryTest is UtilsTest {
 
         assertEq(safeToken.balanceOf(recepient), 10 ether);
         assertEq(safeToken.balanceOf(address(account1)), 990 ether);
+    }
+
+    function test_setGuard() public {
+        Safe account1 = createSmartAccount(account1OwnersPublicKeys, 2);
+        SimpleGuard simpleGuard = new SimpleGuard();
+        setGuard(account1, address(simpleGuard));
+    }
+
+    function test_transferEthWithGuardEnabled() public {
+        Safe account1 = createSmartAccount(account1OwnersPublicKeys, 2);
+        SimpleGuard simpleGuard = new SimpleGuard();
+        setGuard(account1, address(simpleGuard));
+
+        vm.deal(address(account1), 20 ether);
+
+        address recepient = makeAddr("recepient");
+        bytes memory data = ""; // empty for plan ETH
+
+        bytes32 txHash = account1.getTransactionHash(
+            recepient,
+            11 ether,
+            data,
+            Enum.Operation.Call,
+            0,
+            0,
+            0,
+            address(0),
+            address(0),
+            account1.nonce()
+        );
+
+        (uint8 v1, bytes32 r1, bytes32 s1) = vm.sign(
+            account1OwnersPrivateKeys[0],
+            txHash
+        );
+        (uint8 v2, bytes32 r2, bytes32 s2) = vm.sign(
+            account2OwnersPrivateKeys[1],
+            txHash
+        );
+
+        bytes memory sig1 = abi.encodePacked(r1, s1, v1);
+        bytes memory sig2 = abi.encodePacked(r2, s2, v2);
+
+        bytes memory signatures;
+        if (account1OwnersPublicKeys[0] < account1OwnersPublicKeys[1]) {
+            signatures = bytes.concat(sig1, sig2);
+        } else {
+            signatures = bytes.concat(sig2, sig1);
+        }
+
+        vm.expectRevert();
+
+        account1.execTransaction(
+            recepient,
+            11 ether,
+            data,
+            Enum.Operation.Call,
+            0,
+            0,
+            0,
+            address(0),
+            payable(address(0)),
+            signatures
+        );
+    }
+
+    function setGuard(Safe account1, address _simpleGuard) internal {
+        bytes memory data = abi.encodeWithSelector(
+            account1.setGuard.selector,
+            address(_simpleGuard)
+        );
+
+        // if values is greater than 10 ETH the guard will revert the transaction
+        bytes32 txHash = account1.getTransactionHash(
+            address(account1),
+            0,
+            data,
+            Enum.Operation.Call,
+            0,
+            0,
+            0,
+            address(0),
+            address(0),
+            account1.nonce()
+        );
+
+        (uint8 v1, bytes32 r1, bytes32 s1) = vm.sign(
+            account1OwnersPrivateKeys[0],
+            txHash
+        );
+        (uint8 v2, bytes32 r2, bytes32 s2) = vm.sign(
+            account2OwnersPrivateKeys[1],
+            txHash
+        );
+
+        bytes memory sig1 = abi.encodePacked(r1, s1, v1);
+        bytes memory sig2 = abi.encodePacked(r2, s2, v2);
+
+        bytes memory signatures;
+        if (account1OwnersPublicKeys[0] < account1OwnersPublicKeys[1]) {
+            signatures = bytes.concat(sig1, sig2);
+        } else {
+            signatures = bytes.concat(sig2, sig1);
+        }
+
+        account1.execTransaction(
+            address(account1),
+            0,
+            data,
+            Enum.Operation.Call,
+            0,
+            0,
+            0,
+            address(0),
+            payable(address(0)),
+            signatures
+        );
     }
 
     function createSmartAccount(

@@ -50,7 +50,9 @@ interface ITransactionGuard is IERC165 {
 }
 
 abstract contract BaseTransactionGuard is ITransactionGuard {
-    function supportsInterface(bytes4 interfaceId) external view virtual override returns (bool) {
+    function supportsInterface(
+        bytes4 interfaceId
+    ) external view virtual override returns (bool) {
         return
             interfaceId == type(ITransactionGuard).interfaceId || // 0xe6d7a83a
             interfaceId == type(IERC165).interfaceId; // 0x01ffc9a7
@@ -63,14 +65,19 @@ abstract contract BaseTransactionGuard is ITransactionGuard {
  */
 abstract contract GuardManager is SelfAuthorized, IGuardManager {
     // keccak256("guard_manager.guard.address")
-    bytes32 internal constant GUARD_STORAGE_SLOT = 0x4a204f620c8c5ccdca3fd54d003badd85ba500436a431f0cbda4f558c93c34c8;
+    bytes32 internal constant GUARD_STORAGE_SLOT =
+        0x4a204f620c8c5ccdca3fd54d003badd85ba500436a431f0cbda4f558c93c34c8;
 
     /**
      * @inheritdoc IGuardManager
      */
     function setGuard(address guard) external override authorized {
-        if (guard != address(0) && !ITransactionGuard(guard).supportsInterface(type(ITransactionGuard).interfaceId))
-            revertWithError("GS300");
+        if (
+            guard != address(0) &&
+            !ITransactionGuard(guard).supportsInterface(
+                type(ITransactionGuard).interfaceId
+            )
+        ) revertWithError("GS300");
         /* solhint-disable no-inline-assembly */
         /// @solidity memory-safe-assembly
         assembly {
