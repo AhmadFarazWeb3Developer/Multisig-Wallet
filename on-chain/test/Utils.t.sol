@@ -33,6 +33,7 @@ abstract contract UtilsTest is Test {
         //  1. Singleton Factory deployment
 
         singletonFactory = new SingletonFactory();
+
         //  2. Safe creation code
         bytes memory SafeInitCode = abi.encodePacked(type(Safe).creationCode);
         bytes32 SafeSalt = keccak256(abi.encodePacked("my-safe-singleton"));
@@ -40,7 +41,7 @@ abstract contract UtilsTest is Test {
         address safeAddress = singletonFactory.deploy(SafeInitCode, SafeSalt);
         singletonSafe = Safe(payable(safeAddress));
 
-        // 3.  Safe Proxy Factory creatoin code
+        // 3.  Safe Proxy Factory creation code
         bytes memory SafeProxyFactoryInitCode = abi.encodePacked(
             type(SafeProxyFactory).creationCode
         );
@@ -53,6 +54,7 @@ abstract contract UtilsTest is Test {
             SafeProxyFactoryInitCode,
             SafeProxyFactorySalt
         );
+
         proxyFactory = SafeProxyFactory(safeProxyFactoryAddress);
 
         // 4.  CompatibilityFallbackHandler deployment
