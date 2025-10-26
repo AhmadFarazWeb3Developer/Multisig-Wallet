@@ -29,7 +29,13 @@ contract SafeL2 is Safe {
         bytes additionalInfo
     );
 
-    event SafeModuleTransaction(address module, address to, uint256 value, bytes data, Enum.Operation operation);
+    event SafeModuleTransaction(
+        address module,
+        address to,
+        uint256 value,
+        bytes data,
+        Enum.Operation operation
+    );
 
     /**
      * @inheritdoc Safe
@@ -68,7 +74,12 @@ contract SafeL2 is Safe {
     /**
      * @inheritdoc ModuleManager
      */
-    function onBeforeExecTransactionFromModule(address to, uint256 value, bytes memory data, Enum.Operation operation) internal override {
+    function onBeforeExecTransactionFromModule(
+        address to,
+        uint256 value,
+        bytes memory data,
+        Enum.Operation operation
+    ) internal override {
         emit SafeModuleTransaction(msg.sender, to, value, data, operation);
     }
 }

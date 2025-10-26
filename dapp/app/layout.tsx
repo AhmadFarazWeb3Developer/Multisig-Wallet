@@ -1,3 +1,4 @@
+import { ReownProvider } from "./context/ReownProvider";
 import "./globals.css";
 
 export default function RootLayout({
@@ -7,7 +8,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <ReownProvider>{children}</ReownProvider>
+      </body>
     </html>
   );
 }
