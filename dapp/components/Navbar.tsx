@@ -7,7 +7,7 @@ import {
   useAppKitProvider,
 } from "@reown/appkit/react";
 
-import { Wallet, ChevronDown } from "lucide-react";
+import { Wallet, ChevronDown, Vault } from "lucide-react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ethers } from "ethers";
@@ -46,14 +46,14 @@ export default function Navbar() {
   return (
     <nav className="flex items-center justify-between py-4 shadow-sm ">
       <Link href="/" className="flex items-center space-x-3">
-        <span className="text-lg font-bold dark:text-white">MultiSig</span>
+        <Vault size={34} color="white" />
       </Link>
 
       <div className="flex items-center gap-3">
         {isConnected && caipNetwork && (
           <button
             onClick={() => open({ view: "Networks" })}
-            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all shadow-sm hover:shadow-md"
+            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all shadow-sm hover:shadow-md cursor-pointer"
             title={`Connected to ${caipNetwork.name}`}
           >
             {networkImageUrl ? (
@@ -66,7 +66,7 @@ export default function Navbar() {
                 unoptimized
               />
             ) : (
-              <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-400 to-purple-500" />
+              <div className="w-5 h-5 rounded-full  from-blue-400 to-purple-500 cursor-pointer" />
             )}
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300 hidden sm:inline">
               {caipNetwork.name}
