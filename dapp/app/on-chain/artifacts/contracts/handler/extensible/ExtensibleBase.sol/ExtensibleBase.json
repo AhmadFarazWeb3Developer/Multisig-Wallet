@@ -1,0 +1,69 @@
+{
+  "_format": "hh3-artifact-1",
+  "contractName": "ExtensibleBase",
+  "sourceName": "contracts/handler/extensible/ExtensibleBase.sol",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "contract ISafe",
+          "name": "safe",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes4",
+          "name": "selector",
+          "type": "bytes4"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "oldMethod",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "newMethod",
+          "type": "bytes32"
+        }
+      ],
+      "name": "ChangedSafeMethod",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract ISafe",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes4",
+          "name": "",
+          "type": "bytes4"
+        }
+      ],
+      "name": "safeMethods",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {},
+  "immutableReferences": {},
+  "inputSourceName": "project/contracts/handler/extensible/ExtensibleBase.sol",
+  "buildInfoId": "solc-0_8_28-01a07801a84c920c217ca94ad8d8b240dffdb2bb"
+}

@@ -1,26 +1,39 @@
+@import url("https://fonts.googleapis.com/css2?family=Istok+Web:ital,wght@0,400;0,700;1,400;1,700&family=Lalezar&family=Michroma&family=Unbounded:wght@200..900&display=swap");
+
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  --color-primary-black: #283d3b;
+  --color-dark-black: #000000;
+  --color-action-btn: #e07a5f;
+  --color-paragraph: #c0c0c0;
+  --font-unbounded: "Unbounded", sans-serif;
+  --font-lalezar: "Lalezar", cursive;
+  --font-istokWeb: "IstokWeb", sans-serif;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-michroma: "Michroma", sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #201f1f;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.hero-section {
+  font-family: var(--font-michroma);
+}
+
+appkit-button {
+  --wui-color-accent-100: #065f46 !important; /* Dark green */
+  --wui-color-accent-090: #047857 !important; /* Slightly lighter for hover */
+}
+
+/* Alternative: More specific targeting */
+appkit-button::part(button) {
+  background-color: #065f46 !important;
+}
+
+appkit-button::part(button):hover {
+  background-color: #047857 !important;
 }

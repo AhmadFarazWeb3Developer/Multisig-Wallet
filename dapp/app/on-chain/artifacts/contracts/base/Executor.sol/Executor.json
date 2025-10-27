@@ -1,0 +1,13 @@
+{
+  "_format": "hh3-artifact-1",
+  "contractName": "Executor",
+  "sourceName": "contracts/base/Executor.sol",
+  "abi": [],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {},
+  "immutableReferences": {},
+  "inputSourceName": "project/contracts/base/Executor.sol",
+  "buildInfoId": "solc-0_8_28-26035aa590d4f530fab9230925c8ce2f08e8e6eb"
+}

@@ -1,0 +1,13 @@
+{
+  "_format": "hh3-artifact-1",
+  "contractName": "MarshalLib",
+  "sourceName": "contracts/handler/extensible/MarshalLib.sol",
+  "abi": [],
+  "bytecode": "0x60556032600b8282823980515f1a607314602657634e487b7160e01b5f525f60045260245ffd5b305f52607381538281f3fe730000000000000000000000000000000000000000301460806040525f5ffdfea264697066735822122037d7fd78d95b1df20aa1f70f345badb7e47f0ba7847961243e420f567de4c93664736f6c634300081c0033",
+  "deployedBytecode": "0x730000000000000000000000000000000000000000301460806040525f5ffdfea264697066735822122037d7fd78d95b1df20aa1f70f345badb7e47f0ba7847961243e420f567de4c93664736f6c634300081c0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {},
+  "immutableReferences": {},
+  "inputSourceName": "project/contracts/handler/extensible/MarshalLib.sol",
+  "buildInfoId": "solc-0_8_28-14d948f4656bfff77d01d616afb1937fb4d46f13"
+}

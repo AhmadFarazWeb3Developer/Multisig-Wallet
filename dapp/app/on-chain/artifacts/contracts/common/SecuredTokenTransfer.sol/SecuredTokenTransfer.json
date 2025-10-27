@@ -1,0 +1,13 @@
+{
+  "_format": "hh3-artifact-1",
+  "contractName": "SecuredTokenTransfer",
+  "sourceName": "contracts/common/SecuredTokenTransfer.sol",
+  "abi": [],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {},
+  "immutableReferences": {},
+  "inputSourceName": "project/contracts/common/SecuredTokenTransfer.sol",
+  "buildInfoId": "solc-0_8_28-91df60bfe7423093716df687715f88debc9f9838"
+}

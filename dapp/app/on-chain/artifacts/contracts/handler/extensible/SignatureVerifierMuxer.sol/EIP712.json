@@ -1,0 +1,13 @@
+{
+  "_format": "hh3-artifact-1",
+  "contractName": "EIP712",
+  "sourceName": "contracts/handler/extensible/SignatureVerifierMuxer.sol",
+  "abi": [],
+  "bytecode": "0x60556032600b8282823980515f1a607314602657634e487b7160e01b5f525f60045260245ffd5b305f52607381538281f3fe730000000000000000000000000000000000000000301460806040525f5ffdfea26469706673582212207bcb807ae5e562a5f3cc7a01e69318c1c36b8cfbcdd6cba8f2f3b501ccaa660964736f6c634300081c0033",
+  "deployedBytecode": "0x730000000000000000000000000000000000000000301460806040525f5ffdfea26469706673582212207bcb807ae5e562a5f3cc7a01e69318c1c36b8cfbcdd6cba8f2f3b501ccaa660964736f6c634300081c0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {},
+  "immutableReferences": {},
+  "inputSourceName": "project/contracts/handler/extensible/SignatureVerifierMuxer.sol",
+  "buildInfoId": "solc-0_8_28-03b84819a348571394c81da83c7fc4863c73373d"
+}

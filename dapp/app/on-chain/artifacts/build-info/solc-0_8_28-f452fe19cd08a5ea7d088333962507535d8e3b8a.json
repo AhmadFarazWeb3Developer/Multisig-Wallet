@@ -1,0 +1,39 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_28-f452fe19cd08a5ea7d088333962507535d8e3b8a",
+  "solcVersion": "0.8.28",
+  "solcLongVersion": "0.8.28+commit.7893614a",
+  "userSourceNameMap": {
+    "contracts/libraries/CreateCall.sol": "project/contracts/libraries/CreateCall.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "cancun",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/libraries/CreateCall.sol": {
+        "content": "// SPDX-License-Identifier: LGPL-3.0-only\r\n\r\npragma solidity >=0.7.0 <0.9.0;\r\n\r\n/**\r\n * @title Create Call - Allows to use the different create opcodes to deploy a contract.\r\n * @author Richard Meissner - @rmeissner\r\n * @notice This contract provides functions for deploying a new contract using the create and create2 opcodes.\r\n */\r\ncontract CreateCall {\r\n    /// @notice Emitted when a new contract is created\r\n    event ContractCreation(address indexed newContract);\r\n\r\n    /**\r\n     * @notice Deploys a new contract using the create2 opcode.\r\n     * @param value The value in wei to be sent with the contract creation.\r\n     * @param deploymentData The initialisation code of the contract to be created.\r\n     * @param salt The salt value to use for the contract creation.\r\n     * @return newContract The address of the newly created contract.\r\n     */\r\n    function performCreate2(uint256 value, bytes memory deploymentData, bytes32 salt) public returns (address newContract) {\r\n        /* solhint-disable no-inline-assembly */\r\n        /// @solidity memory-safe-assembly\r\n        assembly {\r\n            newContract := create2(value, add(deploymentData, 0x20), mload(deploymentData), salt)\r\n        }\r\n        /* solhint-enable no-inline-assembly */\r\n        require(newContract != address(0), \"Could not deploy contract\");\r\n        emit ContractCreation(newContract);\r\n    }\r\n\r\n    /**\r\n     * @notice Deploys a new contract using the create opcode.\r\n     * @param value The value in wei to be sent with the contract creation.\r\n     * @param deploymentData The initialisation code of the contract to be created.\r\n     * @return newContract The address of the newly created contract.\r\n     */\r\n    function performCreate(uint256 value, bytes memory deploymentData) public returns (address newContract) {\r\n        /* solhint-disable no-inline-assembly */\r\n        /// @solidity memory-safe-assembly\r\n        assembly {\r\n            newContract := create(value, add(deploymentData, 0x20), mload(deploymentData))\r\n        }\r\n        /* solhint-enable no-inline-assembly */\r\n        require(newContract != address(0), \"Could not deploy contract\");\r\n        emit ContractCreation(newContract);\r\n    }\r\n}\r\n"
+      }
+    }
+  }
+}

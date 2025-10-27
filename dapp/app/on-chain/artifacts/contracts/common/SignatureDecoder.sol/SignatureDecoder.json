@@ -1,0 +1,13 @@
+{
+  "_format": "hh3-artifact-1",
+  "contractName": "SignatureDecoder",
+  "sourceName": "contracts/common/SignatureDecoder.sol",
+  "abi": [],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {},
+  "immutableReferences": {},
+  "inputSourceName": "project/contracts/common/SignatureDecoder.sol",
+  "buildInfoId": "solc-0_8_28-8f51bcdd57cd1228bd977e279b81c5b1c970ddd9"
+}

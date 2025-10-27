@@ -1,0 +1,42 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_28-9c637f8d66fdcffc4c0ed59c501b68276ba5f1f4",
+  "solcVersion": "0.8.28",
+  "solcLongVersion": "0.8.28+commit.7893614a",
+  "userSourceNameMap": {
+    "contracts/common/NativeCurrencyPaymentFallback.sol": "project/contracts/common/NativeCurrencyPaymentFallback.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "cancun",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/common/NativeCurrencyPaymentFallback.sol": {
+        "content": "// SPDX-License-Identifier: LGPL-3.0-only\r\npragma solidity >=0.7.0 <0.9.0;\r\n\r\nimport {INativeCurrencyPaymentFallback} from \"./../interfaces/INativeCurrencyPaymentFallback.sol\";\r\n\r\n/**\r\n * @title NativeCurrencyPaymentFallback - A contract that has a fallback to accept native currency payments.\r\n * @author Richard Meissner - @rmeissner\r\n */\r\nabstract contract NativeCurrencyPaymentFallback is INativeCurrencyPaymentFallback {\r\n    /**\r\n     * @inheritdoc INativeCurrencyPaymentFallback\r\n     */\r\n    receive() external payable override {\r\n        emit SafeReceived(msg.sender, msg.value);\r\n    }\r\n}\r\n"
+      },
+      "project/contracts/interfaces/INativeCurrencyPaymentFallback.sol": {
+        "content": "// SPDX-License-Identifier: LGPL-3.0-only\r\npragma solidity >=0.7.0 <0.9.0;\r\n\r\n/**\r\n * @title Native Currency Payment Fallback Interface\r\n * @notice An interface to a contract that can receive native currency payments.\r\n * @author @safe-global/safe-protocol\r\n */\r\ninterface INativeCurrencyPaymentFallback {\r\n    event SafeReceived(address indexed sender, uint256 value);\r\n\r\n    /**\r\n     * @notice Receive function accepts native currency transactions.\r\n     * @dev Emits an event with sender and received value.\r\n     */\r\n    receive() external payable;\r\n}\r\n"
+      }
+    }
+  }
+}

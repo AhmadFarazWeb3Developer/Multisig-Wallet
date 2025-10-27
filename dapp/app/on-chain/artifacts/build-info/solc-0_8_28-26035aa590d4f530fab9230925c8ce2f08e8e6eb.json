@@ -1,0 +1,42 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_28-26035aa590d4f530fab9230925c8ce2f08e8e6eb",
+  "solcVersion": "0.8.28",
+  "solcLongVersion": "0.8.28+commit.7893614a",
+  "userSourceNameMap": {
+    "contracts/base/Executor.sol": "project/contracts/base/Executor.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "cancun",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/base/Executor.sol": {
+        "content": "// SPDX-License-Identifier: LGPL-3.0-only\r\npragma solidity >=0.7.0 <0.9.0;\r\nimport {Enum} from \"../libraries/Enum.sol\";\r\n\r\n/**\r\n * @title Executor - A contract that can execute transactions\r\n * @author Richard Meissner - @rmeissner\r\n */\r\nabstract contract Executor {\r\n    /**\r\n     * @notice Executes either a delegatecall or a call with provided parameters.\r\n     * @dev This method doesn't perform any sanity check of the transaction, such as:\r\n     *      - if the contract at `to` address has code or not\r\n     *      It is the responsibility of the caller to perform such checks.\r\n     * @param to Destination address.\r\n     * @param value Ether value.\r\n     * @param data Data payload.\r\n     * @param operation Operation type.\r\n     * @return success boolean flag indicating if the call succeeded.\r\n     */\r\n    function execute(\r\n        address to,\r\n        uint256 value,\r\n        bytes memory data,\r\n        Enum.Operation operation,\r\n        uint256 txGas\r\n    ) internal returns (bool success) {\r\n        if (operation == Enum.Operation.DelegateCall) {\r\n            /* solhint-disable no-inline-assembly */\r\n            /// @solidity memory-safe-assembly\r\n            assembly {\r\n                success := delegatecall(txGas, to, add(data, 0x20), mload(data), 0, 0)\r\n            }\r\n            /* solhint-enable no-inline-assembly */\r\n        } else {\r\n            /* solhint-disable no-inline-assembly */\r\n            /// @solidity memory-safe-assembly\r\n            assembly {\r\n                success := call(txGas, to, value, add(data, 0x20), mload(data), 0, 0)\r\n            }\r\n            /* solhint-enable no-inline-assembly */\r\n        }\r\n    }\r\n}\r\n"
+      },
+      "project/contracts/libraries/Enum.sol": {
+        "content": "// SPDX-License-Identifier: LGPL-3.0-only\r\npragma solidity >=0.7.0 <0.9.0;\r\n\r\n/**\r\n * @title Enum - Collection of enums used in Safe Smart Account contracts.\r\n * @author @safe-global/safe-protocol\r\n */\r\nlibrary Enum {\r\n    enum Operation {\r\n        Call,\r\n        DelegateCall\r\n    }\r\n}\r\n"
+      }
+    }
+  }
+}

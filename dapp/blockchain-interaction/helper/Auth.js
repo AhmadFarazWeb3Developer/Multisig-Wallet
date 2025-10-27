@@ -6,7 +6,7 @@ const useAuthenticate = () => {
   const { walletProvider } = useAppKitProvider("eip155");
   const { address, isConnected } = useAppKitAccount();
 
-  const [signer, setSigner] = useState(null);
+  const [signer, setSigner] = useState({});
   const [error, setError] = useState(null);
 
   const authenticate = useCallback(async () => {

@@ -1,0 +1,56 @@
+{
+  "_format": "hh3-artifact-1",
+  "contractName": "ISignatureVerifierMuxer",
+  "sourceName": "contracts/handler/extensible/SignatureVerifierMuxer.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "contract ISafe",
+          "name": "safe",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "domainSeparator",
+          "type": "bytes32"
+        }
+      ],
+      "name": "domainVerifiers",
+      "outputs": [
+        {
+          "internalType": "contract ISafeSignatureVerifier",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "domainSeparator",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "contract ISafeSignatureVerifier",
+          "name": "verifier",
+          "type": "address"
+        }
+      ],
+      "name": "setDomainVerifier",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {},
+  "immutableReferences": {},
+  "inputSourceName": "project/contracts/handler/extensible/SignatureVerifierMuxer.sol",
+  "buildInfoId": "solc-0_8_28-03b84819a348571394c81da83c7fc4863c73373d"
+}

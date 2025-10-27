@@ -1,0 +1,42 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_28-fca088079255af35bb64786af54cfa6337cb4878",
+  "solcVersion": "0.8.28",
+  "solcLongVersion": "0.8.28+commit.7893614a",
+  "userSourceNameMap": {
+    "contracts/libraries/SafeToL2Setup.sol": "project/contracts/libraries/SafeToL2Setup.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "cancun",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/libraries/SafeStorage.sol": {
+        "content": "// SPDX-License-Identifier: LGPL-3.0-only\r\npragma solidity >=0.7.0 <0.9.0;\r\n\r\n/**\r\n * @title SafeStorage - Storage layout of the Safe Smart Account contracts to be used in libraries.\r\n * @dev Should be always the first base contract of a library that is used with a Safe.\r\n * @author Richard Meissner - @rmeissner\r\n */\r\nabstract contract SafeStorage {\r\n    // From /common/Singleton.sol\r\n    address internal singleton;\r\n    // From /common/ModuleManager.sol\r\n    mapping(address => address) internal modules;\r\n    // From /common/OwnerManager.sol\r\n    mapping(address => address) internal owners;\r\n    uint256 internal ownerCount;\r\n    uint256 internal threshold;\r\n\r\n    // From /Safe.sol\r\n    uint256 internal nonce;\r\n    bytes32 internal _deprecatedDomainSeparator;\r\n    mapping(bytes32 => uint256) internal signedMessages;\r\n    mapping(address => mapping(bytes32 => uint256)) internal approvedHashes;\r\n}\r\n"
+      },
+      "project/contracts/libraries/SafeToL2Setup.sol": {
+        "content": "// SPDX-License-Identifier: LGPL-3.0-only\r\npragma solidity >=0.7.0 <0.9.0;\r\n\r\nimport {SafeStorage} from \"../libraries/SafeStorage.sol\";\r\n\r\n/**\r\n * @title Safe to L2 Setup Contract\r\n * @dev This contract expects the singleton to be the {Safe} by default. Even if there are more\r\n * {SafeL2} proxies deployed, the average gas cost on L2s is significantly lower, making the\r\n * current design more economically efficient overall.\r\n * @notice This contract facilitates the deployment of a Safe to the same address on all networks by\r\n *         automatically changing the singleton to the L2 version when not on chain ID 1.\r\n */\r\ncontract SafeToL2Setup is SafeStorage {\r\n    /**\r\n     * @dev Address of the contract.\r\n     *      This is used to ensure that the contract is only ever `DELEGATECALL`-ed.\r\n     */\r\n    address private immutable SELF;\r\n\r\n    /**\r\n     * @notice Event indicating a change of master copy address.\r\n     * @param singleton New master copy address\r\n     */\r\n    event ChangedMasterCopy(address singleton);\r\n\r\n    /**\r\n     * @notice Initializes a new {SafeToL2Setup} instance.\r\n     */\r\n    constructor() {\r\n        SELF = address(this);\r\n    }\r\n\r\n    /**\r\n     * @notice Modifier ensure a function is only called via `DELEGATECALL`. Will revert otherwise.\r\n     */\r\n    modifier onlyDelegateCall() {\r\n        require(address(this) != SELF, \"SafeToL2Setup should only be called via delegatecall\");\r\n        _;\r\n    }\r\n\r\n    /**\r\n     * @notice Modifier to prevent using initialized Safes.\r\n     */\r\n    modifier onlyNonceZero() {\r\n        require(nonce == 0, \"Safe must have not executed any tx\");\r\n        _;\r\n    }\r\n\r\n    /**\r\n     * @notice Modifier to ensure that the specified account is a contract.\r\n     *\r\n     */\r\n    modifier onlyContract(address account) {\r\n        require(codeSize(account) != 0, \"Account doesn't contain code\");\r\n        _;\r\n    }\r\n\r\n    /**\r\n     * @notice Setup the Safe with the provided L2 singleton if needed.\r\n     * @dev This function checks that the chain ID is not 1, and if it isn't updates the singleton\r\n     *      to the provided L2 singleton.\r\n     */\r\n    function setupToL2(address l2Singleton) external onlyDelegateCall onlyNonceZero onlyContract(l2Singleton) {\r\n        if (chainId() != 1) {\r\n            singleton = l2Singleton;\r\n            emit ChangedMasterCopy(l2Singleton);\r\n        }\r\n    }\r\n\r\n    /**\r\n     * @notice Returns the current chain ID.\r\n     */\r\n    function chainId() private view returns (uint256 result) {\r\n        /* solhint-disable no-inline-assembly */\r\n        /// @solidity memory-safe-assembly\r\n        assembly {\r\n            result := chainid()\r\n        }\r\n        /* solhint-enable no-inline-assembly */\r\n    }\r\n\r\n    /**\r\n     * @notice Returns the code size of the specified account.\r\n     */\r\n    function codeSize(address account) internal view returns (uint256 result) {\r\n        /* solhint-disable no-inline-assembly */\r\n        /// @solidity memory-safe-assembly\r\n        assembly {\r\n            result := extcodesize(account)\r\n        }\r\n        /* solhint-enable no-inline-assembly */\r\n    }\r\n}\r\n"
+      }
+    }
+  }
+}

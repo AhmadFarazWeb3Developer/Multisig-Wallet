@@ -1,0 +1,42 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_28-7c9296e0e56a07e0915b92aea7f08fce1f43f5d0",
+  "solcVersion": "0.8.28",
+  "solcLongVersion": "0.8.28+commit.7893614a",
+  "userSourceNameMap": {
+    "contracts/interfaces/IModuleManager.sol": "project/contracts/interfaces/IModuleManager.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "cancun",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/interfaces/IModuleManager.sol": {
+        "content": "// SPDX-License-Identifier: LGPL-3.0-only\r\npragma solidity >=0.7.0 <0.9.0;\r\nimport {Enum} from \"../libraries/Enum.sol\";\r\n\r\n/**\r\n * @title IModuleManager - An interface of contract managing Safe modules\r\n * @notice Modules are extensions with unlimited access to a Safe that can be added to a Safe by its owners.\r\n           ⚠️ WARNING: Modules are a security risk since they can execute arbitrary transactions, \r\n           so only trusted and audited modules should be added to a Safe. A malicious module can\r\n           completely takeover a Safe.\r\n * @author @safe-global/safe-protocol\r\n */\r\ninterface IModuleManager {\r\n    event EnabledModule(address indexed module);\r\n    event DisabledModule(address indexed module);\r\n    event ExecutionFromModuleSuccess(address indexed module);\r\n    event ExecutionFromModuleFailure(address indexed module);\r\n    event ChangedModuleGuard(address indexed moduleGuard);\r\n\r\n    /**\r\n     * @notice Enables the module `module` for the Safe.\r\n     * @dev This can only be done via a Safe transaction.\r\n     * @param module Module to be whitelisted.\r\n     */\r\n    function enableModule(address module) external;\r\n\r\n    /**\r\n     * @notice Disables the module `module` for the Safe.\r\n     * @dev This can only be done via a Safe transaction.\r\n     * @param prevModule Previous module in the modules linked list.\r\n     * @param module Module to be removed.\r\n     */\r\n    function disableModule(address prevModule, address module) external;\r\n\r\n    /**\r\n     * @notice Execute `operation` (0: Call, 1: DelegateCall) to `to` with `value` (Native Token)\r\n     * @param to Destination address of module transaction.\r\n     * @param value Ether value of module transaction.\r\n     * @param data Data payload of module transaction.\r\n     * @param operation Operation type of module transaction.\r\n     * @return success Boolean flag indicating if the call succeeded.\r\n     */\r\n    function execTransactionFromModule(\r\n        address to,\r\n        uint256 value,\r\n        bytes memory data,\r\n        Enum.Operation operation\r\n    ) external returns (bool success);\r\n\r\n    /**\r\n     * @notice Execute `operation` (0: Call, 1: DelegateCall) to `to` with `value` (Native Token) and return data\r\n     * @param to Destination address of module transaction.\r\n     * @param value Ether value of module transaction.\r\n     * @param data Data payload of module transaction.\r\n     * @param operation Operation type of module transaction.\r\n     * @return success Boolean flag indicating if the call succeeded.\r\n     * @return returnData Data returned by the call.\r\n     */\r\n    function execTransactionFromModuleReturnData(\r\n        address to,\r\n        uint256 value,\r\n        bytes memory data,\r\n        Enum.Operation operation\r\n    ) external returns (bool success, bytes memory returnData);\r\n\r\n    /**\r\n     * @notice Returns if a module is enabled\r\n     * @return True if the module is enabled\r\n     */\r\n    function isModuleEnabled(address module) external view returns (bool);\r\n\r\n    /**\r\n     * @notice Returns an array of modules.\r\n     *         If all entries fit into a single page, the next pointer will be 0x1.\r\n     *         If another page is present, next will be the last element of the returned array.\r\n     * @param start Start of the page. Has to be a module or start pointer (0x1 address)\r\n     * @param pageSize Maximum number of modules that should be returned. Has to be > 0\r\n     * @return array Array of modules.\r\n     * @return next Start of the next page.\r\n     */\r\n    function getModulesPaginated(address start, uint256 pageSize) external view returns (address[] memory array, address next);\r\n\r\n    /**\r\n     * @dev Set a module guard that checks transactions initiated by the module before execution\r\n     *      This can only be done via a Safe transaction.\r\n     *      ⚠️ IMPORTANT: Since a module guard has full power to block Safe transaction execution initiated via a module,\r\n     *        a broken module guard can cause a denial of service for the Safe modules. Make sure to carefully\r\n     *        audit the module guard code and design recovery mechanisms.\r\n     * @notice Set Module Guard `moduleGuard` for the Safe. Make sure you trust the module guard.\r\n     * @param moduleGuard The address of the module guard to be used or the zero address to disable the module guard.\r\n     */\r\n    function setModuleGuard(address moduleGuard) external;\r\n}\r\n"
+      },
+      "project/contracts/libraries/Enum.sol": {
+        "content": "// SPDX-License-Identifier: LGPL-3.0-only\r\npragma solidity >=0.7.0 <0.9.0;\r\n\r\n/**\r\n * @title Enum - Collection of enums used in Safe Smart Account contracts.\r\n * @author @safe-global/safe-protocol\r\n */\r\nlibrary Enum {\r\n    enum Operation {\r\n        Call,\r\n        DelegateCall\r\n    }\r\n}\r\n"
+      }
+    }
+  }
+}
