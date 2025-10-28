@@ -3,12 +3,15 @@
 import { useState } from "react";
 import { Trash2, UserPlus, Settings, Rocket, Plus, Minus } from "lucide-react";
 import { useAppKitAccount } from "@reown/appkit/react";
+import { useRouter } from "next/navigation";
 
 export default function CreateSmartAccountPage() {
   const { address, isConnected } = useAppKitAccount();
   const [owners, setOwners] = useState<string[]>([]);
   const [newOwner, setNewOwner] = useState("");
   const [threshold, setThreshold] = useState(0);
+
+  const router = useRouter();
 
   const addOwner = () => {
     if (!newOwner.trim()) return;
@@ -47,7 +50,9 @@ export default function CreateSmartAccountPage() {
                 key={index}
                 className="flex items-center justify-between bg-white/10 px-4 py-2 rounded-full"
               >
-                <p className="truncate text-sm text-gray-400">{owner}</p>
+                <p className="truncate text-sm text-gray-400">
+                  {owner.toUpperCase()}
+                </p>
                 <button
                   onClick={() => removeOwner(index)}
                   className="text-red-400 hover:text-red-500 transition cursor-pointer"
@@ -58,7 +63,7 @@ export default function CreateSmartAccountPage() {
             ))}
           </div>
 
-          <div className="flex items-center gap-3 bg-white/10 rounded-full pl-4 mt-4">
+          <div className=" truncate flex items-center gap-3 bg-white/10 rounded-full pl-4 mt-4">
             <input
               type="text"
               placeholder="Enter owner address (0x...)"
@@ -113,12 +118,14 @@ export default function CreateSmartAccountPage() {
             <p className="text-white/60 mb-6">
               Review and confirm your setup before deploying.
             </p>
+
+            <div className="flex flex-col items-start text-white/60 py-4">
+              <p>Owner : {owners.length}</p>
+              <p>Threshold : {threshold}</p>
+            </div>
+
             <button
-              onClick={() =>
-                alert(
-                  `Wallet will be created with ${owners.length} owners and threshold ${threshold}`
-                )
-              }
+              onClick={() => router.push("/dashboard")}
               className="w-full py-3 rounded-full bg-[#eb5e28] hover:bg-[#ff6b36] text-white font-semibold text-lg shadow-lg hover:scale-105 transition-all cursor-pointer"
             >
               Deploy Wallet

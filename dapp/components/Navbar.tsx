@@ -3,22 +3,50 @@ import Link from "next/link";
 import {
   useAppKit,
   useAppKitAccount,
-  useAppKitNetwork,
   useAppKitProvider,
+  useAppKitNetwork,
+  useAppKitState,
 } from "@reown/appkit/react";
 
 import { Wallet, ChevronDown, Vault } from "lucide-react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ethers } from "ethers";
+import { getNetworkToken } from "../blockchain-interaction/helper/getNetworkToken";
 
 export default function Navbar() {
-  const { open } = useAppKit();
+  const { open, close } = useAppKit();
   const { address, isConnected } = useAppKitAccount();
   const { caipNetwork, chainId } = useAppKitNetwork();
   const { walletProvider } = useAppKitProvider("eip155");
+  const { open: isModalOpen } = useAppKitState();
+
+  const [nativeToken, setNativeToken] = useState({
+    symbol: "ETH",
+    name: "Ether",
+  });
+  const [previousChainId, setPreviousChainId] = useState(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const [balance, setBalance] = useState<string>("0.00");
+
+  useEffect(() => {
+    if (
+      previousChainId !== null &&
+      previousChainId !== chainId &&
+      isModalOpen
+    ) {
+      close();
+    }
+    setPreviousChainId(chainId);
+  }, [chainId, isModalOpen, close, previousChainId]);
+
+  useEffect(() => {
+    if (chainId) {
+      const token = getNetworkToken(chainId);
+      setNativeToken(token);
+    }
+  }, [chainId]);
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -30,18 +58,58 @@ export default function Navbar() {
           setBalance(parseFloat(balanceEth).toFixed(4));
         } catch (error) {
           console.error("Error fetching balance:", error);
+          setBalance("0.00");
         }
       }
     };
 
     fetchBalance();
-  }, [isConnected, address, chainId]);
+  }, [isConnected, address, chainId, walletProvider]);
 
-  const networkImageUrl =
-    caipNetwork?.imageUrl ||
-    (caipNetwork?.imageId
-      ? `https://api.web3modal.com/public/getAssetImage/${caipNetwork.imageId}`
-      : null);
+  useEffect(() => {
+    setImageLoaded(false);
+  }, [chainId, caipNetwork]);
+
+  const getNetworkImageUrl = () => {
+    if (!chainId) return null;
+
+    const chainMap = {
+      1: "ethereum",
+      137: "polygon",
+      56: "smartchain",
+      42161: "arbitrum",
+      10: "optimism",
+      43114: "avalanchec",
+      8453: "base",
+      250: "fantom",
+      100: "xdai",
+      11155111: "ethereum",
+      80002: "polygon",
+      97: "smartchain",
+      421614: "arbitrum",
+      43113: "avalanchec",
+      11155420: "optimism",
+      84532: "base",
+      31337: "ethereum",
+    };
+
+    const chainName = chainMap[chainId];
+    if (chainName) {
+      return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${chainName}/info/logo.png`;
+    }
+
+    return null;
+  };
+
+  const networkImageUrl = getNetworkImageUrl();
+
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+  };
+
+  const handleImageError = () => {
+    setImageLoaded(false);
+  };
 
   return (
     <nav className="flex items-center justify-between py-4 shadow-sm ">
@@ -49,35 +117,7 @@ export default function Navbar() {
         <Vault size={34} color="white" />
       </Link>
 
-      <div className="flex items-center gap-3">
-        {isConnected && caipNetwork && (
-          <button
-            onClick={() => open({ view: "Networks" })}
-            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all shadow-sm hover:shadow-md cursor-pointer"
-            title={`Connected to ${caipNetwork.name}`}
-          >
-            {networkImageUrl ? (
-              <Image
-                src={networkImageUrl}
-                alt={caipNetwork.name || "Network"}
-                width={22}
-                height={22}
-                className="rounded-full"
-                unoptimized
-              />
-            ) : (
-              <div className="w-5 h-5 rounded-full  from-blue-400 to-purple-500 cursor-pointer" />
-            )}
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300 hidden sm:inline">
-              {caipNetwork.name}
-            </span>
-            <ChevronDown
-              size={16}
-              className="text-gray-400 dark:text-gray-500"
-            />
-          </button>
-        )}
-
+      <div className="wallet flex items-center gap-3">
         {isConnected ? (
           <div className="flex flex-row items-center gap-2 border border-white/10 rounded-full bg-white/5 backdrop-blur-xl p-1 shadow-lg cursor-pointer">
             <div className="flex items-center justify-center gap-2 px-4 py-2 bg-white/5 rounded-full">
@@ -90,28 +130,37 @@ export default function Navbar() {
               </div>
             </div>
 
-            {caipNetwork && networkImageUrl && (
+            {caipNetwork && (
               <button
                 onClick={() => open({ view: "Networks" })}
-                className="flex items-center gap-2 px-3 py-2 hover:bg-white/10 rounded-full transition-all group cursor-pointer"
+                className="flex items-center gap-2 px-3 py-2  rounded-full group cursor-pointer  transition-all hover:scale-105 hover:bg-[#eb5e28]"
               >
-                <Image
-                  src={networkImageUrl}
-                  alt={caipNetwork.name || "Network"}
-                  width={20}
-                  height={20}
-                  className="rounded-full ring-2 ring-white/10 group-hover:ring-primary-orange/50 transition-all"
-                  unoptimized
-                />
-                <span className="text-sm font-medium text-white/80 group-hover:text-white transition-colors hidden sm:inline">
+                {networkImageUrl && (
+                  <img
+                    src={networkImageUrl}
+                    alt={caipNetwork.name || "Network"}
+                    className=" w-5 h-5 rounded-full   transition-all object-cover"
+                    onLoad={handleImageLoad}
+                    onError={handleImageError}
+                    style={{ display: imageLoaded ? "block" : "none" }}
+                  />
+                )}
+
+                {(!networkImageUrl || !imageLoaded) && (
+                  <div className=" w-5 h-5 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-[10px] font-bold text-white ring-2 ring-white/10  transition-all ">
+                    {caipNetwork.name?.charAt(0)?.toUpperCase() || "N"}
+                  </div>
+                )}
+
+                <span className="text-xs  text-white/80 group-hover:text-white transition-colors ">
                   {caipNetwork.name}
                 </span>
+                <ChevronDown size={14} className="text-white/60 " />
               </button>
             )}
-
             <button
               onClick={() => open({ view: "Account" })}
-              className="flex items-center gap-2 px-5 py-2.5 hover:bg-[#eb5e28] rounded-full font-semibold text-white/70 transition-all hover:scale-105 shadow-2xl  cursor-pointer  "
+              className="flex items-center gap-2 px-5 py-2.5 hover:bg-[#eb5e28] rounded-full  text-white/70 transition-all hover:scale-105 shadow-2xl  cursor-pointer  "
             >
               <span className="text-sm">
                 {`${address?.slice(0, 6)}...${address?.slice(-4)}`}

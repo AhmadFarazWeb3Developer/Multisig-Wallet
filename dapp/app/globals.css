@@ -28,3 +28,10 @@
 .create-smart-account h2 {
   font-family: var(--font-orbitron);
 }
+
+.truncate {
+  font-family: var(--font-unbounded);
+}
+.wallet {
+  font-family: var(--font-unbounded);
+}

@@ -2,7 +2,16 @@
 
 import { createAppKit, AppKitProvider } from "@reown/appkit/react";
 import { Ethers5Adapter } from "@reown/appkit-adapter-ethers5";
-import { defineChain } from "@reown/appkit/networks";
+import {
+  arbitrum,
+  arbitrumSepolia,
+  avalancheFuji,
+  defineChain,
+  mainnet,
+  optimism,
+  optimismSepolia,
+  zksync,
+} from "@reown/appkit/networks";
 
 const projectId = process.env.NEXT_PUBLIC_REOWN_PROJECT_ID;
 
@@ -33,7 +42,16 @@ const hardhat = defineChain({
 
 createAppKit({
   adapters: [new Ethers5Adapter()],
-  networks: [hardhat],
+  networks: [
+    hardhat,
+    mainnet,
+    zksync,
+    optimism,
+    optimismSepolia,
+    arbitrum,
+    arbitrumSepolia,
+    avalancheFuji,
+  ],
   projectId,
   features: { analytics: true },
 });

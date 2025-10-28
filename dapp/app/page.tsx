@@ -12,7 +12,7 @@ export default function HomePage() {
           Secure Assets with <span className="">Multisig Wallet</span>
         </h1>
         <p className="text-neutral-400 text-lg md:text-xl mb-10">
-          Welcome to the multisig world, where security isn't optional.
+          Welcome to Multisig era, where single-sig isn't enough.
         </p>
         <button
           onClick={() => router.push("/create-smart-account")}
