@@ -58,7 +58,7 @@ import {
   Plus,
 } from "lucide-react";
 
-export default function UserDashboard() {
+export default function Transactions() {
   const [notifications, setNotifications] = useState(3);
   const [activeTab, setActiveTab] = useState("pending");
 
@@ -237,14 +237,14 @@ export default function UserDashboard() {
             {/* Header */}
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-white mb-2">
+                {/* <h1 className="text-3xl font-bold text-white mb-2">
                   MultiSig Dashboard
-                </h1>
+                </h1> */}
                 <p className="text-[#A0A0A0]">
                   Manage your wallet transactions and owners
                 </p>
               </div>
-              <button className="bg-[#eb5e28] hover:bg-[#d54e20] text-white px-6 py-3 rounded-full font-semibold transition-all shadow-lg hover:shadow-xl flex items-center gap-2">
+              <button className="bg-[#eb5e28] hover:bg-[#d54e20] text-white px-6 py-3 rounded-full font-semibold transition-all shadow-lg hover:shadow-xl flex items-center gap-2 cursor-pointer">
                 <Plus size={20} />
                 New Transaction
               </button>
