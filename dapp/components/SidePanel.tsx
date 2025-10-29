@@ -1,4 +1,4 @@
-import { HomeIcon, ArrowDownUp, Circle } from "lucide-react";
+import { HomeIcon, ArrowDownUp, Circle, Copy } from "lucide-react";
 import React, { ReactElement, useState, Dispatch, SetStateAction } from "react";
 import Home from "./Home";
 import Transactions from "./Transactions";
@@ -13,6 +13,39 @@ export default function SidePanel({ setComponent }: SidePanelProps) {
 
   return (
     <aside className="bg-[#242424] border-r border-[#333333] min-h-[80vh] w-64 p-4">
+      {/* Wallet Address Section */}
+      <div className="flex items-center justify-between px-4 py-3 bg-[#2a2a2a] rounded-xl mb-4 border border-[#333333]">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full ring-2 ring-[#333333] hover:ring-[#eb5e28] transition-all overflow-hidden">
+            <img
+              src={`https://api.dicebear.com/9.x/pixel-art/svg?seed=${0x2546bcd3c84621e976d8185a91a922ae77ecec30}`}
+              alt=""
+              className="w-full h-full"
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <p className="text-gray-500 text-xs font-semibold">
+              Wallet Address
+            </p>
+            <p className="text-white text-sm font-mono">0x2546b9...ec30</p>
+          </div>
+        </div>
+
+        <button
+          onClick={() => {
+            navigator.clipboard.writeText(
+              "0x2546bcd3c84621e976d8185a91a922ae77ecec30"
+            );
+            alert("copied");
+          }}
+          className="text-[#eb5e28] hover:text-[#d54e20] transition-colors cursor-pointer"
+        >
+          <Copy size={14} />
+        </button>
+      </div>
+
+      {/* Navigation Buttons */}
       <div className="space-y-2">
         <button
           onClick={() => {
@@ -22,11 +55,11 @@ export default function SidePanel({ setComponent }: SidePanelProps) {
           className={`w-full flex items-center gap-3 px-4 py-2 rounded-xl font-bold transition-all cursor-pointer ${
             activeTab === "home"
               ? "bg-[#eb5e28] text-white shadow-lg"
-              : "text-[#A0A0A0]   hover:bg-[#eb5e28]/20 hover:text-white"
+              : "text-[#A0A0A0] hover:bg-[#eb5e28]/20 hover:text-white"
           }`}
         >
           <HomeIcon size={17} />
-          <span className=" text-sm">Home</span>
+          <span className="text-sm">Home</span>
         </button>
 
         <button
@@ -34,7 +67,7 @@ export default function SidePanel({ setComponent }: SidePanelProps) {
             setComponent(<Assets />);
             setActiveTab("assets");
           }}
-          className={`w-full flex items-center gap-3 px-4 py-2 rounded-xl font-bold transition-all  cursor-pointer ${
+          className={`w-full flex items-center gap-3 px-4 py-2 rounded-xl font-bold transition-all cursor-pointer ${
             activeTab === "assets"
               ? "bg-[#eb5e28] text-white shadow-lg"
               : "text-[#A0A0A0] hover:bg-[#eb5e28]/20 hover:text-white"
@@ -54,7 +87,7 @@ export default function SidePanel({ setComponent }: SidePanelProps) {
               fillOpacity={0.2}
             />
           </div>
-          <span className=" text-sm">Assets</span>
+          <span className="text-sm">Assets</span>
         </button>
 
         <button
@@ -65,11 +98,11 @@ export default function SidePanel({ setComponent }: SidePanelProps) {
           className={`w-full flex items-center gap-3 px-4 py-2 rounded-xl font-bold transition-all cursor-pointer ${
             activeTab === "transactions"
               ? "bg-[#eb5e28] text-white shadow-lg"
-              : "text-[#A0A0A0]  hover:bg-[#eb5e28]/20 hover:text-white"
+              : "text-[#A0A0A0] hover:bg-[#eb5e28]/20 hover:text-white"
           }`}
         >
           <ArrowDownUp size={16} />
-          <span className=" text-sm">Transactions</span>
+          <span className="text-sm">Transactions</span>
         </button>
       </div>
     </aside>
