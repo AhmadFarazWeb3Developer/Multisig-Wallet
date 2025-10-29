@@ -7,7 +7,6 @@ export default function HomePage() {
   const router = useRouter();
   const canvasRef = useRef(null);
 
-  // draw stars on canvas
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -56,7 +55,7 @@ export default function HomePage() {
         </p>
         <button
           onClick={() => router.push("/create-smart-account")}
-          className="px-8 py-4 text-md font-semibold rounded-full bg-[#eb5e28] text-white hover:scale-105 hover:shadow-xl transition-all duration-300"
+          className="px-8 py-4 text-md font-semibold rounded-full bg-[#eb5e28] text-white hover:scale-105 hover:shadow-xl transition-all duration-300 cursor-pointer"
         >
           Launch Smart Account
         </button>

@@ -131,7 +131,7 @@ export default function Navbar() {
         </div>
         <div className="wallet flex items-center gap-3">
           {isConnected ? (
-            <div className="flex flex-row items-center gap-2 border border-white/10 rounded-full bg-white/5 backdrop-blur-xl p-1 shadow-lg cursor-pointer">
+            <div className="flex flex-row items-center gap-2 border border-white/10 rounded-full bg-white/5 backdrop-blur-xl p-1 shadow-lg ">
               <div className="flex items-center justify-center gap-2 px-4 py-2 bg-white/5 rounded-full">
                 <div className="rounded-full flex items-center justify-center">
                   <Wallet size={18} color="gray" strokeWidth="2px" />

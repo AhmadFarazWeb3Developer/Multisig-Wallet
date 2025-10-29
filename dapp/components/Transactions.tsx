@@ -161,11 +161,11 @@ export default function Transactions() {
 
       {isPending && (
         <div className="flex gap-2">
-          <button className="flex-1 bg-[#eb5e28] hover:bg-[#d54e20] text-white py-2 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-1.5">
+          <button className="flex-1 bg-[#eb5e28] hover:bg-[#d54e20] text-white py-2 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer">
             <CheckCircle size={16} />
             Approve
           </button>
-          <button className="flex-1 bg-[#242424] hover:bg-[#303030] text-[#A0A0A0] hover:text-white py-2 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-1.5 border border-[#333333]">
+          <button className="flex-1 bg-[#242424] hover:bg-[#303030] text-[#A0A0A0] hover:text-white py-2 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-1.5 border border-[#333333] cursor-pointer">
             <XCircle size={16} />
             Reject
           </button>
@@ -208,7 +208,7 @@ export default function Transactions() {
             <div className="flex gap-2 border-b border-[#333333]">
               <button
                 onClick={() => setActiveTab("pending")}
-                className={`flex-1 py-2.5 px-4 text-sm font-semibold transition-all relative ${
+                className={`flex-1 py-2.5 px-4 text-sm font-semibold transition-all relative cursor-pointer ${
                   activeTab === "pending"
                     ? "text-white after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-[#eb5e28]"
                     : "text-[#A0A0A0] hover:text-white"
@@ -218,7 +218,7 @@ export default function Transactions() {
               </button>
               <button
                 onClick={() => setActiveTab("executed")}
-                className={`flex-1 py-2.5 px-4 text-sm font-semibold transition-all relative ${
+                className={`flex-1 py-2.5 px-4 text-sm font-semibold transition-all relative cursor-pointer ${
                   activeTab === "executed"
                     ? "text-white after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-[#eb5e28]"
                     : "text-[#A0A0A0] hover:text-white"
@@ -228,7 +228,7 @@ export default function Transactions() {
               </button>
               <button
                 onClick={() => setActiveTab("rejected")}
-                className={`flex-1 py-2.5 px-4 text-sm font-semibold transition-all relative ${
+                className={`flex-1 py-2.5 px-4 text-sm font-semibold transition-all relative cursor-pointer ${
                   activeTab === "rejected"
                     ? "text-white after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-[#eb5e28]"
                     : "text-[#A0A0A0] hover:text-white"
