@@ -11,7 +11,7 @@ export default function Dashboard() {
     <main className=" w-full flex flex-row border-1 border-[#333333] rounded-sm min-h-[80vh]">
       <div className="flex-1 bg-[#1A1A1A]  flex flex-row">
         <SidePanel setComponent={setComponent} />
-        <div className="flex-1 p-4 bg-[#1A1A1A]">
+        <div className="flex-1 px-4 bg-[#1A1A1A]">
           {component ? component : <Home />}
         </div>
       </div>
