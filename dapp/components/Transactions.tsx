@@ -105,7 +105,7 @@ export default function Transactions() {
   };
 
   const TransactionCard = ({ tx, isPending = false }) => (
-    <div className="bg-[#1A1A1A] border border-[#333333] rounded-xl p-4 hover:border-[#eb5e28] transition-all">
+    <div className="bg-[#1A1A1A]  border border-[#333333] rounded-xl p-4 hover:border-[#eb5e28] transition-all">
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-[#242424] flex items-center justify-center border border-[#333333]">
