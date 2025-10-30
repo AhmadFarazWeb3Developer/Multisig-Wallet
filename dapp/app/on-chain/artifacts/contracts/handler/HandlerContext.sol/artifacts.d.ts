@@ -15,7 +15,7 @@ export interface HandlerContext$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/handler/HandlerContext.sol";
-  readonly buildInfoId: "solc-0_8_28-90e4de88ba6b0d49ea7994b5f15a6a457c9b4da1";
+  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
 };
 
 import "hardhat/types/artifacts";

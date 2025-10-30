@@ -15,7 +15,7 @@ export interface ExtensibleBase$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/handler/extensible/ExtensibleBase.sol";
-  readonly buildInfoId: "solc-0_8_28-01a07801a84c920c217ca94ad8d8b240dffdb2bb";
+  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
 };
 
 export interface IFallbackMethod$Type {
@@ -29,7 +29,7 @@ export interface IFallbackMethod$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/handler/extensible/ExtensibleBase.sol";
-  readonly buildInfoId: "solc-0_8_28-01a07801a84c920c217ca94ad8d8b240dffdb2bb";
+  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
 };
 
 export interface IStaticFallbackMethod$Type {
@@ -43,7 +43,7 @@ export interface IStaticFallbackMethod$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/handler/extensible/ExtensibleBase.sol";
-  readonly buildInfoId: "solc-0_8_28-01a07801a84c920c217ca94ad8d8b240dffdb2bb";
+  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
 };
 
 import "hardhat/types/artifacts";

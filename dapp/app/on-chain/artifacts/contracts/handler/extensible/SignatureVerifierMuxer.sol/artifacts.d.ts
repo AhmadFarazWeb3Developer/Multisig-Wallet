@@ -9,13 +9,13 @@ export interface EIP712$Type {
   readonly contractName: "EIP712";
   readonly sourceName: "contracts/handler/extensible/SignatureVerifierMuxer.sol";
   readonly abi: [];
-  readonly bytecode: "0x60556032600b8282823980515f1a607314602657634e487b7160e01b5f525f60045260245ffd5b305f52607381538281f3fe730000000000000000000000000000000000000000301460806040525f5ffdfea26469706673582212207bcb807ae5e562a5f3cc7a01e69318c1c36b8cfbcdd6cba8f2f3b501ccaa660964736f6c634300081c0033";
-  readonly deployedBytecode: "0x730000000000000000000000000000000000000000301460806040525f5ffdfea26469706673582212207bcb807ae5e562a5f3cc7a01e69318c1c36b8cfbcdd6cba8f2f3b501ccaa660964736f6c634300081c0033";
+  readonly bytecode: "0x6055604b600b8282823980515f1a607314603f577f4e487b71000000000000000000000000000000000000000000000000000000005f525f60045260245ffd5b305f52607381538281f3fe730000000000000000000000000000000000000000301460806040525f5ffdfea2646970667358221220fefecdee7ced55b045fa35f1c999d13772f5a7e709901cbba876581bfc1e0e1864736f6c634300081c0033";
+  readonly deployedBytecode: "0x730000000000000000000000000000000000000000301460806040525f5ffdfea2646970667358221220fefecdee7ced55b045fa35f1c999d13772f5a7e709901cbba876581bfc1e0e1864736f6c634300081c0033";
   readonly linkReferences: {};
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/handler/extensible/SignatureVerifierMuxer.sol";
-  readonly buildInfoId: "solc-0_8_28-03b84819a348571394c81da83c7fc4863c73373d";
+  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
 };
 
 export interface ERC1271$Type {
@@ -29,7 +29,7 @@ export interface ERC1271$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/handler/extensible/SignatureVerifierMuxer.sol";
-  readonly buildInfoId: "solc-0_8_28-03b84819a348571394c81da83c7fc4863c73373d";
+  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
 };
 
 export interface ISafeSignatureVerifier$Type {
@@ -43,7 +43,7 @@ export interface ISafeSignatureVerifier$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/handler/extensible/SignatureVerifierMuxer.sol";
-  readonly buildInfoId: "solc-0_8_28-03b84819a348571394c81da83c7fc4863c73373d";
+  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
 };
 
 export interface ISignatureVerifierMuxer$Type {
@@ -57,7 +57,7 @@ export interface ISignatureVerifierMuxer$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/handler/extensible/SignatureVerifierMuxer.sol";
-  readonly buildInfoId: "solc-0_8_28-03b84819a348571394c81da83c7fc4863c73373d";
+  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
 };
 
 export interface SignatureVerifierMuxer$Type {
@@ -71,7 +71,7 @@ export interface SignatureVerifierMuxer$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/handler/extensible/SignatureVerifierMuxer.sol";
-  readonly buildInfoId: "solc-0_8_28-03b84819a348571394c81da83c7fc4863c73373d";
+  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
 };
 
 import "hardhat/types/artifacts";

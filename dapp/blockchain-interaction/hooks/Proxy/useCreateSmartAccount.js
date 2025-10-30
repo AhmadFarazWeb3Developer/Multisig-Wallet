@@ -1,21 +1,46 @@
 import { ethers, providers } from "ethers";
 import Interfaces from "../../helper/interfaces";
 import DeterministicAddresses from "../../helper/deterministicAddresses";
-import Instances from "../../helper/instances";
-import { getProviderByChainId } from "../../helper/getProviderByChainId";
+import useInstancesSigner from "@/blockchain-interaction/helper/instancesSigner";
 import SafeArtifact from "../../../app/on-chain/artifacts/contracts/Safe.sol/Safe.json";
+import { useEffect, useState } from "react";
 
 const useCreateSmartAccount = () => {
-  const { safeProxyFactoryInterface } = Interfaces();
+  const { safeSingltonInterface, safeProxyFactoryInterface } = Interfaces();
+  const instancesSigner = useInstancesSigner();
+
   const { safeSingltonAddress, fallbackHandlerAddress } =
     DeterministicAddresses();
 
-  const { safeProxyFactoryIntance } = Instances();
+  const [signer, setSigner] = useState(null);
+  const [safeProxyFactoryIntance, setSafeProxyFactoryIntance] = useState(null);
 
-  const provider = getProviderByChainId(31337);
+  useEffect(() => {
+    const init = async () => {
+      const instances = await instancesSigner();
+
+      console.log("instances : ", instances);
+
+      if (!instances) {
+        console.log("instances are not ready");
+        return;
+      }
+      setSigner(instances.signer);
+      setSafeProxyFactoryIntance(instances.safeProxyFactoryIntance);
+    };
+
+    init();
+  }, []);
 
   const createSmartAccount = async (owners, threshold) => {
-    const initializer = safeProxyFactoryInterface.encodeFunctionData("setup", [
+    if (!signer) {
+      console.log("signer not avaliable");
+    }
+    if (!safeProxyFactoryIntance) {
+      console.log("safeProxyFactoryIntance not avaliable");
+    }
+
+    const initializer = safeSingltonInterface.encodeFunctionData("setup", [
       owners,
       threshold,
       ethers.constants.AddressZero,
@@ -26,21 +51,28 @@ const useCreateSmartAccount = () => {
       ethers.constants.AddressZero,
     ]);
 
-    const newUserproxy = await safeProxyFactoryIntance.createProxyWithNonce(
+    console.log("proxy : ", safeProxyFactoryIntance);
+
+    console.log(safeSingltonAddress);
+
+    const tx = await safeProxyFactoryIntance.createProxyWithNonce(
       safeSingltonAddress,
       initializer,
       10 //salt
     );
 
-    const tx = await newUserproxy.wait();
+    await tx.wait();
 
-    console.log("tx : ", tx);
     // Typecast the proxy address to Safe ABI
+    const receipt = await tx.wait();
+
     const newUserSafeAccount = new ethers.Contract(
       proxyAddress,
       SafeArtifact.abi,
-      provider
+      signer
     );
+
+    console.log("new safe ", newUserSafeAccount);
 
     return newUserSafeAccount;
   };

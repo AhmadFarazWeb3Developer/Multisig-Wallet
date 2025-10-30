@@ -15,7 +15,7 @@ export interface SignatureDecoder$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/common/SignatureDecoder.sol";
-  readonly buildInfoId: "solc-0_8_28-8f51bcdd57cd1228bd977e279b81c5b1c970ddd9";
+  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
 };
 
 import "hardhat/types/artifacts";

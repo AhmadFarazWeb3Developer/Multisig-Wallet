@@ -15,7 +15,7 @@ export interface SafeStorage$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/libraries/SafeStorage.sol";
-  readonly buildInfoId: "solc-0_8_28-59031884193fcb1eec27b09d232bd38894c7f9fd";
+  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
 };
 
 import "hardhat/types/artifacts";

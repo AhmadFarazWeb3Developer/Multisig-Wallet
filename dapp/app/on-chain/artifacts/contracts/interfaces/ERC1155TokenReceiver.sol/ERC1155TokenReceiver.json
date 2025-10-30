@@ -88,5 +88,5 @@
   "deployedLinkReferences": {},
   "immutableReferences": {},
   "inputSourceName": "project/contracts/interfaces/ERC1155TokenReceiver.sol",
-  "buildInfoId": "solc-0_8_28-1bf6d410de4e532ce44764791621d3f82cdca450"
+  "buildInfoId": "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352"
 }

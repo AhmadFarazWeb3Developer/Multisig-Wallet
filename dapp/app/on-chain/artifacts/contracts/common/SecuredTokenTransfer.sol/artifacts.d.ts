@@ -15,7 +15,7 @@ export interface SecuredTokenTransfer$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/common/SecuredTokenTransfer.sol";
-  readonly buildInfoId: "solc-0_8_28-91df60bfe7423093716df687715f88debc9f9838";
+  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
 };
 
 import "hardhat/types/artifacts";

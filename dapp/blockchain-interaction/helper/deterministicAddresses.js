@@ -44,6 +44,10 @@ const DeterministicAddresses = () => {
     ethers.utils.keccak256(fallbackHandlerInitCode)
   );
 
+  console.log(safeSingltonAddress);
+  console.log(safeProxyFactoryAddress);
+  console.log(fallbackHandlerAddress);
+
   return {
     safeSingltonAddress,
     safeProxyFactoryAddress,

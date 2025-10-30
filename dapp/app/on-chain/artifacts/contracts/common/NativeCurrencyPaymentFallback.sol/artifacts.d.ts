@@ -15,7 +15,7 @@ export interface NativeCurrencyPaymentFallback$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/common/NativeCurrencyPaymentFallback.sol";
-  readonly buildInfoId: "solc-0_8_28-9c637f8d66fdcffc4c0ed59c501b68276ba5f1f4";
+  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
 };
 
 import "hardhat/types/artifacts";

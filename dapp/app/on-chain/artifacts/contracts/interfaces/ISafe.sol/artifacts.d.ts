@@ -15,7 +15,7 @@ export interface ISafe$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/interfaces/ISafe.sol";
-  readonly buildInfoId: "solc-0_8_28-960b4ba5c3fd489e11aef5a42ecc9adc54a754dd";
+  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
 };
 
 import "hardhat/types/artifacts";

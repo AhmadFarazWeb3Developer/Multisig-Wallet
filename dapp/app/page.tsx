@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 
-import Instances from "../blockchain-interaction/helper/instances";
+import Instances from "../blockchain-interaction/helper/instancesProvider";
 import Interfaces from "../blockchain-interaction/helper/interfaces";
 
 export default function HomePage() {

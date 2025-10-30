@@ -15,7 +15,7 @@ export interface ERC165Handler$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/handler/extensible/ERC165Handler.sol";
-  readonly buildInfoId: "solc-0_8_28-01f4383cad80c6b30981d9d1ecf05f3d85be2188";
+  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
 };
 
 export interface IERC165Handler$Type {
@@ -29,7 +29,7 @@ export interface IERC165Handler$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/handler/extensible/ERC165Handler.sol";
-  readonly buildInfoId: "solc-0_8_28-01f4383cad80c6b30981d9d1ecf05f3d85be2188";
+  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
 };
 
 import "hardhat/types/artifacts";

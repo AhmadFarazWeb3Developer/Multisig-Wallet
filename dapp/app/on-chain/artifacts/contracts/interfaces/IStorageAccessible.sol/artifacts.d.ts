@@ -15,7 +15,7 @@ export interface IStorageAccessible$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/interfaces/IStorageAccessible.sol";
-  readonly buildInfoId: "solc-0_8_28-4dad861290f3ed5f708c889529bff77abcfb63cd";
+  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
 };
 
 import "hardhat/types/artifacts";

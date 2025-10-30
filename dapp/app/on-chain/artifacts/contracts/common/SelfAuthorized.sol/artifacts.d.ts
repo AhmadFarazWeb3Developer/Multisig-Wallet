@@ -15,7 +15,7 @@ export interface SelfAuthorized$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/common/SelfAuthorized.sol";
-  readonly buildInfoId: "solc-0_8_28-72797810d6bf4038ce7f1de6493c4b9e6004ffe3";
+  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
 };
 
 import "hardhat/types/artifacts";

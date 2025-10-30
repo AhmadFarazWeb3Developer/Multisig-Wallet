@@ -15,7 +15,7 @@ export interface Singleton$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/common/Singleton.sol";
-  readonly buildInfoId: "solc-0_8_28-383e540e0632e5f3f1700d816e1788ca6de573fc";
+  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
 };
 
 import "hardhat/types/artifacts";

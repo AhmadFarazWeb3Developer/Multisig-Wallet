@@ -2,11 +2,9 @@ import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import useConstants from "../../helper/useConstants";
 import { getProviderByChainId } from "../../helper/getProviderByChainId";
-// import useReadFactoryInstanceStore from "../../stores/useReadFactoryInstanceStore.store";
 
 useReadFactoryContract = () => {
   const { singletonFactoryAddress, singletonFactoryABI } = useConstants();
-  //   const { setFactoryReadInstance } = useReadFactoryInstanceStore();
   const [singletonFactoryReadInstance, setSingletonFactoryReadInstance] =
     useState({});
 
@@ -22,9 +20,6 @@ useReadFactoryContract = () => {
         provider
       );
 
-      const balance = await provider.getBalance(singletonFactoryAddress);
-
-      //   setFactoryReadInstance(contract);
       setSingletonFactoryReadInstance(contract);
     };
 

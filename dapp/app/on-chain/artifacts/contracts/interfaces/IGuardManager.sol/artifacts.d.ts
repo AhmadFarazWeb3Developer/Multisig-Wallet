@@ -15,7 +15,7 @@ export interface IGuardManager$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/interfaces/IGuardManager.sol";
-  readonly buildInfoId: "solc-0_8_28-b23264f3df351436d225fc01a905599eec90f037";
+  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
 };
 
 import "hardhat/types/artifacts";

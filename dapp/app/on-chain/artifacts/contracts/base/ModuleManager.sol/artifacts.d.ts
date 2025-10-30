@@ -15,7 +15,7 @@ export interface BaseModuleGuard$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/base/ModuleManager.sol";
-  readonly buildInfoId: "solc-0_8_28-a123669d013f9a979006c5b5257599d085af7566";
+  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
 };
 
 export interface IModuleGuard$Type {
@@ -29,7 +29,7 @@ export interface IModuleGuard$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/base/ModuleManager.sol";
-  readonly buildInfoId: "solc-0_8_28-a123669d013f9a979006c5b5257599d085af7566";
+  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
 };
 
 export interface ModuleManager$Type {
@@ -43,7 +43,7 @@ export interface ModuleManager$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/base/ModuleManager.sol";
-  readonly buildInfoId: "solc-0_8_28-a123669d013f9a979006c5b5257599d085af7566";
+  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
 };
 
 import "hardhat/types/artifacts";
