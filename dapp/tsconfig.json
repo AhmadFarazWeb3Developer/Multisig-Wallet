@@ -37,7 +37,7 @@
     "blockchain-interaction/hooks/factory/useReadSingletonFactory.s",
     "blockchain-interaction/helper/useConstants.js",
     "blockchain-interaction/helper/provider.js",
-    "blockchain-interaction/helper/Auth.js"
+    "blockchain-interaction/helper/auth.js"
   ],
   "exclude": ["node_modules"]
 }

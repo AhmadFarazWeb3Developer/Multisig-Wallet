@@ -3,11 +3,16 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 
+import Instances from "../blockchain-interaction/helper/instances";
+import Interfaces from "../blockchain-interaction/helper/interfaces";
+
 export default function HomePage() {
   const router = useRouter();
   const canvasRef = useRef(null);
 
   useEffect(() => {
+    Interfaces();
+
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     canvas.width = window.innerWidth;

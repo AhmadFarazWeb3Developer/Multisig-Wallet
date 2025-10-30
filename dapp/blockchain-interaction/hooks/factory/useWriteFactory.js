@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import useConstants from "../../helper/useConstants";
-import useAuthenticate from "@/blockchain-interaction/helper/Auth";
+import useAuthenticate from "@/blockchain-interaction/helper/auth";
 
 const useWriteFactoryContract = () => {
   const { singletonFactoryAddress, singletonFactoryABI } = useConstants();

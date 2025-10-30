@@ -10,26 +10,21 @@ export default buildModule("SafeModule", (m) => {
   const singletonFactory = m.contract("SingletonFactory");
 
   const safeInitCode = SafeArtifact.bytecode;
-  const proxyInitCode = SafeProxyFactoryArtifact.bytecode;
+  const proxyFactoryInitCode = SafeProxyFactoryArtifact.bytecode;
   const handlerInitCode = CompatibilityFallbackHandlerArtifact.bytecode;
 
   const safeSalt = keccak256(solidityPacked(["string"], ["my-safe-singleton"]));
-  const proxySalt = keccak256(
+  const proxyFactorySalt = keccak256(
     solidityPacked(["string"], ["my-safe-proxy-factory"])
   );
-
   const handlerSalt = keccak256(
     solidityPacked(["string"], ["my-CompatibilityFallbackHandler"])
   );
 
-  // m.call(singletonFactory, "deploy", [safeInitCode, safeSalt]);
-  // m.call(singletonFactory, "deploy", [proxyInitCode, proxySalt]);
-  // m.call(singletonFactory, "deploy", [handlerInitCode, handlerSalt]);
-
   m.call(singletonFactory, "deploy", [safeInitCode, safeSalt], {
     id: "DeploySafe",
   });
-  m.call(singletonFactory, "deploy", [proxyInitCode, proxySalt], {
+  m.call(singletonFactory, "deploy", [proxyFactoryInitCode, proxyFactorySalt], {
     id: "DeployProxyFactory",
   });
   m.call(singletonFactory, "deploy", [handlerInitCode, handlerSalt], {

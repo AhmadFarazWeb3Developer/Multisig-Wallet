@@ -1,15 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Trash2, UserPlus, Settings, Rocket, Plus, Minus } from "lucide-react";
 import { useAppKitAccount } from "@reown/appkit/react";
 import { useRouter } from "next/navigation";
+
+import useCreateSmartAccount from "../../blockchain-interaction/hooks/Proxy/useCreateSmartAccount";
+import { promises } from "dns";
 
 export default function CreateSmartAccountPage() {
   const { address, isConnected } = useAppKitAccount();
   const [owners, setOwners] = useState<string[]>([]);
   const [newOwner, setNewOwner] = useState("");
   const [threshold, setThreshold] = useState(0);
+  const { createSmartAccount } = useCreateSmartAccount();
 
   const router = useRouter();
 
@@ -31,6 +35,20 @@ export default function CreateSmartAccountPage() {
   const decreaseThreshold = () => {
     if (threshold > 1) setThreshold(threshold - 1);
   };
+
+  useEffect(() => {
+    const init = async () => {
+      await createSmartAccount(
+        [
+          "0x2546bcd3c84621e976d8185a91a922ae77ecec30",
+          "0x8626f6940e2eb28930efb4cef49b2d1f2c9c1199",
+          "0xf39fd6e51aad18f6f4ce6ab8827279cfffb92266",
+        ],
+        2
+      );
+    };
+    init();
+  });
 
   return (
     <main className="flex items-center justify-center  min-h-[80vh] bg-gradient-to-b from-[#1e1e1e] to-[#121212] text-white px-6 py-12">
