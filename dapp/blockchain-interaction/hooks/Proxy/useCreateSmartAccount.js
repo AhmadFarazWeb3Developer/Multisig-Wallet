@@ -51,20 +51,19 @@ const useCreateSmartAccount = () => {
       ethers.constants.AddressZero,
     ]);
 
-    console.log("proxy : ", safeProxyFactoryIntance);
+    console.log("proxy factory : ", safeProxyFactoryIntance);
 
-    console.log(safeSingltonAddress);
+    console.log("safe singleton ", safeSingltonAddress);
 
     const tx = await safeProxyFactoryIntance.createProxyWithNonce(
       safeSingltonAddress,
       initializer,
-      10 //salt
+      10 // salt
     );
 
-    await tx.wait();
-
-    // Typecast the proxy address to Safe ABI
     const receipt = await tx.wait();
+
+    console.log("receipt  : ", receipt);
 
     const newUserSafeAccount = new ethers.Contract(
       proxyAddress,

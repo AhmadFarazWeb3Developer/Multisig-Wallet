@@ -15,7 +15,7 @@ export interface ERC777TokensRecipient$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/interfaces/ERC777TokensRecipient.sol";
-  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
+  readonly buildInfoId: "solc-0_8_28-17531e0b96d948eec6de65d01904887707875ea9";
 };
 
 import "hardhat/types/artifacts";

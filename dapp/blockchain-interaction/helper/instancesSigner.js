@@ -31,6 +31,7 @@ const useInstancesSigner = () => {
       }
 
       const provider = new ethers.providers.Web3Provider(walletProvider);
+
       console.log("provider : ", provider);
 
       const signer = provider.getSigner();
@@ -48,7 +49,7 @@ const useInstancesSigner = () => {
         signer
       );
 
-      console.log(safeProxyFactoryIntance);
+      console.log("safe proxy factory : ", safeProxyFactoryIntance);
 
       const compatibilityFallbackHandlerInstace = new ethers.Contract(
         fallbackHandlerAddress,

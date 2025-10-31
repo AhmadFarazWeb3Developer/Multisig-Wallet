@@ -15,7 +15,7 @@ export interface BaseGuard$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/examples/guards/BaseGuard.sol";
-  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
+  readonly buildInfoId: "solc-0_8_28-6087b07b2060cca7a7951f460c17a7ef3b715b24";
 };
 
 import "hardhat/types/artifacts";

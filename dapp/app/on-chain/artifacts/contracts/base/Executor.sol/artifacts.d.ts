@@ -15,7 +15,7 @@ export interface Executor$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/base/Executor.sol";
-  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
+  readonly buildInfoId: "solc-0_8_28-26035aa590d4f530fab9230925c8ce2f08e8e6eb";
 };
 
 import "hardhat/types/artifacts";

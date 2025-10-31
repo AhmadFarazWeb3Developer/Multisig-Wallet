@@ -15,7 +15,7 @@ export interface ErrorMessage$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/libraries/ErrorMessage.sol";
-  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
+  readonly buildInfoId: "solc-0_8_28-61df8a8f9ae60442ba02c0038991ab89d28e0afe";
 };
 
 import "hardhat/types/artifacts";

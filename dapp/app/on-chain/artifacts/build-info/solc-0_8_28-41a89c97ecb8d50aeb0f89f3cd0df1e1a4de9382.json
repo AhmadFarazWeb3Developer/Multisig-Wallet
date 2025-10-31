@@ -1,0 +1,57 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_28-41a89c97ecb8d50aeb0f89f3cd0df1e1a4de9382",
+  "solcVersion": "0.8.28",
+  "solcLongVersion": "0.8.28+commit.7893614a",
+  "userSourceNameMap": {
+    "contracts/SimpleGuard.sol": "project/contracts/SimpleGuard.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "cancun",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/base/GuardManager.sol": {
+        "content": "// SPDX-License-Identifier: LGPL-3.0-only\r\n/* solhint-disable one-contract-per-file */\r\npragma solidity >=0.7.0 <0.9.0;\r\n\r\nimport {SelfAuthorized} from \"./../common/SelfAuthorized.sol\";\r\nimport {IERC165} from \"./../interfaces/IERC165.sol\";\r\nimport {IGuardManager} from \"./../interfaces/IGuardManager.sol\";\r\nimport {Enum} from \"./../libraries/Enum.sol\";\r\n\r\n/**\r\n * @title ITransactionGuard Interface\r\n */\r\ninterface ITransactionGuard is IERC165 {\r\n    /**\r\n     * @notice Checks the transaction details.\r\n     * @dev The function needs to implement transaction validation logic.\r\n     * @param to The address to which the transaction is intended.\r\n     * @param value The value of the transaction in Wei.\r\n     * @param data The transaction data.\r\n     * @param operation The type of operation of the transaction.\r\n     * @param safeTxGas Gas used for the transaction.\r\n     * @param baseGas The base gas for the transaction.\r\n     * @param gasPrice The price of gas in Wei for the transaction.\r\n     * @param gasToken The token used to pay for gas.\r\n     * @param refundReceiver The address which should receive the refund.\r\n     * @param signatures The signatures of the transaction.\r\n     * @param msgSender The address of the message sender.\r\n     */\r\n    function checkTransaction(\r\n        address to,\r\n        uint256 value,\r\n        bytes memory data,\r\n        Enum.Operation operation,\r\n        uint256 safeTxGas,\r\n        uint256 baseGas,\r\n        uint256 gasPrice,\r\n        address gasToken,\r\n        address payable refundReceiver,\r\n        bytes memory signatures,\r\n        address msgSender\r\n    ) external;\r\n\r\n    /**\r\n     * @notice Checks after execution of the transaction.\r\n     * @dev The function needs to implement a check after the execution of the transaction.\r\n     * @param hash The hash of the transaction.\r\n     * @param success The status of the transaction execution.\r\n     */\r\n    function checkAfterExecution(bytes32 hash, bool success) external;\r\n}\r\n\r\nabstract contract BaseTransactionGuard is ITransactionGuard {\r\n    function supportsInterface(\r\n        bytes4 interfaceId\r\n    ) external view virtual override returns (bool) {\r\n        return\r\n            interfaceId == type(ITransactionGuard).interfaceId || // 0xe6d7a83a\r\n            interfaceId == type(IERC165).interfaceId; // 0x01ffc9a7\r\n    }\r\n}\r\n\r\n/**\r\n * @title Guard Manager - A contract managing transaction guards which perform pre and post-checks on Safe transactions.\r\n * @author Richard Meissner - @rmeissner\r\n */\r\nabstract contract GuardManager is SelfAuthorized, IGuardManager {\r\n    // keccak256(\"guard_manager.guard.address\")\r\n    bytes32 internal constant GUARD_STORAGE_SLOT =\r\n        0x4a204f620c8c5ccdca3fd54d003badd85ba500436a431f0cbda4f558c93c34c8;\r\n\r\n    /**\r\n     * @inheritdoc IGuardManager\r\n     */\r\n    function setGuard(address guard) external override authorized {\r\n        if (\r\n            guard != address(0) &&\r\n            !ITransactionGuard(guard).supportsInterface(\r\n                type(ITransactionGuard).interfaceId\r\n            )\r\n        ) revertWithError(\"GS300\");\r\n        /* solhint-disable no-inline-assembly */\r\n        /// @solidity memory-safe-assembly\r\n        assembly {\r\n            sstore(GUARD_STORAGE_SLOT, guard)\r\n        }\r\n        /* solhint-enable no-inline-assembly */\r\n        emit ChangedGuard(guard);\r\n    }\r\n\r\n    /**\r\n     * @dev Internal method to retrieve the current guard\r\n     *      We do not have a public method because we're short on bytecode size limit,\r\n     *      to retrieve the guard address, one can use `getStorageAt` from `StorageAccessible` contract\r\n     *      with the slot `GUARD_STORAGE_SLOT`\r\n     * @return guard The address of the guard\r\n     */\r\n    function getGuard() internal view returns (address guard) {\r\n        /* solhint-disable no-inline-assembly */\r\n        /// @solidity memory-safe-assembly\r\n        assembly {\r\n            guard := sload(GUARD_STORAGE_SLOT)\r\n        }\r\n        /* solhint-enable no-inline-assembly */\r\n    }\r\n}\r\n"
+      },
+      "project/contracts/common/SelfAuthorized.sol": {
+        "content": "// SPDX-License-Identifier: LGPL-3.0-only\r\npragma solidity >=0.7.0 <0.9.0;\r\n\r\nimport {ErrorMessage} from \"../libraries/ErrorMessage.sol\";\r\n\r\n/**\r\n * @title SelfAuthorized - Authorizes current contract to perform actions to itself.\r\n * @author Richard Meissner - @rmeissner\r\n */\r\nabstract contract SelfAuthorized is ErrorMessage {\r\n    function requireSelfCall() private view {\r\n        if (msg.sender != address(this)) revertWithError(\"GS031\");\r\n    }\r\n\r\n    modifier authorized() {\r\n        // Modifiers are copied around during compilation. This is a function call as it minimized the bytecode size\r\n        requireSelfCall();\r\n        _;\r\n    }\r\n}\r\n"
+      },
+      "project/contracts/interfaces/IERC165.sol": {
+        "content": "// SPDX-License-Identifier: LGPL-3.0-only\r\npragma solidity >=0.7.0 <0.9.0;\r\n\r\n/// @notice More details at https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/introspection/IERC165.sol\r\ninterface IERC165 {\r\n    /**\r\n     * @dev Returns true if this contract implements the interface defined by `interfaceId`.\r\n     * See the corresponding EIP section\r\n     * https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified\r\n     * to learn more about how these ids are created.\r\n     *\r\n     * This function call must use less than 30 000 gas.\r\n     */\r\n    function supportsInterface(bytes4 interfaceId) external view returns (bool);\r\n}\r\n"
+      },
+      "project/contracts/interfaces/IGuardManager.sol": {
+        "content": "// SPDX-License-Identifier: LGPL-3.0-only\r\n/* solhint-disable one-contract-per-file */\r\npragma solidity >=0.7.0 <0.9.0;\r\n\r\n/**\r\n * @title IGuardManager - A contract interface managing transaction guards which perform pre and post-checks on Safe transactions.\r\n * @author @safe-global/safe-protocol\r\n */\r\ninterface IGuardManager {\r\n    event ChangedGuard(address indexed guard);\r\n\r\n    /**\r\n     * @dev Set a guard that checks transactions before execution\r\n     *      This can only be done via a Safe transaction.\r\n     *      ⚠️ IMPORTANT: Since a guard has full power to block Safe transaction execution,\r\n     *        a broken guard can cause a denial of service for the Safe. Make sure to carefully\r\n     *        audit the guard code and design recovery mechanisms.\r\n     * @notice Set Transaction Guard `guard` for the Safe. Make sure you trust the guard.\r\n     * @param guard The address of the guard to be used or the 0 address to disable the guard\r\n     */\r\n    function setGuard(address guard) external;\r\n}\r\n"
+      },
+      "project/contracts/libraries/Enum.sol": {
+        "content": "// SPDX-License-Identifier: LGPL-3.0-only\r\npragma solidity >=0.7.0 <0.9.0;\r\n\r\n/**\r\n * @title Enum - Collection of enums used in Safe Smart Account contracts.\r\n * @author @safe-global/safe-protocol\r\n */\r\nlibrary Enum {\r\n    enum Operation {\r\n        Call,\r\n        DelegateCall\r\n    }\r\n}\r\n"
+      },
+      "project/contracts/libraries/ErrorMessage.sol": {
+        "content": "// SPDX-License-Identifier: LGPL-3.0-only\r\n\r\npragma solidity >=0.7.0 <0.9.0;\r\n\r\n/**\r\n * @title Error Message - Contract which uses assembly to revert with a custom error message.\r\n * @author Shebin John - @remedcu\r\n * @notice The aim is to save gas using assembly to revert with a custom error message.\r\n */\r\nabstract contract ErrorMessage {\r\n    /**\r\n     * @notice Function which uses assembly to revert with the passed error message.\r\n     * @param error The error string to revert with.\r\n     * @dev Currently it is expected that the `error` string is at max 5 bytes of length. Ex: \"GSXXX\"\r\n     */\r\n    function revertWithError(bytes5 error) internal pure {\r\n        /* solhint-disable no-inline-assembly */\r\n        /// @solidity memory-safe-assembly\r\n        assembly {\r\n            let ptr := mload(0x40)\r\n            mstore(ptr, 0x08c379a000000000000000000000000000000000000000000000000000000000) // Selector for method \"Error(string)\"\r\n            mstore(add(ptr, 0x04), 0x20) // String offset\r\n            mstore(add(ptr, 0x24), 0x05) // Revert reason length (5 bytes for bytes5)\r\n            mstore(add(ptr, 0x44), error) // Revert reason\r\n            revert(ptr, 0x64) // Revert data length is 4 bytes for selector + offset + error length + error.\r\n        }\r\n        /* solhint-enable no-inline-assembly */\r\n    }\r\n}\r\n"
+      },
+      "project/contracts/SimpleGuard.sol": {
+        "content": "// SPDX-License-Identifier: MIT\r\npragma solidity >=0.7.0 <0.9.0;\r\nimport {GuardManager} from \"./base/GuardManager.sol\";\r\nimport {ITransactionGuard} from \"./base/GuardManager.sol\";\r\nimport {Enum} from \"./libraries/Enum.sol\";\r\nimport {IERC165} from \"./interfaces/IERC165.sol\";\r\n\r\ncontract SimpleGuard is ITransactionGuard, GuardManager {\r\n    event ExecutionSuccess(bytes32 hash);\r\n    error NoMoreThan10(uint256 value);\r\n\r\n    function checkTransaction(\r\n        address to,\r\n        uint256 value,\r\n        bytes memory data,\r\n        Enum.Operation operation,\r\n        uint256 safeTxGas,\r\n        uint256 baseGas,\r\n        uint256 gasPrice,\r\n        address gasToken,\r\n        address payable refundReceiver,\r\n        bytes memory signatures,\r\n        address msgSender\r\n    ) external override {\r\n        if (value > 10e18) {\r\n            revert NoMoreThan10(value);\r\n        }\r\n    }\r\n\r\n    function checkAfterExecution(bytes32 hash, bool success) external override {\r\n        if (!success) revert(\"Success Failed\");\r\n        else {\r\n            emit ExecutionSuccess(hash);\r\n        }\r\n    }\r\n\r\n    function supportsInterface(\r\n        bytes4 interfaceId\r\n    ) external view virtual override returns (bool) {\r\n        return\r\n            interfaceId == type(ITransactionGuard).interfaceId || // 0xe6d7a83a\r\n            interfaceId == type(IERC165).interfaceId; // 0x01ffc9a7\r\n    }\r\n}\r\n"
+      }
+    }
+  }
+}

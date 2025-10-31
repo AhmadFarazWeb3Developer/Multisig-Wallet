@@ -1,0 +1,39 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_28-91df60bfe7423093716df687715f88debc9f9838",
+  "solcVersion": "0.8.28",
+  "solcLongVersion": "0.8.28+commit.7893614a",
+  "userSourceNameMap": {
+    "contracts/common/SecuredTokenTransfer.sol": "project/contracts/common/SecuredTokenTransfer.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "cancun",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/common/SecuredTokenTransfer.sol": {
+        "content": "// SPDX-License-Identifier: LGPL-3.0-only\r\npragma solidity >=0.7.0 <0.9.0;\r\n\r\n/**\r\n * @title SecuredTokenTransfer - Secure token transfer.\r\n * @author Richard Meissner - @rmeissner\r\n */\r\nabstract contract SecuredTokenTransfer {\r\n    /**\r\n     * @notice Transfers a token and returns a boolean if it was a success\r\n     * @dev It checks the return data of the transfer call and returns true if the transfer was successful.\r\n     *      It doesn't check if the `token` address is a contract or not.\r\n     * @param token Token that should be transferred\r\n     * @param receiver Receiver to whom the token should be transferred\r\n     * @param amount The amount of tokens that should be transferred\r\n     * @return transferred Returns true if the transfer was successful\r\n     */\r\n    function transferToken(address token, address receiver, uint256 amount) internal returns (bool transferred) {\r\n        // 0xa9059cbb - bytes4(keccak256(\"transfer(address,uint256)\"))\r\n        bytes memory data = abi.encodeWithSelector(0xa9059cbb, receiver, amount);\r\n        /* solhint-disable no-inline-assembly */\r\n        /// @solidity memory-safe-assembly\r\n        assembly {\r\n            // We write the return value to scratch space.\r\n            // See https://docs.soliditylang.org/en/v0.7.6/internals/layout_in_memory.html#layout-in-memory\r\n            let success := call(sub(gas(), 10000), token, 0, add(data, 0x20), mload(data), 0, 0x20)\r\n            switch returndatasize()\r\n            case 0 {\r\n                transferred := success\r\n            }\r\n            case 0x20 {\r\n                transferred := iszero(or(iszero(success), iszero(mload(0))))\r\n            }\r\n            default {\r\n                transferred := 0\r\n            }\r\n        }\r\n        /* solhint-enable no-inline-assembly */\r\n    }\r\n}\r\n"
+      }
+    }
+  }
+}

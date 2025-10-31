@@ -15,7 +15,7 @@ export interface TokenCallbacks$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/handler/extensible/TokenCallbacks.sol";
-  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
+  readonly buildInfoId: "solc-0_8_28-d789ccb71681998aaf9e42ee786cfa4c308fc9f6";
 };
 
 import "hardhat/types/artifacts";

@@ -1,0 +1,39 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_28-59031884193fcb1eec27b09d232bd38894c7f9fd",
+  "solcVersion": "0.8.28",
+  "solcLongVersion": "0.8.28+commit.7893614a",
+  "userSourceNameMap": {
+    "contracts/libraries/SafeStorage.sol": "project/contracts/libraries/SafeStorage.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "cancun",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/libraries/SafeStorage.sol": {
+        "content": "// SPDX-License-Identifier: LGPL-3.0-only\r\npragma solidity >=0.7.0 <0.9.0;\r\n\r\n/**\r\n * @title SafeStorage - Storage layout of the Safe Smart Account contracts to be used in libraries.\r\n * @dev Should be always the first base contract of a library that is used with a Safe.\r\n * @author Richard Meissner - @rmeissner\r\n */\r\nabstract contract SafeStorage {\r\n    // From /common/Singleton.sol\r\n    address internal singleton;\r\n    // From /common/ModuleManager.sol\r\n    mapping(address => address) internal modules;\r\n    // From /common/OwnerManager.sol\r\n    mapping(address => address) internal owners;\r\n    uint256 internal ownerCount;\r\n    uint256 internal threshold;\r\n\r\n    // From /Safe.sol\r\n    uint256 internal nonce;\r\n    bytes32 internal _deprecatedDomainSeparator;\r\n    mapping(bytes32 => uint256) internal signedMessages;\r\n    mapping(address => mapping(bytes32 => uint256)) internal approvedHashes;\r\n}\r\n"
+      }
+    }
+  }
+}

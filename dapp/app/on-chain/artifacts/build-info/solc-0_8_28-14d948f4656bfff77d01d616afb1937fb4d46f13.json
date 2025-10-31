@@ -1,0 +1,39 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_28-14d948f4656bfff77d01d616afb1937fb4d46f13",
+  "solcVersion": "0.8.28",
+  "solcLongVersion": "0.8.28+commit.7893614a",
+  "userSourceNameMap": {
+    "contracts/handler/extensible/MarshalLib.sol": "project/contracts/handler/extensible/MarshalLib.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "cancun",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/handler/extensible/MarshalLib.sol": {
+        "content": "// SPDX-License-Identifier: LGPL-3.0-only\r\npragma solidity >=0.7.0 <0.9.0;\r\n\r\nlibrary MarshalLib {\r\n    /**\r\n     * Encode a method handler into a `bytes32` value\r\n     * @dev The first byte of the `bytes32` value is set to 0x01 if the method is not static (`view`)\r\n     * @dev The last 20 bytes of the `bytes32` value are set to the address of the handler contract\r\n     * @param isStatic Whether the method is static (`view`) or not\r\n     * @param handler The address of the handler contract implementing the `IFallbackMethod` or `IStaticFallbackMethod` interface\r\n     */\r\n    function encode(bool isStatic, address handler) internal pure returns (bytes32 data) {\r\n        data = bytes32(uint256(uint160(handler)) | (isStatic ? 0 : (1 << 248)));\r\n    }\r\n\r\n    /**\r\n     * Encode a method handler into a `bytes32` value with a selector\r\n     * @dev The first byte of the `bytes32` value is set to 0x01 if the method is not static (`view`)\r\n     * @dev The next 4 bytes of the `bytes32` value are set to the selector of the method\r\n     * @dev The last 20 bytes of the `bytes32` value are set to the address of the handler contract\r\n     * @param isStatic Whether the method is static (`view`) or not\r\n     * @param selector The selector of the method\r\n     * @param handler The address of the handler contract implementing the `IFallbackMethod` or `IStaticFallbackMethod` interface\r\n     */\r\n    function encodeWithSelector(bool isStatic, bytes4 selector, address handler) internal pure returns (bytes32 data) {\r\n        data = bytes32(uint256(uint160(handler)) | (isStatic ? 0 : (1 << 248)) | (uint256(uint32(selector)) << 216));\r\n    }\r\n\r\n    /**\r\n     * Given a `bytes32` value, decode it into a method handler and return it\r\n     * @param data The packed data to decode\r\n     * @return isStatic Whether the method is static (`view`) or not\r\n     * @return handler The address of the handler contract implementing the `IFallbackMethod` or `IStaticFallbackMethod` interface\r\n     */\r\n    function decode(bytes32 data) internal pure returns (bool isStatic, address handler) {\r\n        /* solhint-disable no-inline-assembly */\r\n        /// @solidity memory-safe-assembly\r\n        assembly {\r\n            // set isStatic to true if the left-most byte of the data is 0x00\r\n            isStatic := iszero(shr(248, data))\r\n            handler := and(data, 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)\r\n        }\r\n        /* solhint-enable no-inline-assembly */\r\n    }\r\n\r\n    /**\r\n     * Given a `bytes32` value, decode it into a method handler and return it\r\n     * @param data The packed data to decode\r\n     * @return isStatic Whether the method is static (`view`) or not\r\n     * @return selector The selector of the method\r\n     * @return handler The address of the handler contract implementing the `IFallbackMethod` or `IStaticFallbackMethod` interface\r\n     */\r\n    function decodeWithSelector(bytes32 data) internal pure returns (bool isStatic, bytes4 selector, address handler) {\r\n        /* solhint-disable no-inline-assembly */\r\n        /// @solidity memory-safe-assembly\r\n        assembly {\r\n            // set isStatic to true if the left-most byte of the data is 0x00\r\n            isStatic := iszero(shr(248, data))\r\n            handler := and(data, 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)\r\n            selector := shl(168, shr(160, data))\r\n        }\r\n        /* solhint-enable no-inline-assembly */\r\n    }\r\n}\r\n"
+      }
+    }
+  }
+}

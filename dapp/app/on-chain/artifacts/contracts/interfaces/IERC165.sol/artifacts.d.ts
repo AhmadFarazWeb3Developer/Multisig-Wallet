@@ -15,7 +15,7 @@ export interface IERC165$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/interfaces/IERC165.sol";
-  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
+  readonly buildInfoId: "solc-0_8_28-8ff4a601dcc97f5dd45909d3760d0847d05facca";
 };
 
 import "hardhat/types/artifacts";

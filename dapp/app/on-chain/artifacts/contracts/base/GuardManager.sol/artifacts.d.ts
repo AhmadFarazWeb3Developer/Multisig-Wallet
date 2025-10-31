@@ -15,7 +15,7 @@ export interface BaseTransactionGuard$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/base/GuardManager.sol";
-  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
+  readonly buildInfoId: "solc-0_8_28-908052cdd43139f36a07385062e6d6a9bbb995fc";
 };
 
 export interface GuardManager$Type {
@@ -29,7 +29,7 @@ export interface GuardManager$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/base/GuardManager.sol";
-  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
+  readonly buildInfoId: "solc-0_8_28-908052cdd43139f36a07385062e6d6a9bbb995fc";
 };
 
 export interface ITransactionGuard$Type {
@@ -43,7 +43,7 @@ export interface ITransactionGuard$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/base/GuardManager.sol";
-  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
+  readonly buildInfoId: "solc-0_8_28-908052cdd43139f36a07385062e6d6a9bbb995fc";
 };
 
 import "hardhat/types/artifacts";

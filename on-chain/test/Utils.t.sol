@@ -12,20 +12,21 @@ import {CompatibilityFallbackHandler} from "../src/handler/CompatibilityFallback
 import {ERC20Mock} from "./mocks/ERC20Mock.sol";
 
 abstract contract UtilsTest is Test {
+    // deploy proxyFactory , and call deployProxy  function to intialize new proxy for user
+    SingletonFactory singletonFactory;
+
     /*
      The Safe proxy factory contract provides a simple way to create a new proxy contract pointing to a 
      singleton and executing a setup function in the newly deployed proxy all in one transaction.
    */
 
     SafeProxyFactory proxyFactory;
+
     SafeProxy proxy;
 
     Safe singletonSafe; // This is a singleton contract deployed only once and used by Safe Proxy to delegate calls.
+
     CompatibilityFallbackHandler fallbackHandler; // used inside safe if someone unintended behaviour happens
-
-    SingletonFactory singletonFactory;
-
-    // deploy proxyFactory , and call deployProxy  function to intialize new proxy for user
 
     ERC20Mock safeToken;
 

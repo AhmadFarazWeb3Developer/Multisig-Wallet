@@ -1,0 +1,48 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_28-438439afbf13652c0a40ba85fd75b4132274a7ae",
+  "solcVersion": "0.8.28",
+  "solcLongVersion": "0.8.28+commit.7893614a",
+  "userSourceNameMap": {
+    "contracts/base/FallbackManager.sol": "project/contracts/base/FallbackManager.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "cancun",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/base/FallbackManager.sol": {
+        "content": "// SPDX-License-Identifier: LGPL-3.0-only\r\npragma solidity >=0.7.0 <0.9.0;\r\n\r\nimport {SelfAuthorized} from \"../common/SelfAuthorized.sol\";\r\nimport {IFallbackManager} from \"../interfaces/IFallbackManager.sol\";\r\n\r\n/**\r\n * @title Fallback Manager - A contract managing fallback calls made to this contract\r\n * @author Richard Meissner - @rmeissner\r\n */\r\nabstract contract FallbackManager is SelfAuthorized, IFallbackManager {\r\n    // keccak256(\"fallback_manager.handler.address\")\r\n    bytes32 internal constant FALLBACK_HANDLER_STORAGE_SLOT = 0x6c9a6c4a39284e37ed1cf53d337577d14212a4870fb976a4366c693b939918d5;\r\n\r\n    /**\r\n     *  @notice Internal function to set the fallback handler.\r\n     *  @param handler contract to handle fallback calls.\r\n     */\r\n    function internalSetFallbackHandler(address handler) internal {\r\n        /*\r\n            If a fallback handler is set to self, then the following attack vector is opened:\r\n            Imagine we have a function like this:\r\n            function withdraw() internal authorized {\r\n                withdrawalAddress.call.value(address(this).balance)(\"\");\r\n            }\r\n\r\n            If the fallback method is triggered, the fallback handler appends the msg.sender address to the calldata and calls the fallback handler.\r\n            A potential attacker could call a Safe with the 3 bytes signature of a withdraw function. Since 3 bytes do not create a valid signature,\r\n            the call would end in a fallback handler. Since it appends the msg.sender address to the calldata, the attacker could craft an address\r\n            where the first 3 bytes of the previous calldata + the first byte of the address make up a valid function signature. The subsequent call would result in unsanctioned access to Safe's internal protected methods.\r\n            For some reason, solidity matches the first 4 bytes of the calldata to a function signature, regardless if more data follow these 4 bytes.\r\n        */\r\n        if (handler == address(this)) revertWithError(\"GS400\");\r\n\r\n        /* solhint-disable no-inline-assembly */\r\n        /// @solidity memory-safe-assembly\r\n        assembly {\r\n            sstore(FALLBACK_HANDLER_STORAGE_SLOT, handler)\r\n        }\r\n        /* solhint-enable no-inline-assembly */\r\n    }\r\n\r\n    /**\r\n     * @inheritdoc IFallbackManager\r\n     */\r\n    function setFallbackHandler(address handler) public override authorized {\r\n        internalSetFallbackHandler(handler);\r\n        emit ChangedFallbackHandler(handler);\r\n    }\r\n\r\n    /**\r\n     * @inheritdoc IFallbackManager\r\n     */\r\n    // solhint-disable-next-line payable-fallback,no-complex-fallback\r\n    fallback() external override {\r\n        /* solhint-disable no-inline-assembly */\r\n        /// @solidity memory-safe-assembly\r\n        assembly {\r\n            // When compiled with the optimizer, the compiler relies on certain assumptions on how the\r\n            // memory is used, therefore we need to guarantee memory safety (keeping the free memory point 0x40 slot intact,\r\n            // not going beyond the scratch space, etc)\r\n            // Solidity docs: https://docs.soliditylang.org/en/latest/assembly.html#memory-safety\r\n\r\n            let handler := sload(FALLBACK_HANDLER_STORAGE_SLOT)\r\n\r\n            if iszero(handler) {\r\n                return(0, 0)\r\n            }\r\n\r\n            let ptr := mload(0x40)\r\n            calldatacopy(ptr, 0, calldatasize())\r\n\r\n            // The msg.sender address is shifted to the left by 12 bytes to remove the padding\r\n            // Then the address without padding is stored right after the calldata\r\n            mstore(add(ptr, calldatasize()), shl(96, caller()))\r\n\r\n            // Add 20 bytes for the address appended at the end\r\n            let success := call(gas(), handler, 0, ptr, add(calldatasize(), 20), 0, 0)\r\n\r\n            returndatacopy(ptr, 0, returndatasize())\r\n            if iszero(success) {\r\n                revert(ptr, returndatasize())\r\n            }\r\n            return(ptr, returndatasize())\r\n        }\r\n        /* solhint-enable no-inline-assembly */\r\n    }\r\n}\r\n"
+      },
+      "project/contracts/common/SelfAuthorized.sol": {
+        "content": "// SPDX-License-Identifier: LGPL-3.0-only\r\npragma solidity >=0.7.0 <0.9.0;\r\n\r\nimport {ErrorMessage} from \"../libraries/ErrorMessage.sol\";\r\n\r\n/**\r\n * @title SelfAuthorized - Authorizes current contract to perform actions to itself.\r\n * @author Richard Meissner - @rmeissner\r\n */\r\nabstract contract SelfAuthorized is ErrorMessage {\r\n    function requireSelfCall() private view {\r\n        if (msg.sender != address(this)) revertWithError(\"GS031\");\r\n    }\r\n\r\n    modifier authorized() {\r\n        // Modifiers are copied around during compilation. This is a function call as it minimized the bytecode size\r\n        requireSelfCall();\r\n        _;\r\n    }\r\n}\r\n"
+      },
+      "project/contracts/interfaces/IFallbackManager.sol": {
+        "content": "// SPDX-License-Identifier: LGPL-3.0-only\r\npragma solidity >=0.7.0 <0.9.0;\r\n\r\n/**\r\n * @title IFallbackManager - A contract interface managing fallback calls made to this contract.\r\n * @author @safe-global/safe-protocol\r\n */\r\ninterface IFallbackManager {\r\n    event ChangedFallbackHandler(address indexed handler);\r\n\r\n    /**\r\n     * @notice Set Fallback Handler to `handler` for the Safe.\r\n     * @dev 1. Only fallback calls without value and with data will be forwarded.\r\n     *      2. Changing the fallback handler can only be done via a Safe transaction.\r\n     *      3. Cannot be set to the Safe itself.\r\n     *      4. IMPORTANT! SECURITY RISK! The fallback handler can be set to any address and all the calls will be forwarded to it,\r\n     *         bypassing all the Safe's access control mechanisms. When setting the fallback handler, make sure to check the address\r\n     *         is a trusted contract and if it supports state changes, it implements the necessary checks.\r\n     * @param handler contract to handle fallback calls.\r\n     */\r\n    function setFallbackHandler(address handler) external;\r\n\r\n    /**\r\n     * @notice Forwards all calls to the fallback handler if set.\r\n     *         Returns empty data if no handler is set.\r\n     * @dev Appends the non-padded caller address to the calldata to be optionally used in the handler\r\n     *      The handler can make use of {HandlerContext} to extract the address.\r\n     *      This is done because in the next call frame the `msg.sender` will be {FallbackManager}'s address\r\n     *      and having the original caller address may enable additional verification scenarios.\r\n     */\r\n    fallback() external;\r\n}\r\n"
+      },
+      "project/contracts/libraries/ErrorMessage.sol": {
+        "content": "// SPDX-License-Identifier: LGPL-3.0-only\r\n\r\npragma solidity >=0.7.0 <0.9.0;\r\n\r\n/**\r\n * @title Error Message - Contract which uses assembly to revert with a custom error message.\r\n * @author Shebin John - @remedcu\r\n * @notice The aim is to save gas using assembly to revert with a custom error message.\r\n */\r\nabstract contract ErrorMessage {\r\n    /**\r\n     * @notice Function which uses assembly to revert with the passed error message.\r\n     * @param error The error string to revert with.\r\n     * @dev Currently it is expected that the `error` string is at max 5 bytes of length. Ex: \"GSXXX\"\r\n     */\r\n    function revertWithError(bytes5 error) internal pure {\r\n        /* solhint-disable no-inline-assembly */\r\n        /// @solidity memory-safe-assembly\r\n        assembly {\r\n            let ptr := mload(0x40)\r\n            mstore(ptr, 0x08c379a000000000000000000000000000000000000000000000000000000000) // Selector for method \"Error(string)\"\r\n            mstore(add(ptr, 0x04), 0x20) // String offset\r\n            mstore(add(ptr, 0x24), 0x05) // Revert reason length (5 bytes for bytes5)\r\n            mstore(add(ptr, 0x44), error) // Revert reason\r\n            revert(ptr, 0x64) // Revert data length is 4 bytes for selector + offset + error length + error.\r\n        }\r\n        /* solhint-enable no-inline-assembly */\r\n    }\r\n}\r\n"
+      }
+    }
+  }
+}

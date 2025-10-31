@@ -15,7 +15,7 @@ export interface ISignatureValidator$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/interfaces/ISignatureValidator.sol";
-  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
+  readonly buildInfoId: "solc-0_8_28-0adc7f6d51d492df118c468db3b35450670dafc7";
 };
 
 export interface ISignatureValidatorConstants$Type {
@@ -29,7 +29,7 @@ export interface ISignatureValidatorConstants$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/interfaces/ISignatureValidator.sol";
-  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
+  readonly buildInfoId: "solc-0_8_28-0adc7f6d51d492df118c468db3b35450670dafc7";
 };
 
 import "hardhat/types/artifacts";

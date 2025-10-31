@@ -15,7 +15,7 @@ export interface IModuleManager$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/interfaces/IModuleManager.sol";
-  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
+  readonly buildInfoId: "solc-0_8_28-7c9296e0e56a07e0915b92aea7f08fce1f43f5d0";
 };
 
 import "hardhat/types/artifacts";

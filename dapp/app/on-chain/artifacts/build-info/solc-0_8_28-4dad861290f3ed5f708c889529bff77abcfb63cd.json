@@ -1,0 +1,39 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_28-4dad861290f3ed5f708c889529bff77abcfb63cd",
+  "solcVersion": "0.8.28",
+  "solcLongVersion": "0.8.28+commit.7893614a",
+  "userSourceNameMap": {
+    "contracts/interfaces/IStorageAccessible.sol": "project/contracts/interfaces/IStorageAccessible.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "cancun",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/interfaces/IStorageAccessible.sol": {
+        "content": "// SPDX-License-Identifier: LGPL-3.0-only\r\npragma solidity >=0.7.0 <0.9.0;\r\n\r\n/**\r\n * @title Storage Accessible Interface\r\n * @author @safe-global/safe-protocol\r\n */\r\ninterface IStorageAccessible {\r\n    /**\r\n     * @notice Reads `length` bytes of storage in the current contract\r\n     * @param offset The offset in the current contract's storage in words to start reading from.\r\n     * @param length The number of words (32 bytes) of data to read.\r\n     * @return The bytes that were read.\r\n     */\r\n    function getStorageAt(uint256 offset, uint256 length) external view returns (bytes memory);\r\n\r\n    /**\r\n     * @notice Performs a `DELEGATECALL` to a `targetContract` in the context of self.\r\n     * @dev Internally reverts execution to avoid side effects (making it effectively static).\r\n     *      This method reverts with data equal to `abi.encodePacked(uint256(success), uint256(response.length), bytes(response))`.\r\n     *      Specifically, the return data after a call to this method will be:\r\n     *      `success:uint256 || response.length:uint256 || response:bytes`.\r\n     * @param targetContract Address of the contract containing the code to execute.\r\n     * @param calldataPayload Calldata that should be sent to the target contract (encoded method name and arguments).\r\n     */\r\n    function simulateAndRevert(address targetContract, bytes memory calldataPayload) external;\r\n}\r\n"
+      }
+    }
+  }
+}

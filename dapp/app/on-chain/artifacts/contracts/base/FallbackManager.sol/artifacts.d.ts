@@ -15,7 +15,7 @@ export interface FallbackManager$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/base/FallbackManager.sol";
-  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
+  readonly buildInfoId: "solc-0_8_28-438439afbf13652c0a40ba85fd75b4132274a7ae";
 };
 
 import "hardhat/types/artifacts";

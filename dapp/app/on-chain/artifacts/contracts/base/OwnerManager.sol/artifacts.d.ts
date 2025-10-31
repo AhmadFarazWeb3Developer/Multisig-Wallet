@@ -15,7 +15,7 @@ export interface OwnerManager$Type {
   readonly deployedLinkReferences: {};
   readonly immutableReferences: {};
   readonly inputSourceName: "project/contracts/base/OwnerManager.sol";
-  readonly buildInfoId: "solc-0_8_28-ed2d128c3ac1e98a551cdd21051ecbf6dd081352";
+  readonly buildInfoId: "solc-0_8_28-e07f1612c47b76e17903e0eac8b427a291773bbd";
 };
 
 import "hardhat/types/artifacts";
