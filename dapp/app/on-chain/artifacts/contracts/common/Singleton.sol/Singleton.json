@@ -1,13 +1,10 @@
 {
-  "_format": "hh3-artifact-1",
+  "_format": "hh-sol-artifact-1",
   "contractName": "Singleton",
   "sourceName": "contracts/common/Singleton.sol",
   "abi": [],
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "linkReferences": {},
-  "deployedLinkReferences": {},
-  "immutableReferences": {},
-  "inputSourceName": "project/contracts/common/Singleton.sol",
-  "buildInfoId": "solc-0_8_28-383e540e0632e5f3f1700d816e1788ca6de573fc"
+  "deployedLinkReferences": {}
 }

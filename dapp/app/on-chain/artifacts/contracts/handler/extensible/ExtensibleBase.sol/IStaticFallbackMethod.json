@@ -1,5 +1,5 @@
 {
-  "_format": "hh3-artifact-1",
+  "_format": "hh-sol-artifact-1",
   "contractName": "IStaticFallbackMethod",
   "sourceName": "contracts/handler/extensible/ExtensibleBase.sol",
   "abi": [
@@ -41,8 +41,5 @@
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "linkReferences": {},
-  "deployedLinkReferences": {},
-  "immutableReferences": {},
-  "inputSourceName": "project/contracts/handler/extensible/ExtensibleBase.sol",
-  "buildInfoId": "solc-0_8_28-01a07801a84c920c217ca94ad8d8b240dffdb2bb"
+  "deployedLinkReferences": {}
 }

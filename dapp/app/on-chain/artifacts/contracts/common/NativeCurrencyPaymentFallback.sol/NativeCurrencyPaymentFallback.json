@@ -1,5 +1,5 @@
 {
-  "_format": "hh3-artifact-1",
+  "_format": "hh-sol-artifact-1",
   "contractName": "NativeCurrencyPaymentFallback",
   "sourceName": "contracts/common/NativeCurrencyPaymentFallback.sol",
   "abi": [
@@ -30,8 +30,5 @@
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "linkReferences": {},
-  "deployedLinkReferences": {},
-  "immutableReferences": {},
-  "inputSourceName": "project/contracts/common/NativeCurrencyPaymentFallback.sol",
-  "buildInfoId": "solc-0_8_28-9c637f8d66fdcffc4c0ed59c501b68276ba5f1f4"
+  "deployedLinkReferences": {}
 }

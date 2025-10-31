@@ -1,5 +1,5 @@
 {
-  "_format": "hh3-artifact-1",
+  "_format": "hh-sol-artifact-1",
   "contractName": "ISafe",
   "sourceName": "contracts/interfaces/ISafe.sol",
   "abi": [
@@ -948,8 +948,5 @@
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "linkReferences": {},
-  "deployedLinkReferences": {},
-  "immutableReferences": {},
-  "inputSourceName": "project/contracts/interfaces/ISafe.sol",
-  "buildInfoId": "solc-0_8_28-960b4ba5c3fd489e11aef5a42ecc9adc54a754dd"
+  "deployedLinkReferences": {}
 }

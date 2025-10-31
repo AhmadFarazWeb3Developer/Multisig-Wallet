@@ -1,5 +1,5 @@
 {
-  "_format": "hh3-artifact-1",
+  "_format": "hh-sol-artifact-1",
   "contractName": "StorageAccessible",
   "sourceName": "contracts/common/StorageAccessible.sol",
   "abi": [
@@ -49,8 +49,5 @@
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "linkReferences": {},
-  "deployedLinkReferences": {},
-  "immutableReferences": {},
-  "inputSourceName": "project/contracts/common/StorageAccessible.sol",
-  "buildInfoId": "solc-0_8_28-5a98c22661fef239abb6516a24169125ea96394c"
+  "deployedLinkReferences": {}
 }

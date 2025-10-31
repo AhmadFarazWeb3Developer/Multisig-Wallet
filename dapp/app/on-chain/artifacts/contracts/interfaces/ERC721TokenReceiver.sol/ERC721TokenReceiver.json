@@ -1,5 +1,5 @@
 {
-  "_format": "hh3-artifact-1",
+  "_format": "hh-sol-artifact-1",
   "contractName": "ERC721TokenReceiver",
   "sourceName": "contracts/interfaces/ERC721TokenReceiver.sol",
   "abi": [
@@ -41,8 +41,5 @@
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "linkReferences": {},
-  "deployedLinkReferences": {},
-  "immutableReferences": {},
-  "inputSourceName": "project/contracts/interfaces/ERC721TokenReceiver.sol",
-  "buildInfoId": "solc-0_8_28-eb84d6c9178ba87d9e9d67170c14db99563c6661"
+  "deployedLinkReferences": {}
 }

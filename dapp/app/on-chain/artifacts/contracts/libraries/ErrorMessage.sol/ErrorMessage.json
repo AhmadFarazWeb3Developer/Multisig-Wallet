@@ -1,13 +1,10 @@
 {
-  "_format": "hh3-artifact-1",
+  "_format": "hh-sol-artifact-1",
   "contractName": "ErrorMessage",
   "sourceName": "contracts/libraries/ErrorMessage.sol",
   "abi": [],
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "linkReferences": {},
-  "deployedLinkReferences": {},
-  "immutableReferences": {},
-  "inputSourceName": "project/contracts/libraries/ErrorMessage.sol",
-  "buildInfoId": "solc-0_8_28-61df8a8f9ae60442ba02c0038991ab89d28e0afe"
+  "deployedLinkReferences": {}
 }

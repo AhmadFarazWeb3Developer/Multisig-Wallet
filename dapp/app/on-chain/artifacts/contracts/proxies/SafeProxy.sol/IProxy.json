@@ -1,5 +1,5 @@
 {
-  "_format": "hh3-artifact-1",
+  "_format": "hh-sol-artifact-1",
   "contractName": "IProxy",
   "sourceName": "contracts/proxies/SafeProxy.sol",
   "abi": [
@@ -20,8 +20,5 @@
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "linkReferences": {},
-  "deployedLinkReferences": {},
-  "immutableReferences": {},
-  "inputSourceName": "project/contracts/proxies/SafeProxy.sol",
-  "buildInfoId": "solc-0_8_28-54f0abea0b4a99a1b8da8c0a9da21029151d1d49"
+  "deployedLinkReferences": {}
 }

@@ -1,5 +1,5 @@
 {
-  "_format": "hh3-artifact-1",
+  "_format": "hh-sol-artifact-1",
   "contractName": "IFallbackManager",
   "sourceName": "contracts/interfaces/IFallbackManager.sol",
   "abi": [
@@ -37,8 +37,5 @@
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "linkReferences": {},
-  "deployedLinkReferences": {},
-  "immutableReferences": {},
-  "inputSourceName": "project/contracts/interfaces/IFallbackManager.sol",
-  "buildInfoId": "solc-0_8_28-70ac3f3b2aeff0394c71a069ffcb01d0952ec669"
+  "deployedLinkReferences": {}
 }

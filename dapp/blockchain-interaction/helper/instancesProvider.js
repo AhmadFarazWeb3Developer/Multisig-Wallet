@@ -9,6 +9,8 @@ import { getProviderByChainId } from "./getProviderByChainId";
 const InstancesProvider = () => {
   const provider = getProviderByChainId(31337);
 
+  console.log("provider : ", provider);
+
   const {
     safeSingltonAddress,
     safeProxyFactoryAddress,

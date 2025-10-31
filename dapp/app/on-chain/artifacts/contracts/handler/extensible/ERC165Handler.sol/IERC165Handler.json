@@ -1,5 +1,5 @@
 {
-  "_format": "hh3-artifact-1",
+  "_format": "hh-sol-artifact-1",
   "contractName": "IERC165Handler",
   "sourceName": "contracts/handler/extensible/ERC165Handler.sol",
   "abi": [
@@ -85,8 +85,5 @@
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "linkReferences": {},
-  "deployedLinkReferences": {},
-  "immutableReferences": {},
-  "inputSourceName": "project/contracts/handler/extensible/ERC165Handler.sol",
-  "buildInfoId": "solc-0_8_28-01f4383cad80c6b30981d9d1ecf05f3d85be2188"
+  "deployedLinkReferences": {}
 }

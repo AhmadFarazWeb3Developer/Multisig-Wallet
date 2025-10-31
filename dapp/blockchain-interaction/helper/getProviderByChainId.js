@@ -6,52 +6,52 @@ export const getProviderByChainId = (chainId) => {
 
   const providers = {
     // Mainnets
-    1: new ethers.providers.JsonRpcProvider(
-      `https://eth-mainnet.g.alchemy.com/v2/${apiKey}`
-    ),
-    137: new ethers.providers.JsonRpcProvider(
-      `https://polygon-mainnet.g.alchemy.com/v2/${apiKey}`
-    ),
-    56: new ethers.providers.JsonRpcProvider(
-      "https://bsc-dataseed.binance.org/"
-    ),
-    42161: new ethers.providers.JsonRpcProvider(
-      `https://arb-mainnet.g.alchemy.com/v2/${apiKey}`
-    ),
-    10: new ethers.providers.JsonRpcProvider(
-      `https://opt-mainnet.g.alchemy.com/v2/${apiKey}`
-    ),
-    43114: new ethers.providers.JsonRpcProvider(
-      `https://avax-mainnet.g.alchemy.com/v2/${apiKey}`
-    ),
-    8453: new ethers.providers.JsonRpcProvider(
-      `https://base-mainnet.g.alchemy.com/v2/${apiKey}`
-    ),
+    // 1: new ethers.providers.JsonRpcProvider(
+    //   `https://eth-mainnet.g.alchemy.com/v2/${apiKey}`
+    // ),
+    // 137: new ethers.providers.JsonRpcProvider(
+    //   `https://polygon-mainnet.g.alchemy.com/v2/${apiKey}`
+    // ),
+    // 56: new ethers.providers.JsonRpcProvider(
+    //   "https://bsc-dataseed.binance.org/"
+    // ),
+    // 42161: new ethers.providers.JsonRpcProvider(
+    //   `https://arb-mainnet.g.alchemy.com/v2/${apiKey}`
+    // ),
+    // 10: new ethers.providers.JsonRpcProvider(
+    //   `https://opt-mainnet.g.alchemy.com/v2/${apiKey}`
+    // ),
+    // 43114: new ethers.providers.JsonRpcProvider(
+    //   `https://avax-mainnet.g.alchemy.com/v2/${apiKey}`
+    // ),
+    // 8453: new ethers.providers.JsonRpcProvider(
+    //   `https://base-mainnet.g.alchemy.com/v2/${apiKey}`
+    // ),
 
-    // Testnets
-    11155111: new ethers.providers.JsonRpcProvider(
-      `https://eth-sepolia.g.alchemy.com/v2/${apiKey}`
-    ),
-    80002: new ethers.providers.JsonRpcProvider(
-      "https://rpc-amoy.polygon.technology"
-    ),
-    97: new ethers.providers.JsonRpcProvider(
-      `https://bnb-testnet.g.alchemy.com/v2/${apiKey}`
-    ),
-    421614: new ethers.providers.JsonRpcProvider(
-      `https://arb-sepolia.g.alchemy.com/v2/${apiKey}`
-    ),
-    43113: new ethers.providers.JsonRpcProvider(
-      `https://avax-fuji.g.alchemy.com/v2/${apiKey}`
-    ),
-    11155420: new ethers.providers.JsonRpcProvider(
-      `https://opt-sepolia.g.alchemy.com/v2/${apiKey}`
-    ),
-    84532: new ethers.providers.JsonRpcProvider(
-      `https://base-sepolia.g.alchemy.com/v2/${apiKey}`
-    ),
+    // // Testnets
+    // 11155111: new ethers.providers.JsonRpcProvider(
+    //   `https://eth-sepolia.g.alchemy.com/v2/${apiKey}`
+    // ),
+    // 80002: new ethers.providers.JsonRpcProvider(
+    //   "https://rpc-amoy.polygon.technology"
+    // ),
+    // 97: new ethers.providers.JsonRpcProvider(
+    //   `https://bnb-testnet.g.alchemy.com/v2/${apiKey}`
+    // ),
+    // 421614: new ethers.providers.JsonRpcProvider(
+    //   `https://arb-sepolia.g.alchemy.com/v2/${apiKey}`
+    // ),
+    // 43113: new ethers.providers.JsonRpcProvider(
+    //   `https://avax-fuji.g.alchemy.com/v2/${apiKey}`
+    // ),
+    // 11155420: new ethers.providers.JsonRpcProvider(
+    //   `https://opt-sepolia.g.alchemy.com/v2/${apiKey}`
+    // ),
+    // 84532: new ethers.providers.JsonRpcProvider(
+    //   `https://base-sepolia.g.alchemy.com/v2/${apiKey}`
+    // ),
 
-    // Local
+    // // Local
     31337: new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545"),
   };
 

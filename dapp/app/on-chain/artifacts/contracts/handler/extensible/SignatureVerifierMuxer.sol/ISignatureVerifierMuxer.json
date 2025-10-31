@@ -1,5 +1,5 @@
 {
-  "_format": "hh3-artifact-1",
+  "_format": "hh-sol-artifact-1",
   "contractName": "ISignatureVerifierMuxer",
   "sourceName": "contracts/handler/extensible/SignatureVerifierMuxer.sol",
   "abi": [
@@ -49,8 +49,5 @@
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "linkReferences": {},
-  "deployedLinkReferences": {},
-  "immutableReferences": {},
-  "inputSourceName": "project/contracts/handler/extensible/SignatureVerifierMuxer.sol",
-  "buildInfoId": "solc-0_8_28-03b84819a348571394c81da83c7fc4863c73373d"
+  "deployedLinkReferences": {}
 }

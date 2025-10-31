@@ -1,5 +1,5 @@
 {
-  "_format": "hh3-artifact-1",
+  "_format": "hh-sol-artifact-1",
   "contractName": "BaseGuard",
   "sourceName": "contracts/examples/guards/BaseGuard.sol",
   "abi": [
@@ -164,8 +164,5 @@
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "linkReferences": {},
-  "deployedLinkReferences": {},
-  "immutableReferences": {},
-  "inputSourceName": "project/contracts/examples/guards/BaseGuard.sol",
-  "buildInfoId": "solc-0_8_28-6087b07b2060cca7a7951f460c17a7ef3b715b24"
+  "deployedLinkReferences": {}
 }

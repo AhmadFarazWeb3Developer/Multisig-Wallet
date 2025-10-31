@@ -1,5 +1,5 @@
 {
-  "_format": "hh3-artifact-1",
+  "_format": "hh-sol-artifact-1",
   "contractName": "IGuardManager",
   "sourceName": "contracts/interfaces/IGuardManager.sol",
   "abi": [
@@ -33,8 +33,5 @@
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "linkReferences": {},
-  "deployedLinkReferences": {},
-  "immutableReferences": {},
-  "inputSourceName": "project/contracts/interfaces/IGuardManager.sol",
-  "buildInfoId": "solc-0_8_28-b23264f3df351436d225fc01a905599eec90f037"
+  "deployedLinkReferences": {}
 }

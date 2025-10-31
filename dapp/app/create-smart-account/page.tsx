@@ -2,13 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { Trash2, UserPlus, Settings, Rocket, Plus, Minus } from "lucide-react";
-import { useAppKitAccount } from "@reown/appkit/react";
+import { useAppKitAccount, useAppKitProvider } from "@reown/appkit/react";
 import { useRouter } from "next/navigation";
 
 import useCreateSmartAccount from "../../blockchain-interaction/hooks/Proxy/useCreateSmartAccount";
+import { deploySafeSingleton } from "../../blockchain-interaction/helper/deploySafeSingleton";
 
 export default function CreateSmartAccountPage() {
   const { address, isConnected } = useAppKitAccount();
+
+  const { walletProvider } = useAppKitProvider("eip155");
+
   const [owners, setOwners] = useState<string[]>([]);
   const [newOwner, setNewOwner] = useState("");
   const [threshold, setThreshold] = useState(0);
@@ -37,14 +41,16 @@ export default function CreateSmartAccountPage() {
 
   useEffect(() => {
     const init = async () => {
-      const newSafe = await createSmartAccount(
-        [
-          "0x2546bcd3c84621e976d8185a91a922ae77ecec30",
-          "0x8626f6940e2eb28930efb4cef49b2d1f2c9c1199",
-          "0xf39fd6e51aad18f6f4ce6ab8827279cfffb92266",
-        ],
-        2
-      );
+      //   const newSafe = await createSmartAccount(
+      //     [
+      //       "0x2546bcd3c84621e976d8185a91a922ae77ecec30",
+      //       "0x8626f6940e2eb28930efb4cef49b2d1f2c9c1199",
+      //       "0xf39fd6e51aad18f6f4ce6ab8827279cfffb92266",
+      //     ],
+      //     2
+      //   );
+
+      await deploySafeSingleton(walletProvider);
     };
     init();
   });

@@ -1,13 +1,10 @@
 {
-  "_format": "hh3-artifact-1",
+  "_format": "hh-sol-artifact-1",
   "contractName": "SafeStorage",
   "sourceName": "contracts/libraries/SafeStorage.sol",
   "abi": [],
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "linkReferences": {},
-  "deployedLinkReferences": {},
-  "immutableReferences": {},
-  "inputSourceName": "project/contracts/libraries/SafeStorage.sol",
-  "buildInfoId": "solc-0_8_28-59031884193fcb1eec27b09d232bd38894c7f9fd"
+  "deployedLinkReferences": {}
 }

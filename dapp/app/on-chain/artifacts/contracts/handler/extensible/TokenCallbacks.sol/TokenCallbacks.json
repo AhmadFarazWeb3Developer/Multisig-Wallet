@@ -1,5 +1,5 @@
 {
-  "_format": "hh3-artifact-1",
+  "_format": "hh-sol-artifact-1",
   "contractName": "TokenCallbacks",
   "sourceName": "contracts/handler/extensible/TokenCallbacks.sol",
   "abi": [
@@ -174,8 +174,5 @@
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "linkReferences": {},
-  "deployedLinkReferences": {},
-  "immutableReferences": {},
-  "inputSourceName": "project/contracts/handler/extensible/TokenCallbacks.sol",
-  "buildInfoId": "solc-0_8_28-d789ccb71681998aaf9e42ee786cfa4c308fc9f6"
+  "deployedLinkReferences": {}
 }

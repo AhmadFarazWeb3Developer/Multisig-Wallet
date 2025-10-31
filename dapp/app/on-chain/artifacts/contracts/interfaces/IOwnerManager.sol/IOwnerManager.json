@@ -1,5 +1,5 @@
 {
-  "_format": "hh3-artifact-1",
+  "_format": "hh-sol-artifact-1",
   "contractName": "IOwnerManager",
   "sourceName": "contracts/interfaces/IOwnerManager.sol",
   "abi": [
@@ -168,8 +168,5 @@
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "linkReferences": {},
-  "deployedLinkReferences": {},
-  "immutableReferences": {},
-  "inputSourceName": "project/contracts/interfaces/IOwnerManager.sol",
-  "buildInfoId": "solc-0_8_28-f9299ad1364308782bdda8ac9391b0de4b24a608"
+  "deployedLinkReferences": {}
 }

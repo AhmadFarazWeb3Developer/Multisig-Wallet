@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 
 const useCreateSmartAccount = () => {
   const { safeSingltonInterface, safeProxyFactoryInterface } = Interfaces();
+
   const instancesSigner = useInstancesSigner();
 
   const { safeSingltonAddress, fallbackHandlerAddress } =
@@ -18,7 +19,6 @@ const useCreateSmartAccount = () => {
   useEffect(() => {
     const init = async () => {
       const instances = await instancesSigner();
-
       console.log("instances : ", instances);
 
       if (!instances) {
@@ -39,6 +39,11 @@ const useCreateSmartAccount = () => {
     if (!safeProxyFactoryIntance) {
       console.log("safeProxyFactoryIntance not avaliable");
     }
+
+    console.log(owners);
+    console.log(threshold);
+    console.log("fall back : ", fallbackHandlerAddress);
+    console.log("safe singleton : ", safeSingltonAddress);
 
     const initializer = safeSingltonInterface.encodeFunctionData("setup", [
       owners,

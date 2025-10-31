@@ -1,5 +1,5 @@
 {
-  "_format": "hh3-artifact-1",
+  "_format": "hh-sol-artifact-1",
   "contractName": "GuardManager",
   "sourceName": "contracts/base/GuardManager.sol",
   "abi": [
@@ -33,8 +33,5 @@
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "linkReferences": {},
-  "deployedLinkReferences": {},
-  "immutableReferences": {},
-  "inputSourceName": "project/contracts/base/GuardManager.sol",
-  "buildInfoId": "solc-0_8_28-908052cdd43139f36a07385062e6d6a9bbb995fc"
+  "deployedLinkReferences": {}
 }

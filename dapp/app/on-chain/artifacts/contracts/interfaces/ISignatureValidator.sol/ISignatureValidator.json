@@ -1,5 +1,5 @@
 {
-  "_format": "hh3-artifact-1",
+  "_format": "hh-sol-artifact-1",
   "contractName": "ISignatureValidator",
   "sourceName": "contracts/interfaces/ISignatureValidator.sol",
   "abi": [
@@ -31,8 +31,5 @@
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "linkReferences": {},
-  "deployedLinkReferences": {},
-  "immutableReferences": {},
-  "inputSourceName": "project/contracts/interfaces/ISignatureValidator.sol",
-  "buildInfoId": "solc-0_8_28-0adc7f6d51d492df118c468db3b35450670dafc7"
+  "deployedLinkReferences": {}
 }
