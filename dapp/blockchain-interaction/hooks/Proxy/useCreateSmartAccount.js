@@ -60,11 +60,18 @@ const useCreateSmartAccount = () => {
 
     const receipt = await tx.wait();
     console.log("receipt  : ", receipt);
+    console.log("events  : ", receipt.events);
 
     const proxyCreatedEvent = receipt.events?.find(
       (e) => e.event === "ProxyCreation"
     );
+
+    console.log("events logs : ", proxyCreatedEvent?.args);
     const proxyAddress = proxyCreatedEvent?.args?.proxy;
+    const singleton = proxyCreatedEvent?.args?.singleton;
+
+    console.log("proxy address : ", proxyAddress);
+    console.log("singlton address : ", singleton);
 
     if (!proxyAddress) {
       throw new Error("Failed to get proxy address from transaction receipt");
@@ -75,8 +82,6 @@ const useCreateSmartAccount = () => {
       SafeArtifact.abi,
       signer
     );
-
-    console.log("new safe ", newUserSafeAccount);
 
     return newUserSafeAccount;
   };

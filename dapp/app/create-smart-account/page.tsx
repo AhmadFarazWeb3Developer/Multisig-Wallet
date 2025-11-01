@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import useCreateSmartAccount from "../../blockchain-interaction/hooks/Proxy/useCreateSmartAccount";
 
 export default function CreateSmartAccountPage() {
-  const { address, isConnected } = useAppKitAccount();
   const [owners, setOwners] = useState<string[]>([]);
   const [newOwner, setNewOwner] = useState("");
   const [threshold, setThreshold] = useState(0);
@@ -44,6 +43,26 @@ export default function CreateSmartAccountPage() {
       setIsLoading(true);
       const newSafe = await createSmartAccount(owners, threshold);
       console.log("Smart Account created at:", newSafe);
+
+      const createSafeResponse = await fetch("/api/safes/create-safe", {
+        method: "POST",
+        body: JSON.stringify({
+          safeAddress: newSafe.address,
+          safeName: "Optional",
+        }),
+      });
+      const createdSafe = await createSafeResponse.json();
+
+      for (const owner of owners) {
+        await fetch("/api/owners/add-owner", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ownerAddress: owner.address,
+            ownerName: owner.name,
+          }),
+        });
+      }
       router.push("/dashboard");
     } catch (err) {
       console.error("Error creating smart account:", err);

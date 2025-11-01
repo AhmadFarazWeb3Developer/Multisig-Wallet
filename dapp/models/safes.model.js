@@ -2,11 +2,8 @@ import pool from "../lib/db.js";
 
 export async function getAllSafes() {
   const client = await pool.connect();
-
   try {
-    const result = await client.query(
-      "SELECT * FROM safes ORDER BY created_at DESC"
-    );
+    const result = await client.query("SELECT * FROM safes ");
     return result.rows;
   } catch (error) {
     console.error("Error fetching safes:", error);
@@ -15,17 +12,17 @@ export async function getAllSafes() {
     client.release();
   }
 }
-
-export async function createSafe(safeAddress, ownerAddress) {
+export async function createSafe(safeAddress, safeName) {
   const client = await pool.connect();
 
   try {
     const result = await client.query(
-      `INSERT INTO safes (safe_address, owner_address)
+      `INSERT INTO safes (safe_address, safe_name)
        VALUES ($1, $2)
        RETURNING *`,
-      [safeAddress, ownerAddress]
+      [safeAddress, safeName]
     );
+
     return result.rows[0];
   } catch (error) {
     console.error("Error creating safe:", error);

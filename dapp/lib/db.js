@@ -7,16 +7,11 @@ if (!connectionString) {
   throw new Error("SUPABASE_DB_URL is required");
 }
 
-console.log("Database connection string loaded");
-
 const pool = new Pool({
   connectionString: connectionString,
   ssl: {
     rejectUnauthorized: false,
   },
-  //   connectionTimeoutMillis: 10000,
-  //   idleTimeoutMillis: 30000,
-  //   max: 10,
 });
 
 pool.on("connect", () => {
