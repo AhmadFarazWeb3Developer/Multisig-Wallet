@@ -22,6 +22,9 @@ module.exports = buildModule("SafeModule", (m) => {
 
   m.call(singletonFactory, "deploy", [safeInitCode, safeSalt], {
     id: "DeploySafe",
+    overrides: {
+      gasLimit: 30_000_000, // increase to near Hardhat block gas limit
+    },
   });
 
   m.call(singletonFactory, "deploy", [proxyFactoryInitCode, proxyFactorySalt], {

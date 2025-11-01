@@ -6,17 +6,14 @@ import { useAppKitAccount, useAppKitProvider } from "@reown/appkit/react";
 import { useRouter } from "next/navigation";
 
 import useCreateSmartAccount from "../../blockchain-interaction/hooks/Proxy/useCreateSmartAccount";
-import { deploySafeSingleton } from "../../blockchain-interaction/helper/deploySafeSingleton";
 
 export default function CreateSmartAccountPage() {
   const { address, isConnected } = useAppKitAccount();
 
-  const { walletProvider } = useAppKitProvider("eip155");
-
   const [owners, setOwners] = useState<string[]>([]);
   const [newOwner, setNewOwner] = useState("");
   const [threshold, setThreshold] = useState(0);
-  const createSmartAccount = useCreateSmartAccount();
+  const { createSmartAccount, isReady } = useCreateSmartAccount();
 
   const router = useRouter();
 
@@ -41,19 +38,22 @@ export default function CreateSmartAccountPage() {
 
   useEffect(() => {
     const init = async () => {
-      //   const newSafe = await createSmartAccount(
-      //     [
-      //       "0x2546bcd3c84621e976d8185a91a922ae77ecec30",
-      //       "0x8626f6940e2eb28930efb4cef49b2d1f2c9c1199",
-      //       "0xf39fd6e51aad18f6f4ce6ab8827279cfffb92266",
-      //     ],
-      //     2
-      //   );
+      if (!isReady) {
+        console.log("Waiting for instances to be ready...");
+        return;
+      }
 
-      await deploySafeSingleton(walletProvider);
+      const newSafe = await createSmartAccount(
+        [
+          "0x2546bcd3c84621e976d8185a91a922ae77ecec30",
+          "0x8626f6940e2eb28930efb4cef49b2d1f2c9c1199",
+          "0xf39fd6e51aad18f6f4ce6ab8827279cfffb92266",
+        ],
+        2
+      );
     };
     init();
-  });
+  }, [isReady]);
 
   return (
     <main className="flex items-center justify-center  min-h-[80vh] bg-gradient-to-b from-[#1e1e1e] to-[#121212] text-white px-6 py-12">

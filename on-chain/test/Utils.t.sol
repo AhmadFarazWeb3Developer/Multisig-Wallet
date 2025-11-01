@@ -32,7 +32,6 @@ abstract contract UtilsTest is Test {
 
     function setUp() public virtual {
         //  1. Singleton Factory deployment
-
         singletonFactory = new SingletonFactory();
 
         //  2. Safe creation code

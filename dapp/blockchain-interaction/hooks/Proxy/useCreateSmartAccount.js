@@ -6,15 +6,15 @@ import SafeArtifact from "../../../app/on-chain/artifacts/contracts/Safe.sol/Saf
 import { useEffect, useState } from "react";
 
 const useCreateSmartAccount = () => {
-  const { safeSingltonInterface, safeProxyFactoryInterface } = Interfaces();
-
   const instancesSigner = useInstancesSigner();
+  const { safeSingltonInterface } = Interfaces();
 
   const { safeSingltonAddress, fallbackHandlerAddress } =
     DeterministicAddresses();
 
   const [signer, setSigner] = useState(null);
   const [safeProxyFactoryIntance, setSafeProxyFactoryIntance] = useState(null);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -27,23 +27,19 @@ const useCreateSmartAccount = () => {
       }
       setSigner(instances.signer);
       setSafeProxyFactoryIntance(instances.safeProxyFactoryIntance);
+      setIsReady(true); // Mark as ready
     };
 
     init();
-  }, []);
+  }, []); // Remove dependencies to run only once
 
   const createSmartAccount = async (owners, threshold) => {
-    if (!signer) {
-      console.log("signer not avaliable");
+    // Add early return with clear error
+    if (!isReady || !signer || !safeProxyFactoryIntance) {
+      throw new Error(
+        "Smart account instances not ready. Please wait and try again."
+      );
     }
-    if (!safeProxyFactoryIntance) {
-      console.log("safeProxyFactoryIntance not avaliable");
-    }
-
-    console.log(owners);
-    console.log(threshold);
-    console.log("fall back : ", fallbackHandlerAddress);
-    console.log("safe singleton : ", safeSingltonAddress);
 
     const initializer = safeSingltonInterface.encodeFunctionData("setup", [
       owners,
@@ -56,19 +52,24 @@ const useCreateSmartAccount = () => {
       ethers.constants.AddressZero,
     ]);
 
-    console.log("proxy factory : ", safeProxyFactoryIntance);
-
-    console.log("safe singleton ", safeSingltonAddress);
-
+    const saltNonce = Date.now() + Math.floor(Math.random() * 1000000);
     const tx = await safeProxyFactoryIntance.createProxyWithNonce(
       safeSingltonAddress,
       initializer,
-      10 // salt
+      saltNonce
     );
 
     const receipt = await tx.wait();
-
     console.log("receipt  : ", receipt);
+
+    const proxyCreatedEvent = receipt.events?.find(
+      (e) => e.event === "ProxyCreation"
+    );
+    const proxyAddress = proxyCreatedEvent?.args?.proxy;
+
+    if (!proxyAddress) {
+      throw new Error("Failed to get proxy address from transaction receipt");
+    }
 
     const newUserSafeAccount = new ethers.Contract(
       proxyAddress,
@@ -81,7 +82,7 @@ const useCreateSmartAccount = () => {
     return newUserSafeAccount;
   };
 
-  return createSmartAccount;
+  return { createSmartAccount, isReady }; // Return both function and ready state
 };
 
 export default useCreateSmartAccount;
