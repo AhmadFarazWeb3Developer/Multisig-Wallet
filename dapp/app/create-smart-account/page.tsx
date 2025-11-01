@@ -1,18 +1,16 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { Trash2, UserPlus, Settings, Rocket, Plus, Minus } from "lucide-react";
-import { useAppKitAccount, useAppKitProvider } from "@reown/appkit/react";
+import { useAppKitAccount } from "@reown/appkit/react";
 import { useRouter } from "next/navigation";
-
 import useCreateSmartAccount from "../../blockchain-interaction/hooks/Proxy/useCreateSmartAccount";
 
 export default function CreateSmartAccountPage() {
   const { address, isConnected } = useAppKitAccount();
-
   const [owners, setOwners] = useState<string[]>([]);
   const [newOwner, setNewOwner] = useState("");
   const [threshold, setThreshold] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const { createSmartAccount, isReady } = useCreateSmartAccount();
 
   const router = useRouter();
@@ -36,24 +34,24 @@ export default function CreateSmartAccountPage() {
     if (threshold > 1) setThreshold(threshold - 1);
   };
 
-  useEffect(() => {
-    const init = async () => {
-      if (!isReady) {
-        console.log("Waiting for instances to be ready...");
-        return;
-      }
+  const createNewSmartAccount = async () => {
+    if (!isReady) {
+      console.log("Waiting for instances to be ready...");
+      return;
+    }
 
-      const newSafe = await createSmartAccount(
-        [
-          "0x2546bcd3c84621e976d8185a91a922ae77ecec30",
-          "0x8626f6940e2eb28930efb4cef49b2d1f2c9c1199",
-          "0xf39fd6e51aad18f6f4ce6ab8827279cfffb92266",
-        ],
-        2
-      );
-    };
-    init();
-  }, [isReady]);
+    try {
+      setIsLoading(true);
+      const newSafe = await createSmartAccount(owners, threshold);
+      console.log("Smart Account created at:", newSafe);
+      router.push("/dashboard");
+    } catch (err) {
+      console.error("Error creating smart account:", err);
+      alert("Failed to create wallet. Check console for details.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <main className="flex items-center justify-center  min-h-[80vh] bg-gradient-to-b from-[#1e1e1e] to-[#121212] text-white px-6 py-12">
@@ -86,7 +84,7 @@ export default function CreateSmartAccountPage() {
             ))}
           </div>
 
-          <div className=" truncate flex items-center gap-3 bg-white/10 rounded-full pl-4 mt-4">
+          <div className="truncate flex items-center gap-3 bg-white/10 rounded-full pl-4 mt-4">
             <input
               type="text"
               placeholder="Enter owner address (0x...)"
@@ -115,14 +113,14 @@ export default function CreateSmartAccountPage() {
                 onClick={decreaseThreshold}
                 className="bg-white/10 hover:bg-white/20 rounded-full p-2 transition cursor-pointer"
               >
-                <Minus className=" cursor-pointer" />
+                <Minus className="cursor-pointer" />
               </button>
               <span className="text-2xl font-bold">{threshold}</span>
               <button
                 onClick={increaseThreshold}
                 className="bg-white/10 hover:bg-white/20 rounded-full p-2 transition cursor-pointer"
               >
-                <Plus className=" cursor-pointer" />
+                <Plus className="cursor-pointer" />
               </button>
             </div>
             <p className="text-sm text-white/60">
@@ -131,9 +129,9 @@ export default function CreateSmartAccountPage() {
           </div>
         </div>
 
-        <div className="group flex-1 hover:flex-[1.5] bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl flex flex-col items-center  text-center transition-all duration-500 overflow-hidden">
-          <div className=" flex flex-row items-center justify-center  gap-2">
-            <Rocket className="text-[#eb5e28] " />
+        <div className="group flex-1 hover:flex-[1.5] bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl flex flex-col items-center text-center transition-all duration-500 overflow-hidden">
+          <div className="flex flex-row items-center justify-center gap-2">
+            <Rocket className="text-[#eb5e28]" />
             <h2 className="text-xl font-semibold mb-2">Deploy Wallet</h2>
           </div>
 
@@ -148,10 +146,15 @@ export default function CreateSmartAccountPage() {
             </div>
 
             <button
-              onClick={() => router.push("/dashboard")}
-              className="w-full py-3 rounded-full bg-[#eb5e28] hover:bg-[#ff6b36] text-white font-semibold text-lg shadow-lg hover:scale-105 transition-all cursor-pointer"
+              onClick={createNewSmartAccount}
+              disabled={isLoading}
+              className={`w-full py-3 rounded-full font-semibold text-lg shadow-lg transition-all cursor-pointer ${
+                isLoading
+                  ? "bg-gray-500 cursor-not-allowed"
+                  : "bg-[#eb5e28] hover:bg-[#ff6b36] text-white hover:scale-105"
+              }`}
             >
-              Deploy Wallet
+              {isLoading ? "Deploying Wallet..." : "Deploy Wallet"}
             </button>
           </div>
         </div>

@@ -1,15 +1,13 @@
 import { ethers } from "ethers";
 
-import deployment from "../../app/on-chain/ignition/deployments/chain-31337/deployed_addresses.json";
-
 import SingletonFactoryArtifact from "../../app/on-chain/artifacts/contracts/SingletonFactory.sol/SingletonFactory.json";
 import SafeArtifact from "../../app/on-chain/artifacts/contracts/Safe.sol/Safe.json";
 import SafeProxyFactoryArtifact from "../../app/on-chain/artifacts/contracts/proxies/SafeProxyFactory.sol/SafeProxyFactory.json";
 import CompatibilityFallbackHandlerArtifact from "../../app/on-chain/artifacts/contracts/handler/CompatibilityFallbackHandler.sol/CompatibilityFallbackHandler.json";
+import DeterministicAddresses from "./deterministicAddresses";
 
 import { useState } from "react";
 import { useAppKitProvider, useAppKitAccount } from "@reown/appkit/react";
-import DeterministicAddresses from "./deterministicAddresses";
 
 const useInstancesSigner = () => {
   const { walletProvider } = useAppKitProvider("eip155");
@@ -36,8 +34,6 @@ const useInstancesSigner = () => {
       const provider = new ethers.providers.Web3Provider(walletProvider);
       const signer = provider.getSigner();
 
-      // console.log("signer : ", signer);
-
       const singletonFactoryInstance = new ethers.Contract(
         safeProxyFactoryAddress,
         SingletonFactoryArtifact.abi,
@@ -56,18 +52,14 @@ const useInstancesSigner = () => {
         signer
       );
 
-      console.log("safe proxy factory : ", safeProxyFactoryIntance);
-
       const compatibilityFallbackHandlerInstace = new ethers.Contract(
         fallbackHandlerAddress,
         CompatibilityFallbackHandlerArtifact.abi,
         signer
       );
 
-      console.log(compatibilityFallbackHandlerInstace);
       return {
         signer,
-
         safeSingltonInstance,
         safeProxyFactoryIntance,
         compatibilityFallbackHandlerInstace,

@@ -27,14 +27,13 @@ const useCreateSmartAccount = () => {
       }
       setSigner(instances.signer);
       setSafeProxyFactoryIntance(instances.safeProxyFactoryIntance);
-      setIsReady(true); // Mark as ready
+      setIsReady(true);
     };
 
     init();
-  }, []); // Remove dependencies to run only once
+  }, []);
 
   const createSmartAccount = async (owners, threshold) => {
-    // Add early return with clear error
     if (!isReady || !signer || !safeProxyFactoryIntance) {
       throw new Error(
         "Smart account instances not ready. Please wait and try again."
@@ -82,7 +81,7 @@ const useCreateSmartAccount = () => {
     return newUserSafeAccount;
   };
 
-  return { createSmartAccount, isReady }; // Return both function and ready state
+  return { createSmartAccount, isReady };
 };
 
 export default useCreateSmartAccount;
