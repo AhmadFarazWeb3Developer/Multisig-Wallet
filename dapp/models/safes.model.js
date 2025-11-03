@@ -2,15 +2,12 @@ import pool from "../lib/db.js";
 import { addOwner, linkOwnerToSafe } from "./owners.model.js";
 
 export async function getAllSafes() {
-  const client = await pool.connect();
   try {
-    const result = await client.query("SELECT * FROM safes ");
+    const result = await pool.query("SELECT * FROM safes ");
     return result.rows;
   } catch (error) {
     console.error("Error fetching safes:", error);
     throw error;
-  } finally {
-    client.release();
   }
 }
 
@@ -37,8 +34,8 @@ export async function handleSafeCreation(safe, owners) {
   const newSafe = await createSafe(safe.address, safe.name);
 
   for (const { address, name } of owners) {
-    const owner = await addOwner(address, name);
-    await linkOwnerToSafe(newSafe.id, newSafe.id);
+    const owner = await addOwner(address.toLowerCase(), name);
+    await linkOwnerToSafe(newSafe.id, owner.id);
   }
 
   return safe;

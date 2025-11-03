@@ -66,7 +66,10 @@ export default function CreateSmartAccountPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          safe: { address: newSafeOnChain.address, name: "Optional" },
+          safe: {
+            address: newSafeOnChain.address.toLowerCase(),
+            name: "Optional",
+          },
           owners,
         }),
       });

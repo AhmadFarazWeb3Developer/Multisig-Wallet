@@ -12,6 +12,7 @@ const pool = new Pool({
   ssl: {
     rejectUnauthorized: false,
   },
+  max: 10,
 });
 
 pool.on("connect", () => {
