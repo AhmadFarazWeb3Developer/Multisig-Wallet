@@ -42,6 +42,7 @@ const hardhat = defineChain({
 
 createAppKit({
   adapters: [new Ethers5Adapter()],
+
   networks: [
     hardhat,
     mainnet,
@@ -52,6 +53,7 @@ createAppKit({
     arbitrumSepolia,
     avalancheFuji,
   ],
+
   projectId,
   features: { analytics: true },
 });

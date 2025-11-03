@@ -1,12 +1,12 @@
-import { createSafe } from "../../../../models/safes.model";
+import { handleSafeCreation } from "../../../../models/safes.model";
 
-export async function POST(res, req) {
-  const { safeAddress, safeName } = await req.json();
+export async function POST(req) {
+  const { safe, owners } = await req.json();
 
   try {
-    const result = await createSafe(safeAddress, safeName);
-    res.status(200).json(result);
+    const result = await handleSafeCreation(safe, owners);
+    return Response.json(result, { status: 200 });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    return Response.json({ status: 500, error: err.message });
   }
 }

@@ -5,8 +5,14 @@ import { useAppKitAccount } from "@reown/appkit/react";
 import { useRouter } from "next/navigation";
 import useCreateSmartAccount from "../../blockchain-interaction/hooks/Proxy/useCreateSmartAccount";
 
+type Owner = {
+  address: string;
+  name: string;
+};
+
 export default function CreateSmartAccountPage() {
-  const [owners, setOwners] = useState<string[]>([]);
+  const [owners, setOwners] = useState<Owner[]>([]);
+
   const [newOwner, setNewOwner] = useState("");
   const [threshold, setThreshold] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -15,9 +21,16 @@ export default function CreateSmartAccountPage() {
   const router = useRouter();
 
   const addOwner = () => {
-    if (!newOwner.trim()) return;
-    if (owners.includes(newOwner.trim())) return alert("Owner already added!");
-    setOwners([...owners, newOwner.trim()]);
+    const trimmed = newOwner.trim();
+    if (!trimmed) return;
+
+    if (owners.some((owner) => owner.address === trimmed)) {
+      return alert("Owner already added!");
+    }
+
+    console.log("trimmed :", trimmed);
+
+    setOwners([...owners, { address: trimmed, name: "optional" }]);
     setNewOwner("");
   };
 
@@ -41,28 +54,24 @@ export default function CreateSmartAccountPage() {
 
     try {
       setIsLoading(true);
-      const newSafe = await createSmartAccount(owners, threshold);
-      console.log("Smart Account created at:", newSafe);
 
-      const createSafeResponse = await fetch("/api/safes/create-safe", {
+      const ownerAddresses = owners.map((o) => o.address);
+
+      const newSafeOnChain = await createSmartAccount(
+        ownerAddresses,
+        threshold
+      );
+
+      const response = await fetch("/api/safes/create-safe", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          safeAddress: newSafe.address,
-          safeName: "Optional",
+          safe: { address: newSafeOnChain.address, name: "Optional" },
+          owners,
         }),
       });
-      const createdSafe = await createSafeResponse.json();
-
-      for (const owner of owners) {
-        await fetch("/api/owners/add-owner", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ownerAddress: owner.address,
-            ownerName: owner.name,
-          }),
-        });
-      }
+      const data = await response.json();
+      console.log(data);
       router.push("/dashboard");
     } catch (err) {
       console.error("Error creating smart account:", err);
@@ -91,7 +100,7 @@ export default function CreateSmartAccountPage() {
                 className="flex items-center justify-between bg-white/10 px-4 py-2 rounded-full"
               >
                 <p className="truncate text-sm text-gray-400">
-                  {owner.toUpperCase()}
+                  {owner.address.toUpperCase()}
                 </p>
                 <button
                   onClick={() => removeOwner(index)}

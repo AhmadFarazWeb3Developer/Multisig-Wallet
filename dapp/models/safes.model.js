@@ -1,4 +1,5 @@
 import pool from "../lib/db.js";
+import { addOwner, linkOwnerToSafe } from "./owners.model.js";
 
 export async function getAllSafes() {
   const client = await pool.connect();
@@ -12,6 +13,7 @@ export async function getAllSafes() {
     client.release();
   }
 }
+
 export async function createSafe(safeAddress, safeName) {
   const client = await pool.connect();
 
@@ -30,4 +32,14 @@ export async function createSafe(safeAddress, safeName) {
   } finally {
     client.release();
   }
+}
+export async function handleSafeCreation(safe, owners) {
+  const newSafe = await createSafe(safe.address, safe.name);
+
+  for (const { address, name } of owners) {
+    const owner = await addOwner(address, name);
+    await linkOwnerToSafe(newSafe.id, newSafe.id);
+  }
+
+  return safe;
 }
