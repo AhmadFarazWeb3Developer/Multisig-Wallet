@@ -6,9 +6,13 @@ import Assets from "./Assets";
 
 type SidePanelProps = {
   setComponent: Dispatch<SetStateAction<ReactElement | null>>;
+  safeAddress: String;
 };
 
-export default function SidePanel({ setComponent }: SidePanelProps) {
+export default function SidePanel({
+  setComponent,
+  safeAddress,
+}: SidePanelProps) {
   const [activeTab, setActiveTab] = useState<string>("home");
 
   return (
@@ -17,7 +21,7 @@ export default function SidePanel({ setComponent }: SidePanelProps) {
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full ring-2 ring-[#333333] s transition-all overflow-hidden">
             <img
-              src={`https://api.dicebear.com/9.x/pixel-art/svg?seed=${0x2546bcd3c84621e976d8185a91a922ae77ecec30}`}
+              src={`https://api.dicebear.com/9.x/pixel-art/svg?seed=${safeAddress}`}
               alt=""
               className="w-full h-full"
             />
@@ -28,13 +32,13 @@ export default function SidePanel({ setComponent }: SidePanelProps) {
               Account Address
             </p>
             <div className=" flex flex-row gap-4">
-              <p className="text-white text-sm font-mono">0x2546b9...ec30</p>
+              <p className="text-white text-sm font-mono">
+                {`${safeAddress?.slice(0, 6)}...${safeAddress?.slice(-6)}`}
+              </p>
 
               <button
                 onClick={() => {
-                  navigator.clipboard.writeText(
-                    "0x2546bcd3c84621e976d8185a91a922ae77ecec30"
-                  );
+                  navigator.clipboard.writeText(safeAddress.toString());
                   alert("copied");
                 }}
                 className="text-[#eb5e28]  hover:text-[#d54e20] transition-colors cursor-pointer"
@@ -51,7 +55,7 @@ export default function SidePanel({ setComponent }: SidePanelProps) {
       <div className="space-y-2">
         <button
           onClick={() => {
-            setComponent(<Home />);
+            setComponent(<Home safeAddress={safeAddress} />);
             setActiveTab("home");
           }}
           className={`w-full flex items-center gap-3 px-4 py-2 rounded-md font-bold transition-all cursor-pointer ${

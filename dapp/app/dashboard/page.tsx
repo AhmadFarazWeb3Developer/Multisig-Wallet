@@ -8,6 +8,7 @@ import { useAppKitAccount } from "@reown/appkit/react";
 export default function Dashboard() {
   const { address, isConnected } = useAppKitAccount();
   const [component, setComponent] = useState<ReactElement | null>(null);
+  const [safeAddress, setSafeAddress] = useState("");
 
   useEffect(() => {
     if (!isConnected || !address) {
@@ -31,6 +32,9 @@ export default function Dashboard() {
         }
 
         const data = await res.json();
+
+        setSafeAddress(data[0]?.safe_address);
+
         console.log("Owner data:", data);
       } catch (err) {
         console.error("Fetch error:", err);
@@ -43,9 +47,9 @@ export default function Dashboard() {
   return (
     <main className="w-full flex flex-row border-1 border-[#333333] rounded-sm min-h-[80vh]">
       <div className="flex-1 bg-[#1A1A1A] flex flex-row">
-        <SidePanel setComponent={setComponent} />
+        <SidePanel setComponent={setComponent} safeAddress={safeAddress} />
         <div className="flex-1 from-[#242424] to-[#1A1A1A]">
-          {component ? component : <Home />}
+          {component ? component : <Home safeAddress={safeAddress} />}
         </div>
       </div>
     </main>

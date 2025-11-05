@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Copy,
   Check,
@@ -11,36 +11,30 @@ import {
   Settings,
 } from "lucide-react";
 
-interface Owner {
-  name: string;
+import useSafeInstance from "../blockchain-interaction/hooks/smartAccount/useSafeInstance";
+
+type safeAddressInterface = {
+  safeAddress: String;
+};
+
+type Owners = {
   address: string;
-}
+  name: string;
+};
 
-const owners: Owner[] = [
-  { name: "Alice", address: "0x2546bcd3c84621e976d8185a91a922ae77ecec30" },
-  { name: "Bob", address: "0x8626f6940e2eb28930efb4cef49b2d1f2c9c1199" },
-  { name: "Charlie", address: "0xf39fd6e51aad18f6f4ce6ab8827279cfffb92266" },
-  { name: "Diana", address: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb" },
-  { name: "Ethan", address: "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4" },
-  { name: "Fiona", address: "0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2" },
-  { name: "George", address: "0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db" },
-  { name: "Hannah", address: "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB" },
-  { name: "Ivan", address: "0x617F2E2fD72FD9D5503197092aC168c91465E7f2" },
-  { name: "Julia", address: "0x17F6AD8Ef982297579C203069C1DbfFE4348c372" },
-  { name: "Kevin", address: "0x5c6B0f7Bf3E7ce046039Bd8FABdfD3f9F5021678" },
-  { name: "Luna", address: "0x03C6FcED478cBbC9a4FAB34eF9f40767739D1Ff7" },
-  { name: "Marcus", address: "0x1aE0EA34a72D944a8C7603FfB3eC30a6669E454C" },
-];
-
-export default function Home() {
+export default function Home({ safeAddress }: safeAddressInterface) {
+  const safeInstance = useSafeInstance(safeAddress);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
+  const [safeOwners, setSafeOwners] = useState<Owners[]>([]);
+  const [threshold, setThreshold] = useState<number | null>();
+
   const itemsPerPage = 5;
 
-  const totalPages = Math.ceil(owners.length / itemsPerPage);
+  const totalPages = Math.ceil(safeOwners.length / itemsPerPage);
   const startIndex = currentPage * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentOwners = owners.slice(startIndex, endIndex);
+  const currentOwners = safeOwners.slice(startIndex, endIndex);
 
   const handleCopy = (address: string, index: number) => {
     navigator.clipboard.writeText(address);
@@ -55,6 +49,49 @@ export default function Home() {
   const handlePrevious = () => {
     if (currentPage > 0) setCurrentPage(currentPage - 1);
   };
+
+  useEffect(() => {
+    if (!safeInstance) return;
+
+    const fetchOwners = async () => {
+      try {
+        const blockchainOwners: string[] = await safeInstance.getOwners();
+
+        const response = await fetch("api/owners/", {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
+
+        if (!response.ok) {
+          console.error("Server error:", response.status);
+          return;
+        }
+
+        const dbOwners = await response.json();
+
+        const formattedOwners = blockchainOwners.map((address) => {
+          const matched = dbOwners.find(
+            (owner: any) =>
+              owner.owner_address.toLowerCase() === address.toLowerCase()
+          );
+
+          return {
+            address,
+            name: matched ? matched.owner_name : "Unknown Owner",
+          };
+        });
+
+        const threshold = await safeInstance.getThreshold();
+
+        setSafeOwners(formattedOwners);
+        setThreshold(Number(threshold));
+      } catch (err) {
+        console.error("Error fetching owners:", err);
+      }
+    };
+
+    fetchOwners();
+  }, [safeInstance]);
 
   return (
     <main className="flex flex-col max-w-3xl gap-6 p-4 ">
@@ -82,7 +119,7 @@ export default function Home() {
             <div>
               <p className="font-bold text-white text-lg">Wallet Owners</p>
               <p className="text-[#A0A0A0] text-sm mt-1">
-                {owners.length} members
+                {safeOwners.length} members
               </p>
             </div>
 
@@ -113,7 +150,7 @@ export default function Home() {
           </div>
 
           <div className="divide-y divide-[#333333]">
-            {currentOwners.map((owner, index) => (
+            {currentOwners.map((safeOwner, index) => (
               <div
                 key={index}
                 className="flex items-center justify-between px-6 py-4 hover:bg-[#2A2A2A] transition-all group"
@@ -121,25 +158,25 @@ export default function Home() {
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-full ring-2 ring-[#333333] transition-all overflow-hidden">
                     <img
-                      src={`https://api.dicebear.com/9.x/pixel-art/svg?seed=${owner.address}`}
-                      alt={owner.name}
+                      src={`https://api.dicebear.com/9.x/pixel-art/svg?seed=${safeOwner.address}`}
+                      alt={safeOwner.name}
                       className="w-full h-full"
                     />
                   </div>
 
                   <div>
                     <p className="text-white text-base font-semibold mb-1">
-                      {owner.name}
+                      {safeOwner.name}
                     </p>
                     <p className="text-[#A0A0A0] text-sm font-mono">
-                      {owner.address.slice(0, 6)}...
-                      {owner.address.slice(-4)}
+                      {safeOwner.address.slice(0, 6)}...
+                      {safeOwner.address.slice(-4)}
                     </p>
                   </div>
                 </div>
 
                 <button
-                  onClick={() => handleCopy(owner.address, index)}
+                  onClick={() => handleCopy(safeOwner.address, index)}
                   className="flex cursor-pointer items-center gap-2 px-4 py-2 bg-[#1A1A1A] hover:bg-[#eb5e28] text-[#A0A0A0] hover:text-white rounded-lg transition-all border border-[#333333] hover:border-[#eb5e28] group-hover:scale-105"
                 >
                   {copiedIndex === index ? (
@@ -175,11 +212,14 @@ export default function Home() {
                 Confirmation Threshold
               </p>
               <h3 className="text-white text-4xl font-bold">
-                <span className="text-[#eb5e28]">2</span> of {owners.length}
+                <span className="text-[#eb5e28]">{Number(threshold)}</span> of{" "}
+                {safeOwners.length}
               </h3>
             </div>
             <div className="w-20 h-20 rounded-full bg-[#eb5e28]/20 border-4 border-[#eb5e28] flex items-center justify-center">
-              <span className="text-white text-2xl font-bold">2/13</span>
+              <span className="text-white text-2xl font-bold">
+                {`${Number(threshold)}/${safeOwners.length}`}
+              </span>
             </div>
           </div>
 
