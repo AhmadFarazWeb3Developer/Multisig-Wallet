@@ -15,12 +15,13 @@ import {
   ArrowRightLeft,
   Plus,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Transactions() {
   const [notifications, setNotifications] = useState(3);
   const [activeTab, setActiveTab] = useState("pending");
 
-  // Mock data
+  const router = useRouter();
   const owners = [
     { address: "0x1234...5678", name: "Alice", isYou: true },
     { address: "0x8765...4321", name: "Bob", isYou: false },
@@ -199,7 +200,10 @@ export default function Transactions() {
                   Manage your wallet transactions and owners
                 </p>
               </div>
-              <button className="bg-[#eb5e28] hover:bg-[#d54e20] text-white px-4 py-2 rounded-full text-sm font-semibold transition-all shadow-lg hover:shadow-xl flex items-center gap-1.5 cursor-pointer">
+              <button
+                onClick={() => router.push("/new-transaction")}
+                className="bg-[#eb5e28] hover:bg-[#d54e20] text-white px-4 py-2 rounded-full text-sm font-semibold transition-all shadow-lg hover:shadow-xl flex items-center gap-1.5 cursor-pointer"
+              >
                 <Plus size={16} />
                 New Transaction
               </button>
@@ -238,7 +242,6 @@ export default function Transactions() {
               </button>
             </div>
 
-            {/* Transactions List */}
             <div className="space-y-3">
               {activeTab === "pending" &&
                 pendingTransactions.map((tx) => (

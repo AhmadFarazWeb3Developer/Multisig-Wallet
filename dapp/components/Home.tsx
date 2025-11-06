@@ -27,7 +27,7 @@ export default function Home({ safeAddress }: safeAddressInterface) {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [safeOwners, setSafeOwners] = useState<Owners[]>([]);
-  const [threshold, setThreshold] = useState<number | null>();
+  const [threshold, setThreshold] = useState<string | null>();
 
   const itemsPerPage = 5;
 
@@ -81,17 +81,17 @@ export default function Home({ safeAddress }: safeAddressInterface) {
           };
         });
 
-        const threshold = await safeInstance.getThreshold();
+        const threshold: string = await safeInstance.getThreshold();
 
         setSafeOwners(formattedOwners);
-        setThreshold(Number(threshold));
+        setThreshold(threshold);
       } catch (err) {
         console.error("Error fetching owners:", err);
       }
     };
 
     fetchOwners();
-  }, [safeInstance]);
+  }, [safeOwners]);
 
   return (
     <main className="flex flex-col max-w-3xl gap-6 p-4 ">
@@ -212,13 +212,13 @@ export default function Home({ safeAddress }: safeAddressInterface) {
                 Confirmation Threshold
               </p>
               <h3 className="text-white text-4xl font-bold">
-                <span className="text-[#eb5e28]">{Number(threshold)}</span> of{" "}
-                {safeOwners.length}
+                <span className="text-[#eb5e28]">{threshold?.toString()}</span>{" "}
+                of {safeOwners.length}
               </h3>
             </div>
             <div className="w-20 h-20 rounded-full bg-[#eb5e28]/20 border-4 border-[#eb5e28] flex items-center justify-center">
               <span className="text-white text-2xl font-bold">
-                {`${Number(threshold)}/${safeOwners.length}`}
+                {`${threshold?.toString()}/${safeOwners.length}`}
               </span>
             </div>
           </div>
