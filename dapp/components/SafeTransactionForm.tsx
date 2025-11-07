@@ -22,69 +22,113 @@ export default function SafeTransactionForm() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     console.log("Transaction Data:", { operation, ...form });
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-gray-900 text-white rounded-2xl shadow-lg">
-      <h2 className="text-xl font-semibold mb-4">Safe Transaction Form</h2>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Operation Dropdown */}
-        <div>
-          <label className="block mb-1 text-sm font-medium">Operation</label>
-          <select
-            name="operation"
-            value={operation}
-            onChange={(e) => setOperation(e.target.value)}
-            className="w-full bg-gray-800 border border-gray-700 rounded-lg p-2"
-          >
-            <option value="">Select Operation</option>
-            <option value="addOwnerWithThreshold">addOwnerWithThreshold</option>
-            <option value="removeOwner">removeOwner</option>
-            <option value="swapOwner">swapOwner</option>
-            <option value="changeThreshold">changeThreshold</option>
-            <option value="setGuard">setGuard</option>
-            <option value="transferToken">transferToken</option>
-          </select>
+    <div className="min-h-screen w-full flex items-center justify-center bg-black p-4">
+      <div className="w-full max-w-2xl">
+        <div className="mb-6">
+          <h1 className="text-2xl font-light text-white tracking-tight">
+            Safe Transaction
+          </h1>
+          <div className="h-px w-20 bg-[#eb5e28] mt-2"></div>
         </div>
 
-        {/* Transaction Fields */}
-        {[
-          { label: "To Address", name: "to" },
-          { label: "Value (ETH)", name: "value" },
-          { label: "Data (calldata)", name: "data" },
-          { label: "safeTxGas", name: "safeTxGas" },
-          { label: "baseGas", name: "baseGas" },
-          { label: "gasPrice", name: "gasPrice" },
-          { label: "Gas Token Address", name: "gasToken" },
-          { label: "Refund Receiver", name: "refundReceiver" },
-          { label: "Nonce", name: "nonce" },
-        ].map((field) => (
-          <div key={field.name}>
-            <label className="block mb-1 text-sm font-medium">
-              {field.label}
+        {/* Form Container */}
+        <div className="space-y-5">
+          {/* Operation */}
+          <div>
+            <label className="block text-xs text-white/40 mb-2 uppercase tracking-widest">
+              Operation
+            </label>
+            <select
+              name="operation"
+              value={operation}
+              onChange={(e) => setOperation(e.target.value)}
+              className="w-full bg-transparent border-b border-white/10 py-3 text-white text-sm focus:outline-none focus:border-[#eb5e28] transition-colors"
+            >
+              <option value="" className="bg-black">
+                Select Operation
+              </option>
+              <option value="addOwnerWithThreshold" className="bg-black">
+                Add Owner with Threshold
+              </option>
+              <option value="removeOwner" className="bg-black">
+                Remove Owner
+              </option>
+              <option value="swapOwner" className="bg-black">
+                Swap Owner
+              </option>
+              <option value="changeThreshold" className="bg-black">
+                Change Threshold
+              </option>
+              <option value="setGuard" className="bg-black">
+                Set Guard
+              </option>
+              <option value="transferToken" className="bg-black">
+                Transfer Token
+              </option>
+            </select>
+          </div>
+
+          {/* Two Column Grid */}
+          <div className="grid grid-cols-2 gap-x-8 gap-y-5">
+            {[
+              { label: "To", name: "to", placeholder: "0x..." },
+              { label: "Value", name: "value", placeholder: "0.0" },
+              { label: "Safe Tx Gas", name: "safeTxGas", placeholder: "0" },
+              { label: "Base Gas", name: "baseGas", placeholder: "0" },
+              { label: "Gas Price", name: "gasPrice", placeholder: "0" },
+              { label: "Gas Token", name: "gasToken", placeholder: "0x..." },
+              {
+                label: "Refund Receiver",
+                name: "refundReceiver",
+                placeholder: "0x...",
+              },
+              { label: "Nonce", name: "nonce", placeholder: "0" },
+            ].map((field) => (
+              <div key={field.name}>
+                <label className="block text-xs text-white/40 mb-2 uppercase tracking-widest">
+                  {field.label}
+                </label>
+                <input
+                  name={field.name}
+                  value={(form as any)[field.name]}
+                  onChange={handleChange}
+                  placeholder={field.placeholder}
+                  className="w-full bg-transparent border-b border-white/10 py-3 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#eb5e28] transition-colors font-mono"
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Data Field */}
+          <div>
+            <label className="block text-xs text-white/40 mb-2 uppercase tracking-widest">
+              Calldata
             </label>
             <input
-              name={field.name}
-              value={(form as any)[field.name]}
+              name="data"
+              value={form.data}
               onChange={handleChange}
-              placeholder={field.label}
-              className="w-full bg-gray-800 border border-gray-700 rounded-lg p-2"
+              placeholder="0x..."
+              className="w-full bg-transparent border-b border-white/10 py-3 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#eb5e28] transition-colors font-mono"
             />
           </div>
-        ))}
 
-        {/* Submit Button */}
-        <button
-          type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 rounded-lg py-2 font-semibold"
-        >
-          Add Transaction
-        </button>
-      </form>
+          {/* Submit Button */}
+          <div className="pt-4">
+            <button
+              onClick={handleSubmit}
+              className="w-full bg-[#eb5e28] text-white py-4 text-sm font-medium uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300"
+            >
+              Execute Transaction
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
