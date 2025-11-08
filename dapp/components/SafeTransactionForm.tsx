@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-
+import CustomSelect from "./CustomSelect";
 export default function SafeTransactionForm() {
   const [operation, setOperation] = useState("");
   const [form, setForm] = useState({
@@ -27,7 +27,7 @@ export default function SafeTransactionForm() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-black p-4">
+    <div className="min-h-screen w-full flex items-center justify-center  p-4 font-unbounded">
       <div className="w-full max-w-2xl">
         <div className="mb-6">
           <h1 className="text-2xl font-light text-white tracking-tight">
@@ -36,44 +36,15 @@ export default function SafeTransactionForm() {
           <div className="h-px w-20 bg-[#eb5e28] mt-2"></div>
         </div>
 
-        {/* Form Container */}
         <div className="space-y-5">
-          {/* Operation */}
-          <div>
-            <label className="block text-xs text-white/40 mb-2 uppercase tracking-widest">
+          <div className="">
+            <label className=" cursor-pointer block text-xs text-white/40 mb-2 uppercase tracking-widest">
               Operation
             </label>
-            <select
-              name="operation"
-              value={operation}
-              onChange={(e) => setOperation(e.target.value)}
-              className="w-full bg-transparent border-b border-white/10 py-3 text-white text-sm focus:outline-none focus:border-[#eb5e28] transition-colors"
-            >
-              <option value="" className="bg-black">
-                Select Operation
-              </option>
-              <option value="addOwnerWithThreshold" className="bg-black">
-                Add Owner with Threshold
-              </option>
-              <option value="removeOwner" className="bg-black">
-                Remove Owner
-              </option>
-              <option value="swapOwner" className="bg-black">
-                Swap Owner
-              </option>
-              <option value="changeThreshold" className="bg-black">
-                Change Threshold
-              </option>
-              <option value="setGuard" className="bg-black">
-                Set Guard
-              </option>
-              <option value="transferToken" className="bg-black">
-                Transfer Token
-              </option>
-            </select>
+
+            <CustomSelect />
           </div>
 
-          {/* Two Column Grid */}
           <div className="grid grid-cols-2 gap-x-8 gap-y-5">
             {[
               { label: "To", name: "to", placeholder: "0x..." },
@@ -104,7 +75,6 @@ export default function SafeTransactionForm() {
             ))}
           </div>
 
-          {/* Data Field */}
           <div>
             <label className="block text-xs text-white/40 mb-2 uppercase tracking-widest">
               Calldata
@@ -118,11 +88,10 @@ export default function SafeTransactionForm() {
             />
           </div>
 
-          {/* Submit Button */}
           <div className="pt-4">
             <button
               onClick={handleSubmit}
-              className="w-full bg-[#eb5e28] text-white py-4 text-sm font-medium uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300"
+              className="w-full bg-[#eb5e28] text-white py-4 text-sm font-medium uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 cursor-pointer rounded-sm"
             >
               Execute Transaction
             </button>
