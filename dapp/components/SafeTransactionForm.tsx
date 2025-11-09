@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomSelect from "./CustomSelect";
 export default function SafeTransactionForm() {
   const [operation, setOperation] = useState("");
@@ -26,6 +26,10 @@ export default function SafeTransactionForm() {
     console.log("Transaction Data:", { operation, ...form });
   };
 
+  useEffect(() => {
+    console.log("operations : ", operation);
+  }, [operation]);
+
   return (
     <div className="min-h-screen w-full flex items-center justify-center  p-4 font-unbounded">
       <div className="w-full max-w-2xl">
@@ -42,7 +46,7 @@ export default function SafeTransactionForm() {
               Operation
             </label>
 
-            <CustomSelect />
+            <CustomSelect setOperation={setOperation} />
           </div>
 
           <div className="grid grid-cols-2 gap-x-8 gap-y-5">

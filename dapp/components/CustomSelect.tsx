@@ -1,12 +1,17 @@
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 
-export default function OperationSelect() {
+interface CustomSelectProps {
+  setOperation: (value: string) => void;
+}
+
+export default function CustomSelect({ setOperation }: CustomSelectProps) {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState("Select Operation");
-  const dropdownRef = useRef(null);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const options = [
+    "Transfer ETH",
     "Add Owner with Threshold",
     "Remove Owner",
     "Swap Owner",
@@ -15,10 +20,12 @@ export default function OperationSelect() {
     "Transfer Token",
   ];
 
-  // Close dropdown when clicking outside
   useEffect(() => {
-    const handler = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+    const handler = (e: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
         setOpen(false);
       }
     };
@@ -30,7 +37,7 @@ export default function OperationSelect() {
     <div ref={dropdownRef} className="relative w-full">
       <button
         onClick={() => setOpen(!open)}
-        className=" cursor-pointer w-full flex justify-between items-center text-left bg-transparent border-b border-white/10 py-3 text-white text-sm focus:outline-none focus:border-[#eb5e28] transition-colors"
+        className="cursor-pointer w-full flex justify-between items-center text-left bg-transparent border-b border-white/10 py-3 text-white text-sm focus:outline-none focus:border-[#eb5e28] transition-colors"
       >
         <span>{selected}</span>
         <ChevronDown
@@ -47,6 +54,7 @@ export default function OperationSelect() {
               key={opt}
               onClick={() => {
                 setSelected(opt);
+                setOperation(opt);
                 setOpen(false);
               }}
               className="px-3 py-2 hover:bg-[#eb5e28] cursor-pointer transition-colors"
