@@ -114,38 +114,44 @@ export default function Navbar() {
 
   return (
     <nav className="flex items-center justify-between py-4  ">
-      <Link href="/" className="flex items-center space-x-3">
-        <Vault size={34} color="white" />
+      <Link href="/" className="flex items-center  ">
+        <Vault size={24} color="white" />
       </Link>
 
-      <div className=" flex flex-row gap-4 items-center">
-        <div className=" border-1 py-3 px-4 border-y-0 border-l-0  border-r-white/10  ">
+      <div className=" flex flex-row gap-1 items-center">
+        <div className=" py-3 pl-3  border-y-0 border-l-0  ">
+          {/*  border-r-white/10  */}
           {isNotification ? (
-            <Bell strokeWidth={1} className="text-white cursor-pointer " />
+            <Bell
+              size={18}
+              strokeWidth={1}
+              className="text-white cursor-pointer "
+            />
           ) : (
             <BellDot
               strokeWidth={1}
+              size={18}
               className=" text-[#eb5e28]  cursor-pointer"
             />
           )}
         </div>
-        <div className="wallet flex items-center gap-3">
+        <div className="wallet flex items-center gap-1">
           {isConnected ? (
-            <div className="flex flex-row items-center gap-2 border border-white/10 rounded-full bg-white/5 backdrop-blur-xl p-1 shadow-lg ">
-              <div className="flex items-center justify-center gap-2 px-4 py-2 bg-white/5 rounded-full">
+            <div className="flex flex-row items-center gap-1 border border-white/10 rounded-full bg-white/5 backdrop-blur-xl px-1 shadow-lg">
+              <div className="flex items-center justify-center gap-2 px-2 py-2 bg-white/5 rounded-full">
                 <div className="rounded-full flex items-center justify-center">
                   <Wallet size={18} color="gray" strokeWidth="2px" />
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm  text-white/60">{balance}</span>
-                  <span className="text-xs text-white/60 ">ETH</span>
+                  <span className="text-xs  text-white/60">{balance}</span>
+                  <span className="text-xs text-white/60  ">ETH</span>
                 </div>
               </div>
 
               {caipNetwork && (
                 <button
                   onClick={() => open({ view: "Networks" })}
-                  className="flex items-center gap-2 px-3 py-2  rounded-full group cursor-pointer  transition-all hover:scale-105 hover:bg-[#eb5e28]"
+                  className="flex items-center gap-1 px-2 py-1  rounded-full group cursor-pointer  transition-all hover:scale-105 hover:bg-[#eb5e28]"
                 >
                   {networkImageUrl && (
                     <img
@@ -164,7 +170,7 @@ export default function Navbar() {
                     </div>
                   )}
 
-                  <span className="text-xs  text-white/80 group-hover:text-white transition-colors ">
+                  <span className="text-[10px]  text-white/80 group-hover:text-white transition-colors ">
                     {caipNetwork.name}
                   </span>
                   <ChevronDown size={14} className="text-white/60 " />
@@ -172,9 +178,9 @@ export default function Navbar() {
               )}
               <button
                 onClick={() => open({ view: "Account" })}
-                className="flex items-center gap-2 px-5 py-2.5 hover:bg-[#eb5e28] rounded-full  text-white/70 transition-all hover:scale-105 shadow-2xl  cursor-pointer  "
+                className=" bg-black flex items-center gap-2 px-2 py-2 hover:bg-[#eb5e28] rounded-full  text-white/70 transition-all hover:scale-105 shadow-2xl  cursor-pointer  "
               >
-                <span className="text-sm">
+                <span className="text-xs">
                   {`${address?.slice(0, 6)}...${address?.slice(-4)}`}
                 </span>
                 <ChevronDown size={14} className="opacity-100" />
@@ -183,10 +189,10 @@ export default function Navbar() {
           ) : (
             <button
               onClick={() => open()}
-              className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r bg-[#eb5e28] rounded-full font-semibold text-white shadow-lg hover:shadow-xl transition-all hover:scale-105 cursor-pointer"
+              className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r bg-[#eb5e28] rounded-full font-semibold text-white shadow-lg hover:shadow-xl transition-all hover:scale-105 cursor-pointer"
             >
               <Wallet size={18} />
-              <span className="text-sm">Connect Wallet</span>
+              <span className="text-xs">Connect Wallet</span>
             </button>
           )}
         </div>
