@@ -85,24 +85,24 @@ export default function CreateSmartAccountPage() {
   };
 
   return (
-    <main className="flex items-center justify-center  min-h-[80vh] bg-gradient-to-b from-[#1e1e1e] to-[#121212] text-white px-6 py-12">
-      <div className="create-smart-account flex gap-6 w-full max-w-7xl">
+    <main className="flex items-center justify-center  bg-gradient-to-b from-[#1e1e1e] to-[#121212] text-white py-6">
+      <div className="create-smart-account flex flex-col sm:flex-row  sm:min-h-80 lg:px-10  gap-6 w-full max-w-7xl">
         <div className="flex-[2] bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl flex flex-col transition-all duration-500">
           <div className="flex items-center gap-2 mb-4">
-            <UserPlus className="text-[#eb5e28]" />
-            <h2 className="text-xl font-semibold">Add Owners</h2>
+            <UserPlus className="text-[#eb5e28]" size={18} />
+            <h2 className="text-md font-semibold">Add Owners</h2>
           </div>
 
           <div className="space-y-2 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10">
             {owners.length === 0 && (
-              <p className="text-white/40 text-sm">No owners added yet.</p>
+              <p className="text-white/40 text-xs">No owners added yet.</p>
             )}
             {owners.map((owner, index) => (
               <div
                 key={index}
                 className="flex items-center justify-between bg-white/10 px-4 py-2 rounded-full"
               >
-                <p className="truncate text-sm text-gray-400">
+                <p className="truncate text-xs text-gray-400">
                   {owner.address.toUpperCase()}
                 </p>
                 <button
@@ -121,21 +121,21 @@ export default function CreateSmartAccountPage() {
               placeholder="Enter owner address (0x...)"
               value={newOwner}
               onChange={(e) => setNewOwner(e.target.value)}
-              className="flex-1 bg-transparent outline-none text-white placeholder-white/40 py-2"
+              className="flex-1 text-xs sm:text-md bg-transparent outline-none text-white placeholder-white/40 py-1 sm:py-2"
             />
             <button
               onClick={addOwner}
-              className="bg-[#eb5e28] hover:bg-[#ff6b36] py-2 px-4 rounded-r-full font-semibold transition cursor-pointer"
+              className="bg-[#eb5e28] hover:bg-[#ff6b36] py-1 sm:py-2 px-4 rounded-r-full font-semibold transition cursor-pointer"
             >
-              <UserPlus className="cursor-pointer" />
+              <UserPlus className="cursor-pointer" size={18} />
             </button>
           </div>
         </div>
 
         <div className="group flex-1 hover:flex-[1.5] bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl flex flex-col  items-center transition-all duration-500 overflow-hidden">
           <div className="flex items-center gap-2 mb">
-            <Settings className="text-[#eb5e28]" />
-            <h2 className="text-xl font-semibold">Set Threshold</h2>
+            <Settings className="text-[#eb5e28]" size={18} />
+            <h2 className="text-md font-semibold">Set Threshold</h2>
           </div>
 
           <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center w-full">
@@ -154,7 +154,7 @@ export default function CreateSmartAccountPage() {
                 <Plus className="cursor-pointer" />
               </button>
             </div>
-            <p className="text-sm text-white/60">
+            <p className="text-xs text-white/60">
               {threshold} of {owners.length || 1} owners required.
             </p>
           </div>
@@ -162,8 +162,8 @@ export default function CreateSmartAccountPage() {
 
         <div className="group flex-1 hover:flex-[1.5] bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl flex flex-col items-center text-center transition-all duration-500 overflow-hidden">
           <div className="flex flex-row items-center justify-center gap-2">
-            <Rocket className="text-[#eb5e28]" />
-            <h2 className="text-xl font-semibold mb-2">Deploy Wallet</h2>
+            <Rocket className="text-[#eb5e28] " size={18} />
+            <h2 className="text-md font-semibold mb-2">Deploy Wallet</h2>
           </div>
 
           <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -179,7 +179,7 @@ export default function CreateSmartAccountPage() {
             <button
               onClick={createNewSmartAccount}
               disabled={isLoading}
-              className={`w-full py-3 rounded-full font-semibold text-lg shadow-lg transition-all cursor-pointer ${
+              className={`w-full py-3 rounded-full font-semibold text-xs shadow-lg transition-all cursor-pointer ${
                 isLoading
                   ? "bg-gray-500 cursor-not-allowed"
                   : "bg-[#eb5e28] hover:bg-[#ff6b36] text-white hover:scale-105"

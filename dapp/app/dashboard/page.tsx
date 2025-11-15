@@ -1,14 +1,19 @@
 "use client";
 
-import React, { useState, ReactElement, useEffect } from "react";
+import React, { useState, ReactElement, useEffect, useRef } from "react";
 import SidePanel from "../../components/SidePanel";
 import Home from "@/components/Home";
 import { useAppKitAccount } from "@reown/appkit/react";
+import { Menu, X } from "lucide-react";
 
 export default function Dashboard() {
   const { address, isConnected } = useAppKitAccount();
   const [component, setComponent] = useState<ReactElement | null>(null);
   const [safeAddress, setSafeAddress] = useState("");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const showMenuIcon = !isSidebarOpen;
+  const showXIcon = isSidebarOpen;
 
   useEffect(() => {
     if (!isConnected || !address) {
@@ -47,7 +52,34 @@ export default function Dashboard() {
   return (
     <main className="w-full flex flex-row border-1 border-[#333333] rounded-sm min-h-[80vh]">
       <div className="flex-1 bg-[#1A1A1A] flex flex-row">
-        <SidePanel setComponent={setComponent} safeAddress={safeAddress} />
+        {showMenuIcon && (
+          <Menu
+            className="text-white cursor-pointer block sm:hidden m-2"
+            strokeWidth={1}
+            onClick={() => {
+              setIsSidebarOpen(true);
+            }}
+          />
+        )}
+
+        <div
+          className={`${
+            isSidebarOpen ? "block" : "hidden"
+          } sm:block bg-[#1A1A1A] sm:static fixed top-0 left-0 w-64 h-full z-50 transform transition-all duration-300 `}
+        >
+          {showXIcon && (
+            <X
+              className="text-white cursor-pointer block sm:hidden m-2"
+              strokeWidth={1}
+              onClick={() => {
+                setIsSidebarOpen(false);
+              }}
+            />
+          )}
+
+          <SidePanel setComponent={setComponent} safeAddress={safeAddress} />
+        </div>
+
         <div className="flex-1 from-[#242424] to-[#1A1A1A]">
           {component ? component : <Home safeAddress={safeAddress} />}
         </div>

@@ -11,7 +11,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="bg-[#1A1A1A] px-1 ">
+      <body className="bg-[#1A1A1A]   lg:px-8 px-1 ">
         <Navbar />
         <ReownProvider>{children}</ReownProvider>
       </body>
