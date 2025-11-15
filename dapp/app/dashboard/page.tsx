@@ -51,11 +51,12 @@ export default function Dashboard() {
 
   return (
     <main className="w-full flex flex-row border-1 border-[#333333] rounded-sm min-h-[80vh]">
-      <div className="flex-1 bg-[#1A1A1A] flex flex-row">
+      <div className="flex-1 bg-[#1A1A1A]  sm:static fixed flex flex-col sm:flex-row flex-">
         {showMenuIcon && (
           <Menu
             className="text-white cursor-pointer block sm:hidden m-2"
             strokeWidth={1}
+            size={16}
             onClick={() => {
               setIsSidebarOpen(true);
             }}
@@ -65,12 +66,13 @@ export default function Dashboard() {
         <div
           className={`${
             isSidebarOpen ? "block" : "hidden"
-          } sm:block bg-[#1A1A1A] sm:static fixed top-0 left-0 w-64 h-full z-50 transform transition-all duration-300 `}
+          } sm:block bg-[#1A1A1A] sm:static fixed  w-64 h-full z-50 transform transition-all duration-300 `}
         >
           {showXIcon && (
             <X
               className="text-white cursor-pointer block sm:hidden m-2"
               strokeWidth={1}
+              size={16}
               onClick={() => {
                 setIsSidebarOpen(false);
               }}

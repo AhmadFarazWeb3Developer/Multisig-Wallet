@@ -8,11 +8,20 @@ import {
   useAppKitState,
 } from "@reown/appkit/react";
 
-import { Wallet, ChevronDown, Vault, Bell, BellDot } from "lucide-react";
+import {
+  Wallet,
+  ChevronDown,
+  Vault,
+  Bell,
+  BellDot,
+  Menu,
+  MenuIcon,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ethers } from "ethers";
 import { getNetworkToken } from "../blockchain-interaction/helper/getNetworkToken";
+import { MenuList } from "@mui/material";
 
 export default function Navbar() {
   const { open, close } = useAppKit();
@@ -113,31 +122,28 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="flex items-center justify-between py-4  ">
-      <Link href="/" className="flex items-center  ">
-        <Vault size={24} color="white" />
+    <nav className="flex items-center justify-between sm:py-4 ">
+      <Link href="/" className="flex items-center">
+        <Vault color="white" className="h-6 w-6 sm:h-10  sm:w-10 " />
       </Link>
-
-      <div className=" flex flex-row   gap-1 sm:gap-2 items-center">
-        <div className=" py-3 pl-3 sm:px-3 sm:border-r-1  sm:border-r-white/10     ">
+      <div className=" flex flex-row  gap-1 sm:gap-2 items-center">
+        <div className=" py-3 pl-3 sm:px-3 sm:border-r-1  sm:border-r-white/10 ">
           {isNotification ? (
             <Bell
-              size={18}
               strokeWidth={1}
-              className="text-white cursor-pointer "
+              className="text-white cursor-pointer h-5 w-5 sm:h-6 sm:w-6"
             />
           ) : (
             <BellDot
               strokeWidth={1}
-              size={18}
-              className=" text-[#eb5e28]  cursor-pointer"
+              className=" text-[#eb5e28]  cursor-pointer h-5 w-5"
             />
           )}
         </div>
         <div className="wallet flex items-center gap-1 ">
           {isConnected ? (
-            <div className="flex flex-row items-center gap-1 border border-white/10 rounded-full bg-white/5 backdrop-blur-xl px-1 shadow-lg sm:py-2">
-              <div className="flex items-center justify-center gap-2 px-2 py-2 bg-white/5 rounded-full">
+            <div className="flex flex-row items-center gap-1 sm:px-2 border border-white/10 rounded-full bg-white/5 backdrop-blur-xl  shadow-lg sm:py-2">
+              <div className="sm:flex items-center justify-center hidden  gap-2 px-2 py-2 bg-white/5 rounded-full">
                 <div className="rounded-full flex items-center justify-center">
                   <Wallet size={18} color="gray" strokeWidth="2px" />
                 </div>

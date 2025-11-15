@@ -94,19 +94,19 @@ export default function Home({ safeAddress }: safeAddressInterface) {
   }, [safeOwners]);
 
   return (
-    <main className="flex flex-col max-w-3xl gap-6 p-4 ">
-      <div className="flex flex-row w-full">
-        <div className="bg-gradient-to-br from-[#242424] to-[#1A1A1A] border border-[#333333] rounded-l-md rounded-br-md p-6 shadow-lg w-full">
+    <main className="flex flex-col max-w-3xl gap-4 sm:gap-6 p-4 ">
+      <div className="flex flex-row  w-full">
+        <div className="bg-gradient-to-br from-[#242424] to-[#1A1A1A] border border-[#333333] rounded-l-md rounded-br-md p-2 sm:p-6 shadow-lg w-full">
           <p className="text-[#A0A0A0] text-sm font-semibold mb-2">
             Total Locked Value
           </p>
-          <h3 className="text-white text-5xl font-bold mb-1">
-            0.0 <span className="text-3xl text-[#A0A0A0]">ETH</span>
+          <h3 className="text-white text-2xl sm:text-5xl font-bold mb-1">
+            0.0 <span className="text-xl sm:text-3xl text-[#A0A0A0]">ETH</span>
           </h3>
         </div>
 
-        <div className="flex flex-row justify-center w-1/3 h-10 rounded-r-md">
-          <button className="cursor-pointer w-full py-2 text-sm text-white bg-[#2A2A2A] hover:bg-[#eb5e28] border border-[#333333] hover:border-[#eb5e28] rounded-r-md transition-all flex items-center justify-center gap-2">
+        <div className="flex flex-row  justify-center  w-1/3 h-10 rounded-r-md">
+          <button className="cursor-pointer w-full px-1 sm:py-2 sm:px-2 text-xs sm:text-sm gap-1 sm:gap-2 text-white bg-[#2A2A2A] hover:bg-[#eb5e28] border border-[#333333] hover:border-[#eb5e28] rounded-r-md transition-all flex items-center justify-center ">
             <Wallet size={16} />
             Add Funds
           </button>
@@ -115,10 +115,12 @@ export default function Home({ safeAddress }: safeAddressInterface) {
 
       <div className="flex flex-row w-full">
         <div className="bg-[#242424] border border-[#333333] rounded-l-md rounded-br-md overflow-hidden shadow-lg w-full">
-          <div className="px-6 py-4 border-b border-[#333333] flex items-center justify-between">
+          <div className="p-2 sm:px-6 sm:py-4 border-b border-[#333333] flex items-center justify-between">
             <div>
-              <p className="font-bold text-white text-lg">Wallet Owners</p>
-              <p className="text-[#A0A0A0] text-sm mt-1">
+              <p className="font-bold text-white text-xs sm:text-lg ">
+                Wallet Owners
+              </p>
+              <p className="text-[#A0A0A0] text-xs sm:text-sm mt-1">
                 {safeOwners.length} members
               </p>
             </div>
@@ -127,7 +129,7 @@ export default function Home({ safeAddress }: safeAddressInterface) {
               <button
                 onClick={handlePrevious}
                 disabled={currentPage === 0}
-                className={`p-2 rounded-lg border border-[#333333] cursor-pointer hover:bg-[#eb5e28] transition ${
+                className={`p-2 rounded-lg border border-[#333333]  cursor-pointer hover:bg-[#eb5e28] transition ${
                   currentPage === 0
                     ? "opacity-40 cursor-not-allowed"
                     : "text-white"
@@ -153,10 +155,10 @@ export default function Home({ safeAddress }: safeAddressInterface) {
             {currentOwners.map((safeOwner, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between px-6 py-4 hover:bg-[#2A2A2A] transition-all group"
+                className="flex items-center justify-between px-2 sm:px-6 py-2 sm:py-4 hover:bg-[#2A2A2A] transition-all group"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full ring-2 ring-[#333333] transition-all overflow-hidden">
+                  <div className=" w-8 h-8 sm:w-12 sm:h-12 rounded-full ring-1 sm:ring-2 ring-[#333333] transition-all overflow-hidden">
                     <img
                       src={`https://api.dicebear.com/9.x/pixel-art/svg?seed=${safeOwner.address}`}
                       alt={safeOwner.name}
@@ -165,7 +167,7 @@ export default function Home({ safeAddress }: safeAddressInterface) {
                   </div>
 
                   <div>
-                    <p className="text-white text-base font-semibold mb-1">
+                    <p className="text-white text-sm sm:text-base sm:font-semibold mb-1">
                       {safeOwner.name}
                     </p>
                     <p className="text-[#A0A0A0] text-sm font-mono">
@@ -177,17 +179,21 @@ export default function Home({ safeAddress }: safeAddressInterface) {
 
                 <button
                   onClick={() => handleCopy(safeOwner.address, index)}
-                  className="flex cursor-pointer items-center gap-2 px-4 py-2 bg-[#1A1A1A] hover:bg-[#eb5e28] text-[#A0A0A0] hover:text-white rounded-lg transition-all border border-[#333333] hover:border-[#eb5e28] group-hover:scale-105"
+                  className="flex cursor-pointer items-center gap-1 px-2 py-1 sm:gap-2 sm:px-4 sm:py-2 bg-[#1A1A1A] hover:bg-[#eb5e28] text-[#A0A0A0] hover:text-white rounded-lg transition-all border border-[#333333] hover:border-[#eb5e28] group-hover:scale-105"
                 >
                   {copiedIndex === index ? (
                     <>
                       <Check size={16} />
-                      <span className="text-sm font-medium">Copied!</span>
+                      <span className="text-xs sm:text-sm  sm:font-medium">
+                        Copied!
+                      </span>
                     </>
                   ) : (
                     <>
                       <Copy size={16} className="cursor-pointer" />
-                      <span className="text-sm font-medium">Copy</span>
+                      <span className="text-xs sm:text-sm sm:font-medium">
+                        Copy
+                      </span>
                     </>
                   )}
                 </button>
@@ -197,27 +203,27 @@ export default function Home({ safeAddress }: safeAddressInterface) {
         </div>
 
         <div className="flex flex-row  justify-center w-1/3 h-10 rounded-r-md">
-          <button className="cursor-pointer w-full py-2 text-sm text-center text-white bg-[#2A2A2A] hover:bg-[#eb5e28] border border-[#333333] hover:border-[#eb5e28] rounded-r-md transition-all flex items-center justify-center gap-2">
+          <button className="cursor-pointer w-full px-1 sm:py-2 sm:px-2 text-xs sm:text-sm gap-1  sm:gap-2   text-center text-white bg-[#2A2A2A] hover:bg-[#eb5e28] border border-[#333333] hover:border-[#eb5e28] rounded-r-md transition-all flex items-center justify-center ">
             <Plus size={16} />
             Add Owner
           </button>
         </div>
       </div>
 
-      <div className="flex flex-row w-full">
-        <div className="bg-gradient-to-br from-[#242424] to-[#1A1A1A] border border-[#333333] rounded-l-md rounded-br-md p-6 shadow-lg w-full">
+      <div className="flex flex-row w-full ">
+        <div className="bg-gradient-to-br from-[#242424] to-[#1A1A1A] border border-[#333333] rounded-l-md rounded-br-md p-2 sm:p-6 shadow-lg w-full">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <p className="text-[#A0A0A0] text-sm font-semibold mb-2">
+              <p className="text-[#A0A0A0] text-xs sm:text-sm font-semibold mb-2">
                 Confirmation Threshold
               </p>
-              <h3 className="text-white text-4xl font-bold">
+              <h3 className="text-white sm:text-4xl font-bold">
                 <span className="text-[#eb5e28]">{threshold?.toString()}</span>{" "}
                 of {safeOwners.length}
               </h3>
             </div>
-            <div className="w-20 h-20 rounded-full bg-[#eb5e28]/20 border-4 border-[#eb5e28] flex items-center justify-center">
-              <span className="text-white text-2xl font-bold">
+            <div className="w-10 h-10 sm:w-20 sm:h-20 rounded-full bg-[#eb5e28]/20 border-1 sm:border-4 border-[#eb5e28] flex items-center justify-center">
+              <span className="text-white   sm:text-2xl sm:font-bold">
                 {`${threshold?.toString()}/${safeOwners.length}`}
               </span>
             </div>
@@ -235,7 +241,7 @@ export default function Home({ safeAddress }: safeAddressInterface) {
         </div>
 
         <div className="flex flex-row  justify-center w-1/3 h-10 rounded-r-md">
-          <button className="cursor-pointer w-full py-2 text-sm text-white bg-[#2A2A2A] hover:bg-[#eb5e28] border border-[#333333] hover:border-[#eb5e28] rounded-r-md transition-all flex items-center justify-center gap-2">
+          <button className="cursor-pointer sm:py-2 w-full px-1 sm:px-2 text-xs sm:text-sm sm:gap-2   text-white bg-[#2A2A2A] hover:bg-[#eb5e28] border border-[#333333] hover:border-[#eb5e28] rounded-r-md transition-all flex items-center justify-center ">
             <Settings size={16} />
             Change Threshold
           </button>

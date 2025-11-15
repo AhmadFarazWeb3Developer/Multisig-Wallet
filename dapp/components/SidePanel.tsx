@@ -27,7 +27,7 @@ export default function SidePanel({
             />
           </div>
 
-          <div className="flex flex-col">
+          <div className="flex flex-col sm:flex-row">
             <p className="text-gray-500 text-xs font-semibold">
               Account Address
             </p>
