@@ -198,10 +198,12 @@ export default function Navbar() {
           ) : (
             <button
               onClick={() => open()}
-              className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-gradient-to-r bg-[#eb5e28] rounded-full font-semibold text-white shadow-lg hover:shadow-xl transition-all hover:scale-105 cursor-pointer"
+              className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r bg-[#eb5e28] rounded-full  text-white shadow-lg hover:shadow-xl transition-all hover:scale-105 cursor-pointer"
             >
               <Wallet size={18} />
-              <span className="text-xs sm:text-sm">Connect Wallet</span>
+              <span className="text-xs sm:text-sm font-semibold">
+                Connect Wallet
+              </span>
             </button>
           )}
         </div>

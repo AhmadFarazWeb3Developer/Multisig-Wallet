@@ -1,6 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Trash2, UserPlus, Settings, Rocket, Plus, Minus } from "lucide-react";
+import {
+  Trash2,
+  UserPlus,
+  Settings,
+  Rocket,
+  Plus,
+  Minus,
+  RocketIcon,
+} from "lucide-react";
 import { useAppKitAccount } from "@reown/appkit/react";
 import { useRouter } from "next/navigation";
 import useCreateSmartAccount from "../../blockchain-interaction/hooks/Proxy/useCreateSmartAccount";
@@ -85,11 +93,11 @@ export default function CreateSmartAccountPage() {
   };
 
   return (
-    <main className="flex items-center justify-center bg-gradient-to-b from-[#1e1e1e] to-[#121212] text-white py-2  sm:py-6">
+    <main className="flex items-center justify-center bg-gradient-to-b from-[#1e1e1e] to-[#121212] text-white py-2 px-2  sm:py-6">
       <div className="create-smart-account flex flex-col sm:flex-row sm:min-h-80 sm:px-10 gap-4 sm:gap-6 w-full max-w-7xl">
         <div className="flex-[2]  bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 sm:p-6 shadow-xl flex flex-col transition-all duration-500">
           <div className="flex items-center  gap-1 sm:gap-2 mb-4">
-            <UserPlus className="text-[#eb5e28] h-5 sm:h-8" />
+            <UserPlus className="text-[#eb5e28] h-4 sm:h-8 " />
             <h2 className="text-sm sm:text-lg font-semibold">Add Owners</h2>
           </div>
 
@@ -133,25 +141,25 @@ export default function CreateSmartAccountPage() {
         </div>
 
         <div className="group flex-1 hover:flex-[1.5] bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl flex flex-col items-center transition-all duration-500 overflow-hidden">
-          <div className="flex items-center gap-2 mb">
-            <Settings className="text-[#eb5e28]  h-8 " />
+          <div className="flex items-center gap-1 sm:gap-2 mb">
+            <Settings className="text-[#eb5e28]  h-4  " />
             <h2 className="text-sm sm:text-lg  font-semibold">Set Threshold</h2>
           </div>
 
           <div className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center w-full">
-            <div className="flex items-center gap-4 justify-center my-4 text-sm sm:text-base">
+            <div className="flex items-center  gap-2 sm:gap-4 justify-center my-4 text-sm sm:text-base">
               <button
                 onClick={decreaseThreshold}
-                className="bg-white/10 hover:bg-white/20 rounded-full p-2 transition cursor-pointer"
+                className="bg-white/10 hover:bg-white/20 rounded-full p-1 sm:p-2 transition cursor-pointer"
               >
-                <Minus className="cursor-pointer" />
+                <Minus className="cursor-pointer size-4 sm:size-8" />
               </button>
               <span className="text-xl sm:text-2xl font-bold">{threshold}</span>
               <button
                 onClick={increaseThreshold}
-                className="bg-white/10 hover:bg-white/20 rounded-full p-2 transition cursor-pointer"
+                className="bg-white/10 hover:bg-white/20 rounded-full p-1  sm:p-2 transition cursor-pointer"
               >
-                <Plus className="cursor-pointer" />
+                <Plus className="cursor-pointer size-4 sm:size-4" />
               </button>
             </div>
             <p className="text-[10px] sm:text-xs text-white/60">
@@ -160,12 +168,10 @@ export default function CreateSmartAccountPage() {
           </div>
         </div>
 
-        <div className="group flex-1 hover:flex-[1.5] bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl flex flex-col items-center text-center transition-all duration-500 overflow-hidden">
-          <div className="flex flex-row items-center justify-center gap-2">
-            <Rocket className="text-[#eb5e28] h-8" />
-            <h2 className="text-sm sm:text-lg font-semibold mb-2">
-              Deploy Wallet
-            </h2>
+        <div className="group flex-1 hover:flex-[1.5] bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl flex flex-col items-center text-center transition-all duration-500 overflow-hidden gap-1">
+          <div className="flex  flex-row items-center justify-center  gap-1  sm:gap-2">
+            <Rocket className="text-[#eb5e28]  h-4 sm:h-8 " />
+            <h2 className="text-sm sm:text-lg font-semibold ">Deploy Wallet</h2>
           </div>
 
           <div className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 text-xs sm:text-sm">

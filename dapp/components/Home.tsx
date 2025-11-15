@@ -91,7 +91,7 @@ export default function Home({ safeAddress }: safeAddressInterface) {
     };
 
     fetchOwners();
-  }, [safeOwners]);
+  }, []);
 
   return (
     <main className="flex flex-col max-w-3xl gap-4 sm:gap-6 p-4 ">
@@ -107,7 +107,7 @@ export default function Home({ safeAddress }: safeAddressInterface) {
 
         <div className="flex flex-row  justify-center  w-1/3 h-10 rounded-r-md">
           <button className="cursor-pointer w-full px-1 sm:py-2 sm:px-2 text-xs sm:text-sm gap-1 sm:gap-2 text-white bg-[#2A2A2A] hover:bg-[#eb5e28] border border-[#333333] hover:border-[#eb5e28] rounded-r-md transition-all flex items-center justify-center ">
-            <Wallet size={16} />
+            <Wallet className="size-4 " />
             Add Funds
           </button>
         </div>
@@ -129,24 +129,24 @@ export default function Home({ safeAddress }: safeAddressInterface) {
               <button
                 onClick={handlePrevious}
                 disabled={currentPage === 0}
-                className={`p-2 rounded-lg border border-[#333333]  cursor-pointer hover:bg-[#eb5e28] transition ${
+                className={`p-1 sm:p-2 rounded-sm sm:rounded-lg border border-[#333333]  cursor-pointer hover:bg-[#eb5e28] transition ${
                   currentPage === 0
                     ? "opacity-40 cursor-not-allowed"
                     : "text-white"
                 }`}
               >
-                <ChevronLeft size={18} className="cursor-pointer" />
+                <ChevronLeft className="cursor-pointer size-3 sm:size-4" />
               </button>
               <button
                 onClick={handleNext}
                 disabled={currentPage === totalPages - 1}
-                className={`p-2 rounded-lg border border-[#333333] hover:bg-[#eb5e28] cursor-pointer transition ${
+                className={`p-1 sm:p-2 rounded-sm sm:rounded-lg  border border-[#333333] hover:bg-[#eb5e28] cursor-pointer transition ${
                   currentPage === totalPages - 1
                     ? "opacity-40 cursor-not-allowed"
                     : "text-white"
                 }`}
               >
-                <ChevronRight size={18} className="cursor-pointer" />
+                <ChevronRight className="cursor-pointer size-3 sm:size-4 " />
               </button>
             </div>
           </div>
@@ -158,7 +158,7 @@ export default function Home({ safeAddress }: safeAddressInterface) {
                 className="flex items-center justify-between px-2 sm:px-6 py-2 sm:py-4 hover:bg-[#2A2A2A] transition-all group"
               >
                 <div className="flex items-center gap-4">
-                  <div className=" w-8 h-8 sm:w-12 sm:h-12 rounded-full ring-1 sm:ring-2 ring-[#333333] transition-all overflow-hidden">
+                  <div className=" size-8 p-1 sm:size-12  rounded-full ring-1 sm:ring-2 ring-[#333333] transition-all overflow-hidden">
                     <img
                       src={`https://api.dicebear.com/9.x/pixel-art/svg?seed=${safeOwner.address}`}
                       alt={safeOwner.name}
@@ -179,18 +179,18 @@ export default function Home({ safeAddress }: safeAddressInterface) {
 
                 <button
                   onClick={() => handleCopy(safeOwner.address, index)}
-                  className="flex cursor-pointer items-center gap-1 px-2 py-1 sm:gap-2 sm:px-4 sm:py-2 bg-[#1A1A1A] hover:bg-[#eb5e28] text-[#A0A0A0] hover:text-white rounded-lg transition-all border border-[#333333] hover:border-[#eb5e28] group-hover:scale-105"
+                  className="flex cursor-pointer items-center gap-1 px-2 py-1 sm:gap-2 sm:px-4 sm:py-2 bg-[#1A1A1A] hover:bg-[#eb5e28] text-[#A0A0A0] hover:text-white  rounded-sm sm:rounded-lg transition-all border border-[#333333] hover:border-[#eb5e28] group-hover:scale-105"
                 >
                   {copiedIndex === index ? (
                     <>
-                      <Check size={16} />
+                      <Check className="size-3 sm:size-4" />
                       <span className="text-xs sm:text-sm  sm:font-medium">
                         Copied!
                       </span>
                     </>
                   ) : (
                     <>
-                      <Copy size={16} className="cursor-pointer" />
+                      <Copy className="cursor-pointer size-3 sm:size-4" />
                       <span className="text-xs sm:text-sm sm:font-medium">
                         Copy
                       </span>
@@ -202,9 +202,9 @@ export default function Home({ safeAddress }: safeAddressInterface) {
           </div>
         </div>
 
-        <div className="flex flex-row  justify-center w-1/3 h-10 rounded-r-md">
+        <div className="flex flex-row justify-center w-1/3 h-10 rounded-r-md">
           <button className="cursor-pointer w-full px-1 sm:py-2 sm:px-2 text-xs sm:text-sm gap-1  sm:gap-2   text-center text-white bg-[#2A2A2A] hover:bg-[#eb5e28] border border-[#333333] hover:border-[#eb5e28] rounded-r-md transition-all flex items-center justify-center ">
-            <Plus size={16} />
+            <Plus className=" size-4" />
             Add Owner
           </button>
         </div>
@@ -240,9 +240,9 @@ export default function Home({ safeAddress }: safeAddressInterface) {
           </p>
         </div>
 
-        <div className="flex flex-row  justify-center w-1/3 h-10 rounded-r-md">
-          <button className="cursor-pointer sm:py-2 w-full px-1 sm:px-2 text-xs sm:text-sm sm:gap-2   text-white bg-[#2A2A2A] hover:bg-[#eb5e28] border border-[#333333] hover:border-[#eb5e28] rounded-r-md transition-all flex items-center justify-center ">
-            <Settings size={16} />
+        <div className="flex flex-row  justify-center w-1/3  h-12 rounded-r-md  ">
+          <button className="cursor-pointer w-full px-1  gap-1 sm:py-2 sm:px-2 text-xs sm:text-sm sm:gap-2   text-white bg-[#2A2A2A] hover:bg-[#eb5e28] border border-[#333333] hover:border-[#eb5e28] rounded-r-md transition-all flex items-center justify-center ">
+            <Settings className="sm:size-4" />
             Change Threshold
           </button>
         </div>

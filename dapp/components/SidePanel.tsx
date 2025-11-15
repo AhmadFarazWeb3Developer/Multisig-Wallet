@@ -16,10 +16,10 @@ export default function SidePanel({
   const [activeTab, setActiveTab] = useState<string>("home");
 
   return (
-    <aside className="bg-[#242424] border-r border-[#333333] min-h-[80vh] w-64 p-4">
-      <div className="flex items-center justify-between px-4 py-3 bg-[#2a2a2a] rounded-md  border border-[#333333]">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full ring-2 ring-[#333333] s transition-all overflow-hidden">
+    <aside className="bg-[#242424] border-r border-[#333333] min-h-[80vh] w-64  p-2 sm:p-4">
+      <div className="flex items-center justify-center py-2 sm:py-3 bg-[#2a2a2a] rounded-md  border border-[#333333]">
+        <div className="flex items-center justify-center gap-3  ">
+          <div className="size-8 rounded-full ring-2 ring-[#333333] transition-all overflow-hidden">
             <img
               src={`https://api.dicebear.com/9.x/pixel-art/svg?seed=${safeAddress}`}
               alt=""
@@ -27,7 +27,7 @@ export default function SidePanel({
             />
           </div>
 
-          <div className="flex flex-col sm:flex-row">
+          <div className="flex flex-col ">
             <p className="text-gray-500 text-xs font-semibold">
               Account Address
             </p>
@@ -41,9 +41,9 @@ export default function SidePanel({
                   navigator.clipboard.writeText(safeAddress.toString());
                   alert("copied");
                 }}
-                className="text-[#eb5e28]  hover:text-[#d54e20] transition-colors cursor-pointer"
+                className=" text-gray-500  hover:text-[#d54e20] transition-colors cursor-pointer"
               >
-                <Copy size={12} color="gray" strokeWidth={3} />
+                <Copy size={12} strokeWidth={3} />
               </button>
             </div>
           </div>
