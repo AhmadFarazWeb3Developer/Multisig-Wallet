@@ -50,7 +50,7 @@ export default function HomePage() {
     <main className="hero-section relative flex items-center justify-center overflow-hidden ">
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full " />
 
-      <section className="relative text-center px-6 py-10 sm:py-20 max-w-3xl z-10">
+      <section className="relative text-center px-6 py-20 sm:py-20 max-w-3xl z-10">
         <h1 className="text-4xl  sm:text-6xl font-extrabold mb-6 text-white">
           Secure Assets with{" "}
           <span className="text-[#eb5e28]">Multisig Wallet</span>

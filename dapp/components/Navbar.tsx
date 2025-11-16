@@ -122,9 +122,9 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="flex items-center justify-between sm:py-4 ">
+    <nav className="flex items-center  justify-between py-2  sm:py-4  ">
       <Link href="/" className="flex items-center">
-        <Vault color="white" className="h-6 w-6 sm:h-10  sm:w-10 " />
+        <Vault color="white" className="size-7 sm:h-10  sm:w-10 " />
       </Link>
       <div className=" flex flex-row  gap-1 sm:gap-2 items-center">
         <div className=" py-3 pl-3 sm:px-3 sm:border-r-1  sm:border-r-white/10 ">

@@ -93,7 +93,7 @@ export default function CreateSmartAccountPage() {
   };
 
   return (
-    <main className="flex items-center justify-center bg-gradient-to-b from-[#1e1e1e] to-[#121212] text-white py-2 px-2  sm:py-6">
+    <main className="flex items-center justify-center bg-gradient-to-b from-[#1e1e1e] to-[#121212] text-white py-15   px-2  sm:py-6">
       <div className="create-smart-account flex flex-col sm:flex-row sm:min-h-80 sm:px-10 gap-4 sm:gap-6 w-full max-w-7xl">
         <div className="flex-[2]  bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 sm:p-6 shadow-xl flex flex-col transition-all duration-500">
           <div className="flex items-center  gap-1 sm:gap-2 mb-4">

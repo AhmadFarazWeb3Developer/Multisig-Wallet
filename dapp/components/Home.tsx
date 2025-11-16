@@ -95,8 +95,8 @@ export default function Home({ safeAddress }: safeAddressInterface) {
 
   return (
     <main className="flex flex-col max-w-3xl gap-4 sm:gap-6 p-4 ">
-      <div className="flex flex-row  w-full">
-        <div className="bg-gradient-to-br from-[#242424] to-[#1A1A1A] border border-[#333333] rounded-l-md rounded-br-md p-2 sm:p-6 shadow-lg w-full">
+      <div className="flex flex-col sm:flex-row  w-full">
+        <div className="bg-gradient-to-br from-[#242424] to-[#1A1A1A] border border-[#333333] rounded-t-md   sm:rounded-l-md sm:rounded-tr-none sm:rounded-br-md py-4 px-2 sm:p-6 shadow-lg w-full">
           <p className="text-[#A0A0A0] text-sm font-semibold mb-2">
             Total Locked Value
           </p>
@@ -105,17 +105,17 @@ export default function Home({ safeAddress }: safeAddressInterface) {
           </h3>
         </div>
 
-        <div className="flex flex-row justify-center  w-1/3 h-10 rounded-r-md">
-          <button className="flex items-center justify-center w-full  gap-1  px-1 sm:py-2 sm:px-2 text-xs sm:text-sm  sm:gap-2 text-white bg-[#2A2A2A] hover:bg-[#eb5e28] border border-[#333333] hover:border-[#eb5e28] rounded-r-md transition-all cursor-pointer  ">
-            <Wallet className="size-4  " />
+        <div className="flex flex-row justify-center sm:w-1/3 sm:h-10 sm:rounded-r-md">
+          <button className="flex py-2 active:bg-[#eb5e28] active:scale-95 sm:active:scale-100  rounded-b-md sm:rounded-bl-none items-center justify-center w-full  gap-2  px-1 sm:py-2 sm:px-2 text-xs sm:text-sm  sm:gap-2 text-white bg-[#2A2A2A] hover:bg-[#eb5e28] border border-[#333333] hover:border-[#eb5e28] sm:rounded-r-md transition-all cursor-pointer  ">
+            <Wallet className="size-4 " />
             Add Funds
           </button>
         </div>
       </div>
 
-      <div className="flex flex-row w-full">
-        <div className="bg-[#242424] border border-[#333333] rounded-l-md rounded-br-md overflow-hidden shadow-lg w-full">
-          <div className="p-2 sm:px-6 sm:py-4 border-b border-[#333333] flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row w-full">
+        <div className="bg-[#242424] border border-[#333333] border-b-0  rounded-t-md   sm:rounded-tr-none  sm:rounded-l-md sm:rounded-br-md overflow-hidden shadow-lg w-full">
+          <div className="p-2  py-3 sm:px-6 sm:py-4 border-b border-[#333333] flex items-center justify-between">
             <div>
               <p className="font-bold text-white text-xs sm:text-lg ">
                 Wallet Owners
@@ -129,7 +129,7 @@ export default function Home({ safeAddress }: safeAddressInterface) {
               <button
                 onClick={handlePrevious}
                 disabled={currentPage === 0}
-                className={`p-1 sm:p-2 rounded-sm sm:rounded-lg border border-[#333333]  cursor-pointer hover:bg-[#eb5e28] transition ${
+                className={`p-1 sm:p-2  rounded-sm sm:rounded-lg border border-[#333333]  cursor-pointer hover:bg-[#eb5e28] transition ${
                   currentPage === 0
                     ? "opacity-40 cursor-not-allowed"
                     : "text-white"
@@ -202,16 +202,16 @@ export default function Home({ safeAddress }: safeAddressInterface) {
           </div>
         </div>
 
-        <div className="flex flex-row justify-center w-1/3 h-10 rounded-r-md">
-          <button className="cursor-pointer w-full px-1 sm:py-2 sm:px-2 text-xs sm:text-sm gap-1  sm:gap-2   text-center text-white bg-[#2A2A2A] hover:bg-[#eb5e28] border border-[#333333] hover:border-[#eb5e28] rounded-r-md transition-all flex items-center justify-center ">
+        <div className="flex flex-row justify-center  sm:w-1/3 sm:h-10  sm:rounded-r-md ">
+          <button className="cursor-pointer w-full active:bg-[#eb5e28] active:scale-95 sm:active:scale-100  px-1 py-2 sm:py-2 sm:px-2 text-xs sm:text-sm gap-2  sm:gap-2   text-center text-white bg-[#2A2A2A] hover:bg-[#eb5e28] border border-[#333333] hover:border-[#eb5e28]  rounded-b-md sm:rounded-r-md sm:rounded-bl-none transition-all flex items-center justify-center ">
             <Plus className=" size-4" />
             Add Owner
           </button>
         </div>
       </div>
 
-      <div className="flex flex-row w-full ">
-        <div className="bg-gradient-to-br from-[#242424] to-[#1A1A1A] border border-[#333333] rounded-l-md rounded-br-md p-2 sm:p-6 shadow-lg w-full">
+      <div className="flex  flex-col sm:flex-row w-full ">
+        <div className="bg-gradient-to-br from-[#242424] to-[#1A1A1A] border border-[#333333]    rounded-t-md sm:rounded-l-md sm:rounded-br-md sm:rounded-tr-none p-2 py-3 sm:p-6 shadow-lg w-full">
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-[#A0A0A0] text-xs sm:text-sm font-semibold mb-2">
@@ -240,9 +240,9 @@ export default function Home({ safeAddress }: safeAddressInterface) {
           </p>
         </div>
 
-        <div className="flex flex-row  justify-center w-1/3  h-12 rounded-r-md  ">
-          <button className="cursor-pointer w-full px-1  gap-1 sm:py-2 sm:px-2 text-xs sm:text-sm sm:gap-2   text-white bg-[#2A2A2A] hover:bg-[#eb5e28] border border-[#333333] hover:border-[#eb5e28] rounded-r-md transition-all flex items-center justify-center ">
-            <Settings className="sm:size-4" />
+        <div className="flex flex-row justify-center sm:w-1/3  sm:h-12  sm:rounded-r-md sm:rounded-bl-none sm:rounded-tl-none">
+          <button className="cursor-pointer w-full  active:bg-[#eb5e28] active:scale-95 sm:active:scale-100  px-1 py-2 gap-2 sm:py-2 sm:px-2 text-xs sm:text-sm sm:gap-2   text-white bg-[#2A2A2A] hover:bg-[#eb5e28] border border-[#333333] hover:border-[#eb5e28]  rounded-b-md sm:rounded-r-md sm:rounded-bl-none sm:rounded-tl-none transition-all flex items-center justify-center ">
+            <Settings className=" size-3 sm:size-4" />
             Change Threshold
           </button>
         </div>
