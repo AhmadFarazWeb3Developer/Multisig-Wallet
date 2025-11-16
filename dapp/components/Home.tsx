@@ -105,9 +105,9 @@ export default function Home({ safeAddress }: safeAddressInterface) {
           </h3>
         </div>
 
-        <div className="flex flex-row  justify-center  w-1/3 h-10 rounded-r-md">
-          <button className="cursor-pointer w-full px-1 sm:py-2 sm:px-2 text-xs sm:text-sm gap-1 sm:gap-2 text-white bg-[#2A2A2A] hover:bg-[#eb5e28] border border-[#333333] hover:border-[#eb5e28] rounded-r-md transition-all flex items-center justify-center ">
-            <Wallet className="size-4 " />
+        <div className="flex flex-row justify-center  w-1/3 h-10 rounded-r-md">
+          <button className="flex items-center justify-center w-full  gap-1  px-1 sm:py-2 sm:px-2 text-xs sm:text-sm  sm:gap-2 text-white bg-[#2A2A2A] hover:bg-[#eb5e28] border border-[#333333] hover:border-[#eb5e28] rounded-r-md transition-all cursor-pointer  ">
+            <Wallet className="size-4  " />
             Add Funds
           </button>
         </div>
@@ -229,13 +229,13 @@ export default function Home({ safeAddress }: safeAddressInterface) {
             </div>
           </div>
 
-          <div className="flex gap-2 mb-3">
-            <div className="flex-1 h-2 bg-[#eb5e28] rounded-full"></div>
-            <div className="flex-1 h-2 bg-[#eb5e28] rounded-full"></div>
-            <div className="flex-1 h-2 bg-[#333333] rounded-full"></div>
+          <div className="hidden  sm:flex gap-2 mb-3">
+            <div className="flex-1 h-1 sm:h-2 bg-[#eb5e28] rounded-full"></div>
+            <div className="flex-1 h-1 sm:h-2 bg-[#eb5e28] rounded-full"></div>
+            <div className="flex-1 h-1 sm:h-2 bg-[#333333] rounded-full"></div>
           </div>
 
-          <p className="text-[#A0A0A0] text-sm">
+          <p className="text-[#A0A0A0] text-xs sm:text-sm">
             Number of approvals required to execute a transaction.
           </p>
         </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Gem, TrendingUp, TrendingDown } from "lucide-react";
 
 const tokensData = [
@@ -13,7 +13,7 @@ const tokensData = [
     price: "1,996.00",
     change: "+5.2",
     supply: "120,000,000",
-    icon: "Ξ",
+    icon: "",
   },
   {
     id: 2,
@@ -24,7 +24,7 @@ const tokensData = [
     price: "35,000.00",
     change: "+2.8",
     supply: "21,000,000",
-    icon: "₿",
+    icon: "",
   },
   {
     id: 3,
@@ -35,7 +35,7 @@ const tokensData = [
     price: "40.00",
     change: "-1.5",
     supply: "555,000,000",
-    icon: "◎",
+    icon: "",
   },
   {
     id: 4,
@@ -46,7 +46,7 @@ const tokensData = [
     price: "15.00",
     change: "+8.3",
     supply: "1,000,000,000",
-    icon: "⬡",
+    icon: "",
   },
   {
     id: 5,
@@ -57,7 +57,7 @@ const tokensData = [
     price: "0.90",
     change: "-2.1",
     supply: "10,000,000,000",
-    icon: "⬢",
+    icon: "",
   },
   {
     id: 6,
@@ -68,7 +68,7 @@ const tokensData = [
     price: "35.00",
     change: "+4.7",
     supply: "720,000,000",
-    icon: "▲",
+    icon: "",
   },
 ];
 
@@ -130,22 +130,40 @@ const nftsData = [
 
 export default function Assets() {
   const [activeTab, setActiveTab] = useState<"tokens" | "nfts">("tokens");
+  const [tokens, setTokens] = useState(tokensData); // use state for tokens
+
+  const [logoUrls, setLogoUrls] = useState<string[]>([]);
+
+  const apiKey = process.env.NEXT_PUBLIC_LOGODEV_API_KEY;
+  if (!apiKey) throw new Error("NEXT_LOGODEV_API_KEY is not set");
+
+  useEffect(() => {
+    const updatedTokenData = tokensData.map((token) => ({
+      ...token,
+      icon: `https://img.logo.dev/crypto/${token.symbol.toLowerCase()}?token=${apiKey}`,
+    }));
+    setTokens(updatedTokenData);
+  }, [tokensData, apiKey]);
 
   const renderTokens = () => (
     <div className="space-y-3">
-      {tokensData.map((token) => (
+      {tokens.map((token) => (
         <div
           key={token.id}
-          className="bg-gradient-to-r from-[#111111] to-[#0e0e0e] border border-[#222222] rounded-xl p-5 hover:border-[#eb5e28]/50 hover:shadow-lg hover:shadow-[#eb5e28]/10 transition-all duration-300"
+          className="bg-gradient-to-r from-[#111111] to-[#0e0e0e] border border-[#222222] rounded-xl p-3 sm:p-5 hover:border-[#eb5e28]/50 hover:shadow-lg hover:shadow-[#eb5e28]/10 transition-all duration-300"
         >
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-[#eb5e28] to-[#d94a1a] rounded-full flex items-center justify-center text-2xl font-bold text-white shadow-lg">
-                {token.icon}
+            <div className="flex items-center  gap-2 sm:gap-4">
+              <div className=" size-8 sm:w-14 sm:h-14 bg-gradient-to-br rounded-full flex items-center justify-center text-2xl font-bold text-white shadow-lg">
+                <img src={token.icon} alt="" className=" rounded-full" />
               </div>
               <div>
-                <h3 className="text-white font-bold text-lg">{token.symbol}</h3>
-                <p className="text-[#8a8a8a] text-sm">{token.name}</p>
+                <h3 className="text-white font-bold text-sm  sm:text-lg">
+                  {token.symbol}
+                </h3>
+                <p className="text-[#8a8a8a] text-sm  sm:text-lg">
+                  {token.name}
+                </p>
               </div>
             </div>
 
@@ -165,7 +183,7 @@ export default function Assets() {
 
             <div className="flex items-center gap-2">
               <div
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold text-sm ${
+                className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5  rounded-md sm:rounded-lg font-semibold  text-xs sm:text-sm ${
                   token.change.startsWith("+")
                     ? "bg-[#10b981]/10 text-[#10b981]"
                     : "bg-[#ef4444]/10 text-[#ef4444]"
@@ -183,21 +201,23 @@ export default function Assets() {
 
           <div className="md:hidden mt-4 pt-4 border-t border-[#222222] grid grid-cols-2 gap-4">
             <div>
-              <p className="text-[#8a8a8a] text-xs mb-1">Balance</p>
-              <p className="text-white font-semibold">
+              <p className="text-[#8a8a8a] text-xs  mb-0.5 sm:mb-1">Balance</p>
+              <p className="text-white text-sm sm:text-lg font-semibold">
                 {token.balance} {token.symbol}
               </p>
             </div>
             <div>
-              <p className="text-[#8a8a8a] text-xs mb-1">Value</p>
-              <p className="text-white font-semibold">${token.value}</p>
+              <p className="text-[#8a8a8a] text-xs mb-0.5 sm:mb-1">Value</p>
+              <p className="text-white text-sm sm:text-lg font-semibold">
+                ${token.value}
+              </p>
             </div>
             <div>
-              <p className="text-[#8a8a8a] text-xs mb-1">Price</p>
+              <p className="text-[#8a8a8a] text-xs mb-0.5 sm:mb-1">Price</p>
               <p className="text-[#a0a0a0] text-sm">${token.price}</p>
             </div>
             <div>
-              <p className="text-[#8a8a8a] text-xs mb-1">Supply</p>
+              <p className="text-[#8a8a8a] text-xs mb-0.5 sm:mb-1">Supply</p>
               <p className="text-[#a0a0a0] text-sm">{token.supply}</p>
             </div>
           </div>
