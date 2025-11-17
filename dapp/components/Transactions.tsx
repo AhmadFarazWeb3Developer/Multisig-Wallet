@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Bell,
   Users,
@@ -17,7 +17,11 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export default function Transactions() {
+type safeAddressInterface = {
+  safeAddress: String;
+};
+
+export default function Transactions({ safeAddress }: safeAddressInterface) {
   const [notifications, setNotifications] = useState(3);
   const [activeTab, setActiveTab] = useState("pending");
 
@@ -30,6 +34,35 @@ export default function Transactions() {
 
   const threshold = 2;
   const totalOwners = owners.length;
+
+  useEffect(() => {
+    if (!safeAddress) return;
+  }, [safeAddress]);
+  const handleSign = async (txHash) => {
+    console.log("Signing tx:", txHash);
+    // Use signer to sign...
+    // const signature = await signer.signMessage(ethers.utils.arrayify(txHash));
+    // Store signature in backend or local state
+  };
+
+  const transactionHashes = [
+    {
+      id: 1,
+      txHash: "0xabc123...789",
+      description: "Transfer 1.5 ETH to vendor",
+      createdBy: "Alice",
+      status: "awaiting-signature",
+      timestamp: "3 hours ago",
+    },
+    {
+      id: 2,
+      txHash: "0xdef456...012",
+      description: "Add new owner David",
+      createdBy: "Bob",
+      status: "awaiting-signature",
+      timestamp: "6 hours ago",
+    },
+  ];
 
   const pendingTransactions = [
     {
@@ -104,6 +137,28 @@ export default function Transactions() {
         return <Settings size={16} className="text-[#A0A0A0]" />;
     }
   };
+
+  const SignatureCard = ({ tx }) => (
+    <div className="bg-[#1A1A1A] border border-[#333333] rounded-xl p-4 hover:border-[#eb5e28] transition-all">
+      <div className="flex items-start justify-between">
+        <div>
+          <h3 className="text-white font-semibold text-sm">{tx.description}</h3>
+          <p className="text-[#A0A0A0] text-xs">{tx.timestamp}</p>
+          <p className="text-white font-mono text-xs mt-1">{tx.txHash}</p>
+        </div>
+      </div>
+
+      <div className="flex justify-end mt-3">
+        <button
+          className="bg-[#eb5e28] hover:bg-[#d54e20] text-white flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer"
+          onClick={() => handleSign(tx.txHash)}
+        >
+          <Key size={14} />
+          Sign
+        </button>
+      </div>
+    </div>
+  );
 
   const TransactionCard = ({ tx, isPending = false }) => (
     <div className="bg-[#1A1A1A]  border border-[#333333] rounded-xl p-4 hover:border-[#eb5e28] transition-all">
@@ -190,10 +245,10 @@ export default function Transactions() {
   );
 
   return (
-    <main className="min-h-screen bg-[#0e0e0e] p-3 sm:p-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-4">
+    <main className="min-h-screen  w-full  bg-[#0e0e0e] p-3 sm:p-6">
+      <div className=" w-full ">
+        <div className="grid  w-full grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="sm:col-span-2 space-y-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[#A0A0A0] text-xs sm:text-sm ">
@@ -201,7 +256,9 @@ export default function Transactions() {
                 </p>
               </div>
               <button
-                onClick={() => router.push("/new-transaction")}
+                onClick={() =>
+                  router.push(`/new-transaction?safeAddress=${safeAddress}`)
+                }
                 className="w-30 bg-[#eb5e28] hover:bg-[#d54e20] text-white flex items-center gap-1 sm:gap-1.5 px-2 sm:px-4 py-1.5 sm:py-2 rounded-full  text-[10px] sm:text-sm font-semibold transition-all shadow-lg hover:shadow-xl cursor-pointer"
               >
                 <Plus className="size-3 sm:size-4" />
@@ -210,6 +267,17 @@ export default function Transactions() {
             </div>
 
             <div className="flex gap-2 border-b border-[#333333]">
+              <button
+                onClick={() => setActiveTab("signatures")}
+                className={`flex-1 py-2.5 px-4 text-xs sm:text-sm font-semibold transition-all relative cursor-pointer ${
+                  activeTab === "signatures"
+                    ? "text-white after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-[#eb5e28]"
+                    : "text-[#A0A0A0] hover:text-white"
+                }`}
+              >
+                Sign ({transactionHashes.length})
+              </button>
+
               <button
                 onClick={() => setActiveTab("pending")}
                 className={`flex-1 py-2.5 px-4  text-xs sm:text-sm font-semibold transition-all relative cursor-pointer ${
@@ -243,6 +311,11 @@ export default function Transactions() {
             </div>
 
             <div className="space-y-3">
+              {activeTab === "signatures" &&
+                transactionHashes.map((tx) => (
+                  <SignatureCard key={tx.id} tx={tx} />
+                ))}
+
               {activeTab === "pending" &&
                 pendingTransactions.map((tx) => (
                   <TransactionCard key={tx.id} tx={tx} isPending={true} />

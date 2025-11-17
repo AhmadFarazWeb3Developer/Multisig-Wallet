@@ -8,7 +8,6 @@ export default function useSafeInstance(safeAddress) {
     return getProviderByChainId(31337);
   }, [safeAddress]);
 
-  // Recreate instance only when safeAddress changes
   const safeInstance = useMemo(() => {
     if (!safeAddress || !provider) return null;
 

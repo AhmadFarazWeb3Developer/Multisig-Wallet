@@ -4,8 +4,6 @@ import { getNetworkToken } from "./getNetworkToken";
 export const getProviderByChainId = (chainId) => {
   const apiKey = process.env.NEXT_PUBLIC_ALCHEMY_RPC_API_KEY;
 
-  console.log("🔍 Creating provider for chainId:", chainId);
-
   // Auto-detect: Using localhost on PC, using PC's IP on mobile
   const getLocalRpcUrl = () => {
     if (typeof window !== "undefined") {
@@ -90,7 +88,7 @@ export const getProviderByChainId = (chainId) => {
   const provider = providers[chainId] || null;
 
   if (provider) {
-    console.log("Provider created successfully with:", localRpcUrl);
+    // console.log("Provider created successfully with:", localRpcUrl);
   } else {
     console.error("No provider found for chainId:", chainId);
   }

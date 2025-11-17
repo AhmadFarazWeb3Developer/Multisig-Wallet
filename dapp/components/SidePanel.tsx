@@ -103,7 +103,7 @@ export default function SidePanel({
 
         <button
           onClick={() => {
-            setComponent(<Transactions />);
+            setComponent(<Transactions safeAddress={safeAddress} />);
             setActiveTab("transactions");
             setIsSidebarOpen(false);
           }}

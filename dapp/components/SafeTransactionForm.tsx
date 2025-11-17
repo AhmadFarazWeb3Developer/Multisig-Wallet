@@ -9,25 +9,34 @@ import SetGuard from "./transactions/SetGuard";
 import AddOwnerWithThreshold from "./transactions/AddOwnerWithThreshold";
 import RemoveOwner from "./transactions/RemoveOwner";
 import SwapOwner from "./transactions/SwapOwner";
+import useTransferETH from "../blockchain-interaction/hooks/smartAccount/useTransferETH";
 import { toast } from "sonner";
 
-export default function SafeTransactionForm() {
+type safeAddressInterface = {
+  safeAddress: string;
+};
+
+type FormData = {
+  [key: string]: any;
+};
+
+export default function SafeTransactionForm({
+  safeAddress,
+}: safeAddressInterface) {
   const [operation, setOperation] = useState("");
-  const [form, setForm] = useState({});
+  const [formData, setForm] = useState<FormData>({});
 
-  const handleSubmit = () => {
-    toast.success(JSON.stringify(form), {
-      duration: 3000,
-      action: {
-        label: "Close",
-        onClick: () => console.log("Toast closed"),
-      },
-    });
+  const transferETH = useTransferETH(safeAddress);
+
+  const handleSubmit = async () => {
+    if (operation === "Transfer ETH") {
+      if (!formData.recipient || !formData.amount) {
+        toast.error("Fill the form before proceeding");
+        return;
+      }
+      await transferETH(formData);
+    }
   };
-
-  useEffect(() => {
-    console.log("operations : ", operation);
-  }, [operation]);
 
   return (
     <div className="min-h-screen w-full flex justify-center py-4 font-unbounded">

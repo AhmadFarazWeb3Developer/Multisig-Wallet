@@ -11,13 +11,7 @@ import {
   Settings,
 } from "lucide-react";
 
-import {
-  useAppKit,
-  useAppKitAccount,
-  useAppKitProvider,
-  useAppKitNetwork,
-  useAppKitState,
-} from "@reown/appkit/react";
+import { useAppKitAccount, useAppKitProvider } from "@reown/appkit/react";
 
 import useSafeInstance from "../blockchain-interaction/hooks/smartAccount/useSafeInstance";
 

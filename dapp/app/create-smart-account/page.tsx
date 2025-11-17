@@ -181,7 +181,7 @@ export default function CreateSmartAccountPage() {
             />
             <button
               onClick={addOwner}
-              className="bg-[#eb5e28] hover:bg-[#ff6b36] py-2 px-4 rounded-r-full font-semibold transition cursor-pointer"
+              className="bg-[#eb5e28] hover:bg-[#ff6b36] py-2 sm:py-3 px-4 rounded-r-full font-semibold transition cursor-pointer"
             >
               <UserPlus className="cursor-pointer h-4" />
             </button>
