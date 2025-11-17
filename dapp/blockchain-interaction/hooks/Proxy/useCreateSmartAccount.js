@@ -70,9 +70,6 @@ const useCreateSmartAccount = () => {
     const proxyAddress = proxyCreatedEvent?.args?.proxy;
     const singleton = proxyCreatedEvent?.args?.singleton;
 
-    console.log("proxy address : ", proxyAddress);
-    console.log("singlton address : ", singleton);
-
     if (!proxyAddress) {
       throw new Error("Failed to get proxy address from transaction receipt");
     }

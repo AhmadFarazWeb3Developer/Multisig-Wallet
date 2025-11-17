@@ -11,6 +11,14 @@ import {
   Settings,
 } from "lucide-react";
 
+import {
+  useAppKit,
+  useAppKitAccount,
+  useAppKitProvider,
+  useAppKitNetwork,
+  useAppKitState,
+} from "@reown/appkit/react";
+
 import useSafeInstance from "../blockchain-interaction/hooks/smartAccount/useSafeInstance";
 
 type safeAddressInterface = {
@@ -24,6 +32,8 @@ type Owners = {
 
 export default function Home({ safeAddress }: safeAddressInterface) {
   const safeInstance = useSafeInstance(safeAddress);
+  const { walletProvider } = useAppKitProvider("eip155");
+  const { address, isConnected } = useAppKitAccount();
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [safeOwners, setSafeOwners] = useState<Owners[]>([]);
@@ -51,8 +61,8 @@ export default function Home({ safeAddress }: safeAddressInterface) {
   };
 
   useEffect(() => {
-    if (!safeInstance) return;
-
+    if (!safeAddress || !safeInstance) return;
+    if (!isConnected || !walletProvider) return;
     const fetchOwners = async () => {
       try {
         const blockchainOwners: string[] = await safeInstance.getOwners();
@@ -91,7 +101,7 @@ export default function Home({ safeAddress }: safeAddressInterface) {
     };
 
     fetchOwners();
-  }, []);
+  }, [safeAddress, safeInstance, isConnected, walletProvider]);
 
   return (
     <main className="flex flex-col max-w-3xl gap-4 sm:gap-6 p-4 ">

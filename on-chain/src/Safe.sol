@@ -5,14 +5,19 @@ import {FallbackManager} from "./base/FallbackManager.sol";
 import {ITransactionGuard, GuardManager} from "./base/GuardManager.sol";
 import {ModuleManager} from "./base/ModuleManager.sol";
 import {OwnerManager} from "./base/OwnerManager.sol";
-import {NativeCurrencyPaymentFallback} from "./common/NativeCurrencyPaymentFallback.sol";
+import {
+    NativeCurrencyPaymentFallback
+} from "./common/NativeCurrencyPaymentFallback.sol";
 import {SecuredTokenTransfer} from "./common/SecuredTokenTransfer.sol";
 import {SignatureDecoder} from "./common/SignatureDecoder.sol";
 import {Singleton} from "./common/Singleton.sol";
 import {StorageAccessible} from "./common/StorageAccessible.sol";
 import {SafeMath} from "./external/SafeMath.sol";
 import {ISafe} from "./interfaces/ISafe.sol";
-import {ISignatureValidator, ISignatureValidatorConstants} from "./interfaces/ISignatureValidator.sol";
+import {
+    ISignatureValidator,
+    ISignatureValidatorConstants
+} from "./interfaces/ISignatureValidator.sol";
 import {Enum} from "./libraries/Enum.sol";
 
 /**

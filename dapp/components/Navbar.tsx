@@ -59,21 +59,30 @@ export default function Navbar() {
   }, [chainId]);
 
   useEffect(() => {
+    if (!isConnected || !address || !walletProvider) {
+      console.warn("Wallet not ready yet");
+      setBalance("0.00");
+      return;
+    }
+
     const fetchBalance = async () => {
-      if (isConnected && address && walletProvider) {
-        try {
-          const provider = new ethers.providers.Web3Provider(walletProvider);
-          const balanceWei = await provider.getBalance(address);
-          const balanceEth = ethers.utils.formatEther(balanceWei);
-          setBalance(parseFloat(balanceEth).toFixed(4));
-        } catch (error) {
-          console.error("Error fetching balance:", error);
-          setBalance("0.00");
-        }
+      try {
+        const provider = new ethers.providers.Web3Provider(
+          walletProvider,
+          "any"
+        );
+
+        const balanceWei = await provider.getBalance(address);
+        const balanceEth = ethers.utils.formatEther(balanceWei);
+        setBalance(parseFloat(balanceEth).toFixed(4));
+      } catch (error) {
+        console.error("Error fetching balance:", error);
+        setBalance("0.00");
       }
     };
 
-    fetchBalance();
+    const timer = setTimeout(fetchBalance, 500);
+    return () => clearTimeout(timer);
   }, [isConnected, address, chainId, walletProvider]);
 
   useEffect(() => {
@@ -100,7 +109,7 @@ export default function Navbar() {
       43113: "avalanchec",
       11155420: "optimism",
       84532: "base",
-      31337: "ethereum",
+      31337: "hardhat",
     };
 
     const chainName = chainMap[chainId];

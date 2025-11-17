@@ -130,7 +130,7 @@ const nftsData = [
 
 export default function Assets() {
   const [activeTab, setActiveTab] = useState<"tokens" | "nfts">("tokens");
-  const [tokens, setTokens] = useState(tokensData); // use state for tokens
+  const [tokens, setTokens] = useState(tokensData);
 
   const [logoUrls, setLogoUrls] = useState<string[]>([]);
 
@@ -155,7 +155,15 @@ export default function Assets() {
           <div className="flex items-center justify-between">
             <div className="flex items-center  gap-2 sm:gap-4">
               <div className=" size-8 sm:w-14 sm:h-14 bg-gradient-to-br rounded-full flex items-center justify-center text-2xl font-bold text-white shadow-lg">
-                <img src={token.icon} alt="" className=" rounded-full" />
+                {token.icon ? (
+                  <img
+                    src={token.icon}
+                    alt={token.name}
+                    className="rounded-full"
+                  />
+                ) : (
+                  <div className="size-8 sm:w-14 sm:h-14 bg-gray-700 rounded-full animate-pulse" />
+                )}
               </div>
               <div>
                 <h3 className="text-white font-bold text-sm  sm:text-lg">

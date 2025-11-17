@@ -79,10 +79,18 @@ export default function Dashboard() {
             />
           )}
 
-          <SidePanel setComponent={setComponent} safeAddress={safeAddress} />
+          <SidePanel
+            setComponent={setComponent}
+            safeAddress={safeAddress}
+            setIsSidebarOpen={setIsSidebarOpen}
+          />
         </div>
 
-        <div className="overflow-auto flex-1 from-[#242424] to-[#1A1A1A]">
+        <div
+          className={`overflow-auto flex-1 from-[#242424] to-[#1A1A1A] transition-all duration-300 ${
+            isSidebarOpen ? "blur-sm " : "blur-0 "
+          }`}
+        >
           {component ? component : <Home safeAddress={safeAddress} />}
         </div>
       </div>

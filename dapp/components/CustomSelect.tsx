@@ -12,12 +12,12 @@ export default function CustomSelect({ setOperation }: CustomSelectProps) {
 
   const options = [
     "Transfer ETH",
+    "Transfer Safe Token",
     "Add Owner with Threshold",
     "Remove Owner",
-    "Swap Owner",
     "Change Threshold",
     "Set Guard",
-    "Transfer Token",
+    "Swap Owner",
   ];
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export default function CustomSelect({ setOperation }: CustomSelectProps) {
         onClick={() => setOpen(!open)}
         className="cursor-pointer w-full flex justify-between items-center text-left bg-transparent border-b border-white/10 py-3 text-white text-sm focus:outline-none focus:border-[#eb5e28] transition-colors"
       >
-        <span>{selected}</span>
+        <span className="text-[#ec7b4f] ">{selected}</span>
         <ChevronDown
           className={`w-4 h-4 transition-transform duration-200 ${
             open ? "rotate-180 text-[#eb5e28]" : "text-white/60"
@@ -48,7 +48,7 @@ export default function CustomSelect({ setOperation }: CustomSelectProps) {
       </button>
 
       {open && (
-        <ul className="absolute w-full bg-black text-white border border-white/10 rounded-md mt-1 z-10 max-h-60 overflow-y-auto scrollbar-hide">
+        <ul className="absolute w-full bg-black text-white border border-white/10 rounded-md mt-1 z-10  scrollbar-hide">
           {options.map((opt) => (
             <li
               key={opt}

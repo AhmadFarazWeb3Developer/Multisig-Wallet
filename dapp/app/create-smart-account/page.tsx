@@ -12,6 +12,7 @@ import {
 import { useAppKitAccount } from "@reown/appkit/react";
 import { useRouter } from "next/navigation";
 import useCreateSmartAccount from "../../blockchain-interaction/hooks/Proxy/useCreateSmartAccount";
+import { toast } from "sonner";
 
 type Owner = {
   address: string;
@@ -33,10 +34,15 @@ export default function CreateSmartAccountPage() {
     if (!trimmed) return;
 
     if (owners.some((owner) => owner.address === trimmed)) {
-      return alert("Owner already added!");
+      toast.message("Owner already added!", {
+        duration: 3000,
+        action: {
+          label: "Close",
+          onClick: () => console.log("Toast closed"),
+        },
+      });
+      return;
     }
-
-    console.log("trimmed :", trimmed);
 
     setOwners([...owners, { address: trimmed, name: "optional" }]);
     setNewOwner("");
@@ -56,7 +62,16 @@ export default function CreateSmartAccountPage() {
 
   const createNewSmartAccount = async () => {
     if (!isReady) {
-      console.log("Waiting for instances to be ready...");
+      toast.error(
+        "Waiting for instances to be ready, so go to home, come, and try again",
+        {
+          duration: 3000,
+          action: {
+            label: "Close",
+            onClick: () => console.log("Toast closed"),
+          },
+        }
+      );
       return;
     }
 
@@ -70,6 +85,17 @@ export default function CreateSmartAccountPage() {
         threshold
       );
 
+      if (!newSafeOnChain) {
+        toast.error("Failed to create wallet", {
+          duration: 3000,
+          action: {
+            label: "Close",
+            onClick: () => console.log("Toast closed"),
+          },
+        });
+        return;
+      }
+
       const response = await fetch("/api/safes/create-safe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -81,12 +107,34 @@ export default function CreateSmartAccountPage() {
           owners,
         }),
       });
-      const data = await response.json();
-      console.log(data);
-      router.push("/dashboard");
+      await response.json();
+
+      if (response.status === 200) {
+        toast.success("wallet created successfully!", {
+          duration: 3000,
+          action: {
+            label: "Close",
+            onClick: () => console.log("Toast closed"),
+          },
+        });
+        router.push("/dashboard");
+      } else {
+        toast.error("Failed to fetch data.", {
+          duration: 3000,
+          action: {
+            label: "Close",
+            onClick: () => console.log("Toast closed"),
+          },
+        });
+      }
     } catch (err) {
-      console.error("Error creating smart account:", err);
-      alert("Failed to create wallet. Check console for details.");
+      toast.error("Error while creating wallet", {
+        duration: 3000,
+        action: {
+          label: "Close",
+          onClick: () => console.log("Toast closed"),
+        },
+      });
     } finally {
       setIsLoading(false);
     }

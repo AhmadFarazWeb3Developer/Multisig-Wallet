@@ -3,20 +3,23 @@ import React, { ReactElement, useState, Dispatch, SetStateAction } from "react";
 import Home from "./Home";
 import Transactions from "./Transactions";
 import Assets from "./Assets";
+import { toast } from "sonner";
 
 type SidePanelProps = {
   setComponent: Dispatch<SetStateAction<ReactElement | null>>;
   safeAddress: String;
+  setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 export default function SidePanel({
   setComponent,
   safeAddress,
+  setIsSidebarOpen,
 }: SidePanelProps) {
   const [activeTab, setActiveTab] = useState<string>("home");
 
   return (
-    <aside className="bg-[#242424] border-r border-[#333333] min-h-[80vh] w-64  p-2 sm:p-4">
+    <aside className="bg-[#242424] border-r border-[#333333] min-h-[80vh] w-64  p-2 sm:p-4 transition-shadow duration-300">
       <div className="flex items-center justify-center py-2 sm:py-3 bg-[#2a2a2a] rounded-md  border border-[#333333]">
         <div className="flex items-center justify-center gap-3  ">
           <div className="size-8 rounded-full ring-2 ring-[#333333] transition-all overflow-hidden">
@@ -39,7 +42,7 @@ export default function SidePanel({
               <button
                 onClick={() => {
                   navigator.clipboard.writeText(safeAddress.toString());
-                  alert("copied");
+                  toast.success("copied");
                 }}
                 className=" text-gray-500  hover:text-[#d54e20] transition-colors cursor-pointer"
               >
@@ -57,6 +60,7 @@ export default function SidePanel({
           onClick={() => {
             setComponent(<Home safeAddress={safeAddress} />);
             setActiveTab("home");
+            setIsSidebarOpen(false);
           }}
           className={`w-full flex items-center gap-3 px-4 py-2 rounded-md font-bold transition-all cursor-pointer ${
             activeTab === "home"
@@ -72,6 +76,7 @@ export default function SidePanel({
           onClick={() => {
             setComponent(<Assets />);
             setActiveTab("assets");
+            setIsSidebarOpen(false);
           }}
           className={`w-full flex items-center gap-3 px-4 py-2 rounded-md font-bold transition-all cursor-pointer ${
             activeTab === "assets"
@@ -100,6 +105,7 @@ export default function SidePanel({
           onClick={() => {
             setComponent(<Transactions />);
             setActiveTab("transactions");
+            setIsSidebarOpen(false);
           }}
           className={`w-full flex items-center gap-3 px-4 py-2 rounded-md font-bold transition-all cursor-pointer ${
             activeTab === "transactions"
