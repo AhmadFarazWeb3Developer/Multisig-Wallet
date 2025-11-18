@@ -1,35 +1,41 @@
 import { ethers } from "ethers";
 
-import Interfaces from "@/blockchain-interaction/helper/interfaces";
-import DeterministicAddresses from "@/blockchain-interaction/helper/deterministicAddresses";
+import Interfaces from "../../helper/interfaces";
+
 import useSafeInstance from "./useSafeInstance";
 import { toast } from "sonner";
+import { isAddress } from "ethers/lib/utils";
 
-const useTransferSafeTokens = (safeAddress) => {
+const useSwapOwner = (safeAddress) => {
   const iface = Interfaces();
-  const addresses = DeterministicAddresses();
   const safeInstance = useSafeInstance(safeAddress);
 
-  const transferSafeTokens = async (formData) => {
+  const swapOwner = async (formData) => {
     try {
       if (!safeInstance) {
-        toast.error("Safe is not ready", {
-          action: {
-            label: "Close",
-          },
-        });
+        toast.error("Safe is not ready");
         return;
       }
 
-      const interfaceOf = iface.safeTokensInterface;
+      if (
+        !isAddress(formData.prevOwner) ||
+        !isAddress(formData.oldOwner) ||
+        !isAddress(formData.newOwner)
+      ) {
+        toast.error("owners must be a valid addresses");
+        return;
+      }
+
+      const interfaceOf = iface.safeSingltonInterface;
 
       // data
-      const data = interfaceOf.encodeFunctionData("transfer", [
-        formData.recipient,
-        formData.amount,
+      const data = interfaceOf.encodeFunctionData("swapOwner", [
+        formData.prevOwner,
+        formData.oldOwner,
+        formData.newOwner,
       ]);
 
-      const safeTokensAddress = addresses.safeTokensMockAddress;
+      const to = safeAddress;
       const value = 0;
       const operation = 0; // Enum.Operation.Call
       const safeTxGas = 0;
@@ -41,7 +47,7 @@ const useTransferSafeTokens = (safeAddress) => {
 
       // transaction hash
       const txHash = await safeInstance.getTransactionHash(
-        safeTokensAddress,
+        to,
         value,
         data,
         operation,
@@ -69,7 +75,7 @@ const useTransferSafeTokens = (safeAddress) => {
     }
   };
 
-  return transferSafeTokens;
+  return swapOwner;
 };
 
-export default useTransferSafeTokens;
+export default useSwapOwner;

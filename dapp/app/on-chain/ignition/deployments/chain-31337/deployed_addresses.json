@@ -1,7 +1,7 @@
 {
-  "SafeModule#SingletonFactory": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
-  "SafeModule#SafeSingleton": "0x9e9Ee64ac4C9865631735A5fAc5395A846C33106",
-  "SafeModule#SafeProxyFactory": "0x9b17c3266DC6EC4C2E281Ec07836371D34Ff070F",
-  "SafeModule#FallbackHandler": "0x6eeD9f4b2f670547d722d7029936e7cE5A645f23",
-  "SafeModule#SafeTokensMock": "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853"
+  "SafeModule#SingletonFactory": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+  "SafeModule#SafeSingleton": "0x9d71390CE99eC9De8161e049c6Eb708E09AEE772",
+  "SafeModule#SafeProxyFactory": "0xaaF080e292CA9D80d291C30bb3192fF33e62b142",
+  "SafeModule#FallbackHandler": "0x95A6f7b539655b102E736cA1C37520A6de6151b4",
+  "SafeModule#SafeTokensMock": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
 }

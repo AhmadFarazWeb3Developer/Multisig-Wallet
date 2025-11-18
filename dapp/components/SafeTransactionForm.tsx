@@ -9,9 +9,17 @@ import ChangeThreshold from "./transactions/ChangeThreshold";
 import SetGuard from "./transactions/SetGuard";
 import AddOwnerWithThreshold from "./transactions/AddOwnerWithThreshold";
 import RemoveOwner from "./transactions/RemoveOwner";
+import MintTokens from "./transactions/MintTokens";
 import SwapOwner from "./transactions/SwapOwner";
+
 import useTransferETH from "../blockchain-interaction/hooks/smartAccount/useTransferETH";
 import useTransferSafeTokens from "../blockchain-interaction/hooks/smartAccount/useTransferSafeTokens";
+import useChangeThreshold from "../blockchain-interaction/hooks/smartAccount/useChangeThreshold";
+import useAddOwnerWithThreshold from "../blockchain-interaction/hooks/smartAccount/useAddOwnerWithThreshold";
+import useRemoveOwner from "../blockchain-interaction/hooks/smartAccount/useRemoveOwner";
+import useSetGuard from "../blockchain-interaction/hooks/smartAccount/useSetGuard";
+import useMintTokens from "../blockchain-interaction/hooks/smartAccount/useMintTokens";
+import useSwapOwner from "../blockchain-interaction/hooks/smartAccount/useSwapOwner";
 
 type safeAddressInterface = {
   safeAddress: string;
@@ -29,6 +37,12 @@ export default function SafeTransactionForm({
 
   const transferETH = useTransferETH(safeAddress);
   const transferSafeTokens = useTransferSafeTokens(safeAddress);
+  const addOwnerWithThreshold = useAddOwnerWithThreshold(safeAddress);
+  const removeAddress = useRemoveOwner(safeAddress);
+  const changeThreshold = useChangeThreshold(safeAddress);
+  const setGuard = useSetGuard(safeAddress);
+  const mintTokens = useMintTokens(safeAddress);
+  const swapOwner = useSwapOwner(safeAddress);
 
   const handleSubmit = async () => {
     if (operation === "Transfer ETH") {
@@ -44,6 +58,56 @@ export default function SafeTransactionForm({
         return;
       }
       await transferSafeTokens(formData);
+    }
+
+    if (operation === "Add Owner with Threshold") {
+      if (!formData.newOwner || !formData.newThreshold) {
+        toast.error("Fill the form before proceeding");
+        return;
+      }
+      await addOwnerWithThreshold(formData);
+    }
+    if (operation === "Remove Owner") {
+      if (!formData.prevOwner || !formData.newOwner || !formData.newThreshold) {
+        toast.error("Fill the form before proceeding");
+        return;
+      }
+      await removeAddress(formData);
+    }
+
+    if (operation === "Set Guard") {
+      if (!formData.guardAddress) {
+        toast.error("Fill the form before proceeding");
+        return;
+      }
+
+      await setGuard(formData);
+    }
+
+    if (operation === "Change Threshold") {
+      if (formData.newThreshold == "0" || !formData.newThreshold) {
+        toast.error("0 or undefined threshold cannot be set");
+        return;
+      }
+      await changeThreshold(formData);
+    }
+
+    if (operation === "Mint Tokens") {
+      if (!formData.amount) {
+        toast.error("Fill the form before proceeding");
+        return;
+      }
+
+      await mintTokens(formData);
+    }
+
+    if (operation === "Swap Owner") {
+      if (!formData.prevOwner || !formData.oldOwner || !formData.newOwner) {
+        toast.error("Fill the form before proceeding");
+        return;
+      }
+
+      await swapOwner(formData);
     }
   };
 
@@ -78,6 +142,8 @@ export default function SafeTransactionForm({
           {operation === "Change Threshold" && (
             <ChangeThreshold setForm={setForm} />
           )}
+
+          {operation === "Mint Tokens" && <MintTokens setForm={setForm} />}
           {operation === "Swap Owner" && <SwapOwner setForm={setForm} />}
 
           <div className="pt-4">

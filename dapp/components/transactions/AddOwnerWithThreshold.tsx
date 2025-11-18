@@ -3,13 +3,13 @@
 import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
 
 type FormProps = {
-  setForm: Dispatch<SetStateAction<{ newOwner: string; threshold: number }>>;
+  setForm: Dispatch<SetStateAction<{ newOwner: string; newThreshold: number }>>;
 };
 
 export default function AddOwnerWithThreshold({ setForm }: FormProps) {
-  const [data, setData] = useState<{ newOwner: string; threshold: number }>({
+  const [data, setData] = useState<{ newOwner: string; newThreshold: number }>({
     newOwner: "",
-    threshold: 1,
+    newThreshold: 1,
   });
 
   useEffect(() => {
@@ -36,9 +36,9 @@ export default function AddOwnerWithThreshold({ setForm }: FormProps) {
           min={1}
           step={1}
           placeholder="1"
-          value={data.threshold}
+          value={data.newThreshold}
           onChange={(e) =>
-            setData({ ...data, threshold: Number(e.target.value) })
+            setData({ ...data, newThreshold: Number(e.target.value) })
           }
           className="bg-[#1a1a1a] border-b border-[#333333] px-3 py-2 text-white text-sm focus:outline-none focus:border-[#eb5e28] transition"
         />

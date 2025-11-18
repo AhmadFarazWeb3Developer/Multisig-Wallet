@@ -8,7 +8,19 @@ const useTransferETH = (safeAddress) => {
   const safeInstance = useSafeInstance(safeAddress);
   const transferETH = async (formData) => {
     if (!safeInstance) {
-      toast.error("safe is not ready");
+      toast.error("safe is not ready", {
+        action: {
+          label: "Close",
+        },
+      });
+    }
+
+    if (!isAddress(formData.recipient)) {
+      toast.error("Invalid address", {
+        action: {
+          label: "Close",
+        },
+      });
     }
 
     try {
@@ -39,20 +51,10 @@ const useTransferETH = (safeAddress) => {
       toast.success(`Transaction Hash: ${txHash}`);
       return txHash;
     } catch (error) {
-      if (!isAddress(formData.recipient)) {
-        toast.error("Invalid address", {
-          action: {
-            label: "Close",
-            onClick: () => console.log("Toast closed"),
-          },
-        });
-      }
       console.error("Error preparing transaction hash:", error);
       toast.error("Failed to create transaction hash.", {
         action: {
           label: "Close",
-
-          onClick: () => console.log("Toast closed"),
         },
       });
     }
