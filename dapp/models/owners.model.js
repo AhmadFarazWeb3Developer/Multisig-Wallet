@@ -10,7 +10,20 @@ export async function getOwners() {
   }
 }
 
-export async function getSingleOwner(ownerAddress) {
+export async function getOwner(owner_address) {
+  try {
+    const result = await pool.query(
+      "SELECT * FROM owners WHERE owner_address = LOWER($1)",
+      [owner_address.toLowerCase()]
+    );
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error fetching owner:", error);
+    throw error;
+  }
+}
+
+export async function getSafesByOwner(ownerAddress) {
   try {
     const result = await pool.query(
       `SELECT 

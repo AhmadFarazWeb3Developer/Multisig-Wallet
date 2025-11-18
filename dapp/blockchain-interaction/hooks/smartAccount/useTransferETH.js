@@ -15,6 +15,11 @@ const useTransferETH = (safeAddress) => {
       });
     }
 
+    if (!formData.recipient || !formData.amount) {
+      toast.error("Fill the form before proceeding");
+      return;
+    }
+
     if (!isAddress(formData.recipient)) {
       toast.error("Invalid address", {
         action: {

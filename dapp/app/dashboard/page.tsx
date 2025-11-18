@@ -24,7 +24,9 @@ export default function Dashboard() {
     const fetchConnectedAddressAccounts = async () => {
       try {
         const res = await fetch(
-          `/api/owners/get-single-owner?address=${encodeURIComponent(address)}`,
+          `/api/owners/get-safes-by-owner?address=${encodeURIComponent(
+            address
+          )}`,
           {
             method: "GET",
             headers: { "Content-Type": "application/json" },

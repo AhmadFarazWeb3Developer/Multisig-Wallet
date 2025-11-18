@@ -21,6 +21,8 @@ import useSetGuard from "../blockchain-interaction/hooks/smartAccount/useSetGuar
 import useMintTokens from "../blockchain-interaction/hooks/smartAccount/useMintTokens";
 import useSwapOwner from "../blockchain-interaction/hooks/smartAccount/useSwapOwner";
 
+import useTransferETH_queueTransaction from "../queue-transactions/useTransferETHService";
+
 type safeAddressInterface = {
   safeAddress: string;
 };
@@ -44,14 +46,14 @@ export default function SafeTransactionForm({
   const mintTokens = useMintTokens(safeAddress);
   const swapOwner = useSwapOwner(safeAddress);
 
+  const transferETH_queueTransaction = useTransferETH_queueTransaction();
+
   const handleSubmit = async () => {
     if (operation === "Transfer ETH") {
-      if (!formData.recipient || !formData.amount) {
-        toast.error("Fill the form before proceeding");
-        return;
-      }
-      await transferETH(formData);
+      const txHash = await transferETH(formData);
+      await transferETH_queueTransaction(operation, formData, txHash);
     }
+
     if (operation === "Transfer Safe Tokens") {
       if (!formData.recipient || !formData.amount) {
         toast.error("Fill the form before proceeding");
