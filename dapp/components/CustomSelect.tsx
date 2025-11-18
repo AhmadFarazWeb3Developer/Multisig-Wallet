@@ -12,11 +12,12 @@ export default function CustomSelect({ setOperation }: CustomSelectProps) {
 
   const options = [
     "Transfer ETH",
-    "Transfer Safe Token",
+    "Transfer Safe Tokens",
     "Add Owner with Threshold",
     "Remove Owner",
     "Change Threshold",
     "Set Guard",
+    "Mint Tokens",
     "Swap Owner",
   ];
 

@@ -7,11 +7,13 @@ const DeterministicAddresses = () => {
   const safeSingltonAddress = deployment["SafeModule#SafeSingleton"];
   const safeProxyFactoryAddress = deployment["SafeModule#SafeProxyFactory"];
   const fallbackHandlerAddress = deployment["SafeModule#FallbackHandler"];
+  const safeTokensMockAddress = deployment["SafeModule#SafeTokensMock"];
 
   return {
     safeSingltonAddress,
     safeProxyFactoryAddress,
     fallbackHandlerAddress,
+    safeTokensMockAddress,
   };
 };
 

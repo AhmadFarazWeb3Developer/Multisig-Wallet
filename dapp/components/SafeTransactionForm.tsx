@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 import CustomSelect from "./CustomSelect";
 import TransferETH from "./transactions/TransferETH";
 import TransferSafeTokens from "./transactions/TransferSafeTokens";
@@ -10,7 +11,7 @@ import AddOwnerWithThreshold from "./transactions/AddOwnerWithThreshold";
 import RemoveOwner from "./transactions/RemoveOwner";
 import SwapOwner from "./transactions/SwapOwner";
 import useTransferETH from "../blockchain-interaction/hooks/smartAccount/useTransferETH";
-import { toast } from "sonner";
+import useTransferSafeTokens from "../blockchain-interaction/hooks/smartAccount/useTransferSafeTokens";
 
 type safeAddressInterface = {
   safeAddress: string;
@@ -27,6 +28,7 @@ export default function SafeTransactionForm({
   const [formData, setForm] = useState<FormData>({});
 
   const transferETH = useTransferETH(safeAddress);
+  const transferSafeTokens = useTransferSafeTokens(safeAddress);
 
   const handleSubmit = async () => {
     if (operation === "Transfer ETH") {
@@ -35,6 +37,13 @@ export default function SafeTransactionForm({
         return;
       }
       await transferETH(formData);
+    }
+    if (operation === "Transfer Safe Tokens") {
+      if (!formData.recipient || !formData.amount) {
+        toast.error("Fill the form before proceeding");
+        return;
+      }
+      await transferSafeTokens(formData);
     }
   };
 
@@ -57,7 +66,7 @@ export default function SafeTransactionForm({
             <CustomSelect setOperation={setOperation} />
           </div>
           {operation === "Transfer ETH" && <TransferETH setForm={setForm} />}
-          {operation === "Transfer Safe Token" && (
+          {operation === "Transfer Safe Tokens" && (
             <TransferSafeTokens setForm={setForm} />
           )}
           {operation === "Add Owner with Threshold" && (
