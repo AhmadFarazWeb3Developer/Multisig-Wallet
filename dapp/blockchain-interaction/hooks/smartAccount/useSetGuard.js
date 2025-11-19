@@ -17,6 +17,11 @@ const useSetGuard = (safeAddress) => {
         return;
       }
 
+      if (!formData.guardAddress) {
+        toast.error("Fill the form before proceeding");
+        return;
+      }
+
       if (!isAddress(formData.guardAddress)) {
         toast.error("guard must be a valid address");
         return;

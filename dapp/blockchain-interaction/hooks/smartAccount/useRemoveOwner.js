@@ -17,7 +17,19 @@ const useRemoveOwner = (safeAddress) => {
         return;
       }
 
-      if (!isAddress(formData.prevOwner) || !isAddress(formData.newOwner)) {
+      if (
+        !formData.prevOwner_for_removal ||
+        !formData.newOwner_for_removal ||
+        !formData.newThreshold_for_removal
+      ) {
+        toast.error("Fill the form before proceeding");
+        return;
+      }
+
+      if (
+        !isAddress(formData.prevOwner_for_removal) ||
+        !isAddress(formData.newOwner_for_removal)
+      ) {
         toast.error("owners must be a valid addresses");
         return;
       }
@@ -26,9 +38,9 @@ const useRemoveOwner = (safeAddress) => {
 
       // data
       const data = interfaceOf.encodeFunctionData("removeOwner", [
-        formData.prevOwner,
-        formData.newOwner,
-        formData.newThreshold,
+        formData.prevOwner_for_removal,
+        formData.newOwner_for_removal,
+        formData.newThreshold_for_removal,
       ]);
 
       const to = safeAddress;

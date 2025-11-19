@@ -15,12 +15,12 @@ const useTransferETH = (safeAddress) => {
       });
     }
 
-    if (!formData.recipient || !formData.amount) {
+    if (!formData.eth_recipient || !formData.eth_amount) {
       toast.error("Fill the form before proceeding");
       return;
     }
 
-    if (!isAddress(formData.recipient)) {
+    if (!isAddress(formData.eth_recipient)) {
       toast.error("Invalid address", {
         action: {
           label: "Close",
@@ -29,8 +29,8 @@ const useTransferETH = (safeAddress) => {
     }
 
     try {
-      const to = formData.recipient;
-      const value = ethers.utils.parseEther(formData.amount.toString());
+      const to = formData.eth_recipient;
+      const value = ethers.utils.parseEther(formData.eth_amount.toString());
       const data = "0x";
       const operation = 0; // Enum.Operation.Call
       const safeTxGas = 0;
@@ -52,7 +52,11 @@ const useTransferETH = (safeAddress) => {
         refundReceiver,
         nonce
       );
-
+      toast.success(`Transaction hash generated successfully! ${txHash}`, {
+        action: {
+          label: "Close",
+        },
+      });
       return txHash;
     } catch (error) {
       console.error("Error preparing transaction hash:", error);

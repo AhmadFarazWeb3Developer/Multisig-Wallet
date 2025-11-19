@@ -3,11 +3,16 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 type FromProps = {
-  setForm: Dispatch<SetStateAction<{ newThreshold?: string }>>;
+  setForm: Dispatch<
+    SetStateAction<{ new_threshold2?: string; operation_description?: string }>
+  >;
 };
 
 export default function ChangeThreshold({ setForm }: FromProps) {
-  const [data, setData] = useState({ newThreshold: "" });
+  const [data, setData] = useState({
+    new_threshold2: "",
+    operation_description: "",
+  });
 
   useEffect(() => {
     setForm(data);
@@ -18,13 +23,27 @@ export default function ChangeThreshold({ setForm }: FromProps) {
       <div className="flex flex-col space-y-2">
         <label className="text-gray-400 text-sm">Change Threshold</label>
         <input
-          value={data.newThreshold}
-          onChange={(e) => setData({ ...data, newThreshold: e.target.value })}
+          value={data.new_threshold2}
+          onChange={(e) => setData({ ...data, new_threshold2: e.target.value })}
           type="number"
           min={1}
           step={1}
           placeholder="1"
           className="bg-[#1a1a1a] border-b border-[#333333] px-3 py-2 text-white text-sm focus:outline-none focus:border-[#eb5e28] transition"
+        />
+      </div>
+
+      <div className="flex flex-col space-y-1">
+        <label className="text-gray-400 text-sm ">Description</label>
+        <textarea
+          name="description"
+          placeholder="Add a description or memo..."
+          value={data.operation_description}
+          onChange={(e) =>
+            setData({ ...data, operation_description: e.target.value })
+          }
+          className="border-b border-[#333333] px-3 py-2 text-white text-sm focus:outline-none focus:border-[#eb5e28] transition-colors"
+          rows={2}
         />
       </div>
     </div>

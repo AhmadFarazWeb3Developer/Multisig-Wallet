@@ -25,8 +25,8 @@ const useTransferSafeTokens = (safeAddress) => {
 
       // data
       const data = interfaceOf.encodeFunctionData("transfer", [
-        formData.recipient,
-        formData.amount,
+        formData.token_recipient,
+        formData.token_amount,
       ]);
 
       const safeTokensAddress = addresses.safeTokensMockAddress;

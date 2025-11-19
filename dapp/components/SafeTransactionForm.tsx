@@ -21,7 +21,7 @@ import useSetGuard from "../blockchain-interaction/hooks/smartAccount/useSetGuar
 import useMintTokens from "../blockchain-interaction/hooks/smartAccount/useMintTokens";
 import useSwapOwner from "../blockchain-interaction/hooks/smartAccount/useSwapOwner";
 
-import useTransferETH_queueTransaction from "../queue-transactions/useTransferETHService";
+import useQueueTransaction from "../queue-transactions/useQueueTransaction";
 
 type safeAddressInterface = {
   safeAddress: string;
@@ -46,70 +46,51 @@ export default function SafeTransactionForm({
   const mintTokens = useMintTokens(safeAddress);
   const swapOwner = useSwapOwner(safeAddress);
 
-  const transferETH_queueTransaction = useTransferETH_queueTransaction();
+  const queueTransaction = useQueueTransaction();
 
   const handleSubmit = async () => {
     if (operation === "Transfer ETH") {
       const txHash = await transferETH(formData);
-      await transferETH_queueTransaction(operation, formData, txHash);
+      await queueTransaction(operation, formData, txHash);
     }
 
     if (operation === "Transfer Safe Tokens") {
-      if (!formData.recipient || !formData.amount) {
+      if (!formData.token_recipient || !formData.token_amount) {
         toast.error("Fill the form before proceeding");
         return;
       }
-      await transferSafeTokens(formData);
+
+      const txHash = await transferSafeTokens(formData);
+      await queueTransaction(operation, formData, txHash);
     }
 
     if (operation === "Add Owner with Threshold") {
-      if (!formData.newOwner || !formData.newThreshold) {
-        toast.error("Fill the form before proceeding");
-        return;
-      }
-      await addOwnerWithThreshold(formData);
+      const txHash = await addOwnerWithThreshold(formData);
+      await queueTransaction(operation, formData, txHash);
     }
     if (operation === "Remove Owner") {
-      if (!formData.prevOwner || !formData.newOwner || !formData.newThreshold) {
-        toast.error("Fill the form before proceeding");
-        return;
-      }
-      await removeAddress(formData);
-    }
-
-    if (operation === "Set Guard") {
-      if (!formData.guardAddress) {
-        toast.error("Fill the form before proceeding");
-        return;
-      }
-
-      await setGuard(formData);
+      const txHash = await removeAddress(formData);
+      await queueTransaction(operation, formData, txHash);
     }
 
     if (operation === "Change Threshold") {
-      if (formData.newThreshold == "0" || !formData.newThreshold) {
-        toast.error("0 or undefined threshold cannot be set");
-        return;
-      }
-      await changeThreshold(formData);
+      const txHash = await changeThreshold(formData);
+      await queueTransaction(operation, formData, txHash);
+    }
+
+    if (operation === "Set Guard") {
+      const txHash = await setGuard(formData);
+      await queueTransaction(operation, formData, txHash);
     }
 
     if (operation === "Mint Tokens") {
-      if (!formData.amount) {
-        toast.error("Fill the form before proceeding");
-        return;
-      }
-
-      await mintTokens(formData);
+      const txHash = await mintTokens(formData);
+      await queueTransaction(operation, formData, txHash);
     }
 
     if (operation === "Swap Owner") {
-      if (!formData.prevOwner || !formData.oldOwner || !formData.newOwner) {
-        toast.error("Fill the form before proceeding");
-        return;
-      }
-
-      await swapOwner(formData);
+      const txHash = await swapOwner(formData);
+      await queueTransaction(operation, formData, txHash);
     }
   };
 

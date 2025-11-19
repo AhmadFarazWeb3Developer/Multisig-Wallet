@@ -18,9 +18,18 @@ const useSwapOwner = (safeAddress) => {
       }
 
       if (
-        !isAddress(formData.prevOwner) ||
-        !isAddress(formData.oldOwner) ||
-        !isAddress(formData.newOwner)
+        !formData.prevOwner_for_swap ||
+        !formData.oldOwner_for_swap ||
+        !formData.newOwner_for_swap
+      ) {
+        toast.error("Fill the form before proceeding");
+        return;
+      }
+
+      if (
+        !isAddress(formData.prevOwner_for_swap) ||
+        !isAddress(formData.oldOwner_for_swap) ||
+        !isAddress(formData.newOwner_for_swap)
       ) {
         toast.error("owners must be a valid addresses");
         return;
@@ -30,9 +39,9 @@ const useSwapOwner = (safeAddress) => {
 
       // data
       const data = interfaceOf.encodeFunctionData("swapOwner", [
-        formData.prevOwner,
-        formData.oldOwner,
-        formData.newOwner,
+        formData.prevOwner_for_swap,
+        formData.oldOwner_for_swap,
+        formData.newOwner_for_swap,
       ]);
 
       const to = safeAddress;

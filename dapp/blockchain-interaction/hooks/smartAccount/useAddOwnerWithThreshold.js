@@ -17,7 +17,12 @@ const useAddOwnerWithThreshold = (safeAddress) => {
         return;
       }
 
-      if (!isAddress(formData.newOwner)) {
+      if (!formData.newOwner_with_threshold || !formData.new_threshold1) {
+        toast.error("Fill the form before proceeding");
+        return;
+      }
+
+      if (!isAddress(formData.newOwner_with_threshold)) {
         toast.error("owner must be a valid address");
         return;
       }
@@ -26,8 +31,8 @@ const useAddOwnerWithThreshold = (safeAddress) => {
 
       // data
       const data = interfaceOf.encodeFunctionData("addOwnerWithThreshold", [
-        formData.newOwner,
-        formData.newThreshold,
+        formData.newOwner_with_threshold,
+        formData.new_threshold1,
       ]);
 
       const to = safeAddress;
@@ -54,7 +59,11 @@ const useAddOwnerWithThreshold = (safeAddress) => {
         nonce
       );
 
-      toast.success(`Transaction hash generated successfully! ${txHash}`);
+      toast.success(`Transaction hash generated successfully! ${txHash}`, {
+        action: {
+          label: "Close",
+        },
+      });
       return txHash;
     } catch (error) {
       console.error(error);

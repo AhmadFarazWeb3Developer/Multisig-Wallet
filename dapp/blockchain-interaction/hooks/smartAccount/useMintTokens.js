@@ -15,12 +15,17 @@ const useMintTokens = (safeAddress) => {
         return;
       }
 
+      if (!formData.mint_token_amount) {
+        toast.error("Fill the form before proceeding");
+        return;
+      }
+
       const interfaceOf = iface.safeTokensInterface;
 
       // data
       const data = interfaceOf.encodeFunctionData("mint", [
         safeAddress,
-        formData.amount,
+        formData.mint_token_amount,
       ]);
 
       const to = safeAddress;

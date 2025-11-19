@@ -1,22 +1,26 @@
 import pool from "../lib/db";
 
-export async function queueTransaction(
+export async function queueTransaction({
   operation_name,
-  amount,
-  amount_to,
   operation_description,
   sender_address,
   sender_name,
-  tx_hash
-) {
+  tx_hash,
+  metadata = {},
+}) {
   const client = await pool.connect();
+
   try {
-    const result = await client.query(
-      "INSERT INTO tx_hash(operation_name, amount, amount_to, operation_description, sender_address, sender_name, tx_hash) VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING *",
+    const txResult = await client.query(
+      `INSERT INTO queued_transactions(
+        operation_name,
+        operation_description,
+        sender_address,
+        sender_name,
+        tx_hash
+      ) VALUES($1,$2,$3,$4,$5) RETURNING tx_id`,
       [
         operation_name,
-        amount,
-        amount_to,
         operation_description,
         sender_address,
         sender_name,
@@ -24,9 +28,22 @@ export async function queueTransaction(
       ]
     );
 
-    return result.rows[0];
+    const txId = txResult.rows[0].tx_id;
+
+    // Insert metadata dynamically
+    for (const [key, value] of Object.entries(metadata)) {
+      if (value !== null && value !== undefined) {
+        await client.query(
+          `INSERT INTO queued_transaction_metadata(tx_hash, key, value)
+           VALUES($1, $2, $3)`,
+          [tx_hash, key, value]
+        );
+      }
+    }
+
+    return { tx_id: txId };
   } catch (error) {
-    console.error("Error adding transaction:", error);
+    console.error("Error queueing transaction:", error);
     throw error;
   } finally {
     client.release();
@@ -35,7 +52,7 @@ export async function queueTransaction(
 
 export async function getTransactions() {
   try {
-    const result = await pool.query("SELECT * FROM tx_hash");
+    const result = await pool.query("SELECT * FROM  queued_transactions");
     return result.rows;
   } catch (error) {
     console.error("Error fetching safes:", error);

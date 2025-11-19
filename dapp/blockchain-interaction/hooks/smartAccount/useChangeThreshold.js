@@ -16,11 +16,15 @@ const useChangeThreshold = (safeAddress) => {
         return;
       }
 
+      if (formData.new_threshold2 == "0" || !formData.new_threshold2) {
+        toast.error("0 or undefined threshold cannot be set");
+        return;
+      }
       const interfaceOf = iface.safeSingltonInterface;
 
       // data
       const data = interfaceOf.encodeFunctionData("changeThreshold", [
-        formData.newThreshold,
+        formData.new_threshold2,
       ]);
 
       const to = safeAddress;

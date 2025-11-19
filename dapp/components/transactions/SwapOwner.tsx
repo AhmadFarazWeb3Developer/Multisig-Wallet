@@ -5,18 +5,20 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 type FormProps = {
   setForm: Dispatch<
     SetStateAction<{
-      prevOwner?: string;
-      oldOwner?: string;
-      newOwner?: string;
+      prevOwner_for_swap?: string;
+      oldOwner_for_swap?: string;
+      newOwner_for_swap?: string;
+      operation_description?: string;
     }>
   >;
 };
 
 export default function SwapOwner({ setForm }: FormProps) {
   const [data, setData] = useState({
-    prevOwner: "",
-    oldOwner: "",
-    newOwner: "",
+    prevOwner_for_swap: "",
+    oldOwner_for_swap: "",
+    newOwner_for_swap: "",
+    operation_description: "",
   });
 
   useEffect(() => {
@@ -28,8 +30,10 @@ export default function SwapOwner({ setForm }: FormProps) {
       <div className="flex flex-col space-y-2">
         <label className="text-gray-400 text-sm">Previous Owner Address</label>
         <input
-          value={data.prevOwner}
-          onChange={(e) => setData({ ...data, prevOwner: e.target.value })}
+          value={data.prevOwner_for_swap}
+          onChange={(e) =>
+            setData({ ...data, prevOwner_for_swap: e.target.value })
+          }
           type="text"
           placeholder="0x..."
           className="bg-[#1a1a1a] border-b border-[#333333] px-3 py-2 text-white text-sm focus:outline-none focus:border-[#eb5e28] transition"
@@ -39,8 +43,10 @@ export default function SwapOwner({ setForm }: FormProps) {
       <div className="flex flex-col space-y-2">
         <label className="text-gray-400 text-sm">Old Owner Address</label>
         <input
-          value={data.oldOwner}
-          onChange={(e) => setData({ ...data, oldOwner: e.target.value })}
+          value={data.oldOwner_for_swap}
+          onChange={(e) =>
+            setData({ ...data, oldOwner_for_swap: e.target.value })
+          }
           type="text"
           placeholder="0x..."
           className="bg-[#1a1a1a] border-b border-[#333333] px-3 py-2 text-white text-sm focus:outline-none focus:border-[#eb5e28] transition"
@@ -50,11 +56,27 @@ export default function SwapOwner({ setForm }: FormProps) {
       <div className="flex flex-col space-y-2">
         <label className="text-gray-400 text-sm">New Owner Address</label>
         <input
-          value={data.newOwner}
-          onChange={(e) => setData({ ...data, newOwner: e.target.value })}
+          value={data.newOwner_for_swap}
+          onChange={(e) =>
+            setData({ ...data, newOwner_for_swap: e.target.value })
+          }
           type="text"
           placeholder="0x..."
           className="bg-[#1a1a1a] border-b border-[#333333] px-3 py-2 text-white text-sm focus:outline-none focus:border-[#eb5e28] transition"
+        />
+      </div>
+
+      <div className="flex flex-col space-y-1">
+        <label className="text-gray-400 text-sm ">Description</label>
+        <textarea
+          name="description"
+          placeholder="Add a description or memo..."
+          value={data.operation_description}
+          onChange={(e) =>
+            setData({ ...data, operation_description: e.target.value })
+          }
+          className="border-b border-[#333333] px-3 py-2 text-white text-sm focus:outline-none focus:border-[#eb5e28] transition-colors"
+          rows={2}
         />
       </div>
     </div>
