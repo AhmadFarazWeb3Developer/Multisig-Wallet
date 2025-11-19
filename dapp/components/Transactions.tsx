@@ -17,13 +17,20 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
+import useGetQueuedTxs from "../app/hooks/useGetQueuedTxs";
+
 type safeAddressInterface = {
   safeAddress: String;
 };
 
 export default function Transactions({ safeAddress }: safeAddressInterface) {
   const [notifications, setNotifications] = useState(3);
+
+  const [queuedTransaction, setQueuedTransactions] = useState([]);
+
   const [activeTab, setActiveTab] = useState("pending");
+
+  const getQueuedTxs = useGetQueuedTxs();
 
   const router = useRouter();
   const owners = [
@@ -36,67 +43,22 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
   const totalOwners = owners.length;
 
   useEffect(() => {
-    if (!safeAddress) return;
-  }, [safeAddress]);
-  const handleSign = async (txHash) => {
-    console.log("Signing tx:", txHash);
-    // Use signer to sign...
-    // const signature = await signer.signMessage(ethers.utils.arrayify(txHash));
-    // Store signature in backend or local state
-  };
+    const init = async () => {
+      if (activeTab == "pending") {
+      }
+      if (activeTab == "signatures") {
+        const data = await getQueuedTxs();
+        console.log("data ", data);
 
-  const transactionHashes = [
-    {
-      id: 1,
-      txHash: "0xabc123...789",
-      description: "Transfer 1.5 ETH to vendor",
-      createdBy: "Alice",
-      status: "awaiting-signature",
-      timestamp: "3 hours ago",
-    },
-    {
-      id: 2,
-      txHash: "0xdef456...012",
-      description: "Add new owner David",
-      createdBy: "Bob",
-      status: "awaiting-signature",
-      timestamp: "6 hours ago",
-    },
-  ];
-
-  const pendingTransactions = [
-    {
-      id: 1,
-      type: "transfer",
-      to: "0x9876...1234",
-      value: "1.5 ETH",
-      description: "Payment to vendor",
-      confirmations: 1,
-      required: threshold,
-      initiator: "Alice",
-      timestamp: "2 hours ago",
-    },
-    {
-      id: 2,
-      type: "addOwner",
-      address: "0x5555...6666",
-      description: "Add new owner David",
-      confirmations: 0,
-      required: threshold,
-      initiator: "Bob",
-      timestamp: "5 hours ago",
-    },
-    {
-      id: 3,
-      type: "changeThreshold",
-      newThreshold: 3,
-      description: "Increase threshold to 3",
-      confirmations: 1,
-      required: threshold,
-      initiator: "Charlie",
-      timestamp: "1 day ago",
-    },
-  ];
+        setQueuedTransactions(data);
+      }
+      if (activeTab == "executed") {
+      }
+      if (activeTab == "rejected") {
+      }
+    };
+    init();
+  }, [activeTab]);
 
   const executedTransactions = [
     {
@@ -121,7 +83,7 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
     },
   ];
 
-  const getTransactionIcon = (type) => {
+  const getTransactionIcon = ({ type }: any) => {
     switch (type) {
       case "transfer":
         return <Send size={16} className="text-[#3B82F6]" />;
@@ -138,21 +100,43 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
     }
   };
 
-  const SignatureCard = ({ tx }) => (
+  const SignatureCard = ({ tx }: any) => (
     <div className="bg-[#1A1A1A] border border-[#333333] rounded-xl p-4 hover:border-[#eb5e28] transition-all">
       <div className="flex items-start justify-between">
-        <div>
-          <h3 className="text-white font-semibold text-sm">{tx.description}</h3>
-          <p className="text-[#A0A0A0] text-xs">{tx.timestamp}</p>
-          <p className="text-white font-mono text-xs mt-1">{tx.txHash}</p>
+        <div className="space-y-1.5">
+          <h3 className="text-white font-semibold text-sm tracking-wide">
+            {tx.operation_name}
+          </h3>
+
+          <p className="text-[#6B7280] text-[11px]">{tx.amount} ETH</p>
+          <p className="text-[#6B7280] text-[11px]">{tx.amount_to}</p>
+          <p className="text-[#6B7280] text-[11px]">{tx.queued_at}</p>
+
+          <p className="text-[#A0A0A0] text-xs">
+            <span className="text-[#6B7280] mr-1">Description:</span>
+            {tx.operation_description}
+          </p>
+
+          <p className="text-[#A0A0A0] text-xs">
+            <span className="text-[#6B7280] mr-1">From:</span>
+            {tx.sender_address.slice(0, 6)}...
+            {tx.sender_address.slice(-4)}
+          </p>
+
+          <p className="text-[#A0A0A0] text-xs">
+            <span className="text-[#6B7280] mr-1">Sender:</span>
+            {tx.sender_name}
+          </p>
+
+          <p className="text-white font-mono text-xs">
+            <span className="text-[#6B7280] mr-1">Tx:</span>
+            {tx.tx_hash.slice(0, 10)}...{tx.tx_hash.slice(-6)}
+          </p>
         </div>
       </div>
 
       <div className="flex justify-end mt-3">
-        <button
-          className="bg-[#eb5e28] hover:bg-[#d54e20] text-white flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer"
-          onClick={() => handleSign(tx.txHash)}
-        >
+        <button className="bg-[#eb5e28] hover:bg-[#d54e20] text-white flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer">
           <Key size={14} />
           Sign
         </button>
@@ -160,16 +144,16 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
     </div>
   );
 
-  const TransactionCard = ({ tx, isPending = false }) => (
+  const TransactionCard = ({ tx, isPending = false }: any) => (
     <div className="bg-[#1A1A1A]  border border-[#333333] rounded-xl p-4 hover:border-[#eb5e28] transition-all">
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-[#242424] flex items-center justify-center border border-[#333333]">
-            {getTransactionIcon(tx.type)}
+            {getTransactionIcon(tx.operation_name)}
           </div>
           <div>
             <h3 className="text-white font-semibold text-sm">
-              {tx.description}
+              {tx.operation_description}
             </h3>
             <p className="text-[#A0A0A0] text-xs">{tx.timestamp}</p>
           </div>
@@ -185,33 +169,22 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
       </div>
 
       <div className="space-y-1.5 mb-3">
-        {tx.to && (
+        {tx.amount_to && (
           <div className="flex justify-between text-xs">
             <span className="text-[#A0A0A0]">To:</span>
-            <span className="text-white font-mono">{tx.to}</span>
+            <span className="text-white font-mono">{tx.amount_to}</span>
           </div>
         )}
-        {tx.value && (
+        {tx.amount && (
           <div className="flex justify-between text-xs">
             <span className="text-[#A0A0A0]">Amount:</span>
-            <span className="text-white font-semibold">{tx.value}</span>
+            <span className="text-white font-semibold">{tx.amount}</span>
           </div>
         )}
-        {tx.address && (
-          <div className="flex justify-between text-xs">
-            <span className="text-[#A0A0A0]">Address:</span>
-            <span className="text-white font-mono">{tx.address}</span>
-          </div>
-        )}
-        {tx.newThreshold && (
-          <div className="flex justify-between text-xs">
-            <span className="text-[#A0A0A0]">New Threshold:</span>
-            <span className="text-white font-semibold">{tx.newThreshold}</span>
-          </div>
-        )}
+
         <div className="flex justify-between text-xs">
           <span className="text-[#A0A0A0]">Initiated by:</span>
-          <span className="text-white">{tx.initiator}</span>
+          <span className="text-white">{tx.sender_name}</span>
         </div>
       </div>
 
@@ -275,7 +248,7 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
                     : "text-[#A0A0A0] hover:text-white"
                 }`}
               >
-                Sign ({transactionHashes.length})
+                Sign ({queuedTransaction.length})
               </button>
 
               <button
@@ -286,7 +259,7 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
                     : "text-[#A0A0A0] hover:text-white"
                 }`}
               >
-                Pending ({pendingTransactions.length})
+                Pending ({queuedTransaction.length})
               </button>
               <button
                 onClick={() => setActiveTab("executed")}
@@ -312,13 +285,13 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
 
             <div className="space-y-3">
               {activeTab === "signatures" &&
-                transactionHashes.map((tx) => (
-                  <SignatureCard key={tx.id} tx={tx} />
+                queuedTransaction.map((tx, index) => (
+                  <SignatureCard key={index} tx={tx} />
                 ))}
 
               {activeTab === "pending" &&
-                pendingTransactions.map((tx) => (
-                  <TransactionCard key={tx.id} tx={tx} isPending={true} />
+                queuedTransaction.map((tx, index) => (
+                  <TransactionCard key={index} tx={tx} isPending={true} />
                 ))}
               {activeTab === "executed" &&
                 executedTransactions.map((tx) => (

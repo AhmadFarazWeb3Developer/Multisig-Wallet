@@ -6,6 +6,8 @@ export async function POST(req) {
 
     const {
       operation_name,
+      amount,
+      amount_to,
       operation_description,
       sender_address,
       sender_name,
@@ -27,6 +29,8 @@ export async function POST(req) {
 
     const result = await queueTransaction(
       operation_name,
+      amount,
+      amount_to,
       operation_description,
       sender_address,
       sender_name,
@@ -36,6 +40,18 @@ export async function POST(req) {
     return Response.json({ status: 200, data: result });
   } catch (err) {
     console.error("Error in POST /queueTransaction:", err);
-    return Response.json({ status: 500, error: err.message });
+
+    // Detect duplicate key error
+    if (err.code === "23505") {
+      return Response.json(
+        { error: "This transaction hash is already queued." },
+        { status: 409 }
+      );
+    }
+
+    return Response.json(
+      { error: "Server error: " + err.message },
+      { status: 500 }
+    );
   }
 }

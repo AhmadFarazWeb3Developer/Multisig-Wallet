@@ -53,7 +53,6 @@ const useTransferETH = (safeAddress) => {
         nonce
       );
 
-      toast.success(`Transaction Hash: ${txHash}`);
       return txHash;
     } catch (error) {
       console.error("Error preparing transaction hash:", error);

@@ -23,6 +23,8 @@ const useTransferETH_queueTransaction = () => {
 
     const payload = {
       operation_name: operation,
+      amount: formData.amount,
+      amount_to: formData.recipient,
       operation_description: formData.description,
       sender_address: data.owner_address,
       sender_name: data.owner_name,
@@ -40,12 +42,12 @@ const useTransferETH_queueTransaction = () => {
     const anotherData = await response.json();
 
     if (!response.ok) {
-      console.error("Queueing transaction failed:", response.status);
-      toast.error("Error queueing transaction");
+      toast.error(anotherData.error || "Error queueing transaction");
       return;
     }
 
-    toast.success("Transaction queued successfully");
+    toast.success(`
+      Transaction queued successfully wiht Transaction Hash: ${txHash}`);
   };
 
   return transferETH_queueTransaction;
