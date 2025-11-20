@@ -95,7 +95,9 @@ const useQueueTransaction = () => {
     const result = await response.json();
 
     if (!response.ok) {
-      toast.error(result.error || "Error queueing transaction");
+      toast.error(result.error || "Error queueing transaction", {
+        action: { label: "Close" },
+      });
       return;
     }
 

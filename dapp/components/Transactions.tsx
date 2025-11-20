@@ -18,39 +18,50 @@ import {
 import { useRouter } from "next/navigation";
 
 import useGetQueuedTxs from "../app/hooks/useGetQueuedTxs";
+import useSafeInstance from "@/blockchain-interaction/hooks/smartAccount/useSafeInstance";
+import useSafeSignatureCount from "@/blockchain-interaction/hooks/smartAccount/useSafeSignatureCount";
+import { toast } from "sonner";
 
 type safeAddressInterface = {
   safeAddress: String;
 };
 
 export default function Transactions({ safeAddress }: safeAddressInterface) {
-  const [notifications, setNotifications] = useState(3);
-
   const [queuedTransaction, setQueuedTransactions] = useState([]);
-
+  const [threshold, setThreshold] = useState<string>();
   const [activeTab, setActiveTab] = useState("pending");
+  const safeInstance = useSafeInstance(safeAddress);
+
+  const safeSignatureCount = useSafeSignatureCount();
 
   const getQueuedTxs = useGetQueuedTxs();
 
   const router = useRouter();
-  const owners = [
-    { address: "0x1234...5678", name: "Alice", isYou: true },
-    { address: "0x8765...4321", name: "Bob", isYou: false },
-    { address: "0xabcd...efgh", name: "Charlie", isYou: false },
-  ];
-
-  const threshold = 2;
-  const totalOwners = owners.length;
 
   useEffect(() => {
     const init = async () => {
       if (activeTab == "pending") {
       }
       if (activeTab == "signatures") {
-        const data = await getQueuedTxs();
-        console.log("data ", data);
+        if (!safeInstance) {
+          toast.error("wait for safe instance");
+        }
 
-        setQueuedTransactions(data);
+        const data = await getQueuedTxs();
+        const { signaturesCount, threshold } = await safeSignatureCount(
+          safeInstance,
+          data
+        );
+
+        const formatedData = data.map((tx, index) => ({
+          ...tx,
+          signaturesCount: signaturesCount[index],
+        }));
+
+        console.log(formatedData);
+
+        setThreshold(threshold.toNumber());
+        setQueuedTransactions(formatedData);
       }
       if (activeTab == "executed") {
       }
@@ -58,7 +69,27 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
       }
     };
     init();
-  }, [activeTab]);
+  }, [activeTab, safeInstance]);
+
+  function timeAgo(timestamp) {
+    const date = new Date(timestamp);
+    const now = new Date();
+
+    const diffMs = now - date;
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+
+    if (diffHours < 1) {
+      const minutes = Math.floor(diffMs / (1000 * 60));
+      return `${minutes}m ago`;
+    }
+
+    if (diffHours < 24) {
+      return `${diffHours}h ago`;
+    }
+
+    const days = Math.floor(diffHours / 24);
+    return `${days}d ago`;
+  }
 
   const executedTransactions = [
     {
@@ -103,14 +134,91 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
   const SignatureCard = ({ tx }: any) => (
     <div className="bg-[#1A1A1A] border border-[#333333] rounded-xl p-4 hover:border-[#eb5e28] transition-all">
       <div className="flex items-start justify-between">
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           <h3 className="text-white font-semibold text-sm tracking-wide">
             {tx.operation_name}
           </h3>
 
-          <p className="text-[#6B7280] text-[11px]">{tx.amount} ETH</p>
-          <p className="text-[#6B7280] text-[11px]">{tx.amount_to}</p>
-          <p className="text-[#6B7280] text-[11px]">{tx.queued_at}</p>
+          {tx.metadata.eth_amount && (
+            <p className="text-[#6B7280] text-[11px]">
+              Amount: {tx.metadata.eth_amount} ETH
+            </p>
+          )}
+          {tx.metadata.eth_recipient && (
+            <p className="text-[#6B7280] text-[11px]">
+              To: {tx.metadata.eth_recipient}
+            </p>
+          )}
+          {tx.metadata.token_amount && (
+            <p className="text-[#6B7280] text-[11px]">
+              Token Amount: {tx.metadata.token_amount}
+            </p>
+          )}
+          {tx.metadata.token_recipient && (
+            <p className="text-[#6B7280] text-[11px]">
+              To: {tx.metadata.token_recipient}
+            </p>
+          )}
+          {tx.metadata.mint_token_amount && (
+            <p className="text-[#6B7280] text-[11px]">
+              Mint: {tx.metadata.mint_token_amount}
+            </p>
+          )}
+
+          {tx.metadata.newOwner_with_threshold && (
+            <p className="text-[#6B7280] text-[11px]">
+              New Owner: {tx.metadata.newOwner_with_threshold}
+            </p>
+          )}
+          {tx.metadata.new_threshold1 && (
+            <p className="text-[#6B7280] text-[11px]">
+              Threshold: {tx.metadata.new_threshold1}
+            </p>
+          )}
+          {tx.metadata.prevOwner_for_removal && (
+            <p className="text-[#6B7280] text-[11px]">
+              Previous Owner: {tx.metadata.prevOwner_for_removal}
+            </p>
+          )}
+          {tx.metadata.newOwner_for_removal && (
+            <p className="text-[#6B7280] text-[11px]">
+              New Owner: {tx.metadata.newOwner_for_removal}
+            </p>
+          )}
+          {tx.metadata.newThreshold_for_removal && (
+            <p className="text-[#6B7280] text-[11px]">
+              Threshold: {tx.metadata.newThreshold_for_removal}
+            </p>
+          )}
+
+          {tx.metadata.prevOwner_for_swap && (
+            <p className="text-[#6B7280] text-[11px]">
+              Previous Owner: {tx.metadata.prevOwner_for_swap}
+            </p>
+          )}
+          {tx.metadata.oldOwner_for_swap && (
+            <p className="text-[#6B7280] text-[11px]">
+              Old Owner: {tx.metadata.oldOwner_for_swap}
+            </p>
+          )}
+          {tx.metadata.newOwner_for_swap && (
+            <p className="text-[#6B7280] text-[11px]">
+              New Owner: {tx.metadata.newOwner_for_swap}
+            </p>
+          )}
+          {tx.metadata.new_threshold2 && (
+            <p className="text-[#6B7280] text-[11px]">
+              Threshold: {tx.metadata.new_threshold2}
+            </p>
+          )}
+
+          {tx.metadata.guard_address && (
+            <p className="text-[#6B7280] text-[11px]">
+              Guard Address: {tx.metadata.guard_address}
+            </p>
+          )}
+
+          <p className="text-[#6B7280] text-[11px]"> {timeAgo(tx.queued_at)}</p>
 
           <p className="text-[#A0A0A0] text-xs">
             <span className="text-[#6B7280] mr-1">Description:</span>
@@ -161,25 +269,93 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
         {isPending && (
           <div className="flex items-center gap-1.5 bg-[#eb5e28]/20 px-2.5 py-1 rounded-full border border-[#eb5e28]/30">
             <Clock size={12} className="text-[#eb5e28]" />
-            <span className="text-[#eb5e28] text-xs font-medium">
-              {tx.confirmations}/{tx.required}
-            </span>
+            {threshold && (
+              <span className="text-[#eb5e28] text-xs font-medium">
+                {tx.signaturesCount}/{threshold}
+              </span>
+            )}
           </div>
         )}
       </div>
 
       <div className="space-y-1.5 mb-3">
-        {tx.amount_to && (
-          <div className="flex justify-between text-xs">
-            <span className="text-[#A0A0A0]">To:</span>
-            <span className="text-white font-mono">{tx.amount_to}</span>
-          </div>
+        {tx.metadata.eth_amount && (
+          <p className="text-[#6B7280] text-[11px]">
+            Amount: {tx.metadata.eth_amount} ETH
+          </p>
         )}
-        {tx.amount && (
-          <div className="flex justify-between text-xs">
-            <span className="text-[#A0A0A0]">Amount:</span>
-            <span className="text-white font-semibold">{tx.amount}</span>
-          </div>
+        {tx.metadata.eth_recipient && (
+          <p className="text-[#6B7280] text-[11px]">
+            To: {tx.metadata.eth_recipient}
+          </p>
+        )}
+        {tx.metadata.token_amount && (
+          <p className="text-[#6B7280] text-[11px]">
+            Token Amount: {tx.metadata.token_amount}
+          </p>
+        )}
+        {tx.metadata.token_recipient && (
+          <p className="text-[#6B7280] text-[11px]">
+            To: {tx.metadata.token_recipient}
+          </p>
+        )}
+        {tx.metadata.mint_token_amount && (
+          <p className="text-[#6B7280] text-[11px]">
+            Mint: {tx.metadata.mint_token_amount}
+          </p>
+        )}
+
+        {tx.metadata.newOwner_with_threshold && (
+          <p className="text-[#6B7280] text-[11px]">
+            New Owner: {tx.metadata.newOwner_with_threshold}
+          </p>
+        )}
+        {tx.metadata.new_threshold1 && (
+          <p className="text-[#6B7280] text-[11px]">
+            Threshold: {tx.metadata.new_threshold1}
+          </p>
+        )}
+        {tx.metadata.prevOwner_for_removal && (
+          <p className="text-[#6B7280] text-[11px]">
+            Previous Owner: {tx.metadata.prevOwner_for_removal}
+          </p>
+        )}
+        {tx.metadata.newOwner_for_removal && (
+          <p className="text-[#6B7280] text-[11px]">
+            New Owner: {tx.metadata.newOwner_for_removal}
+          </p>
+        )}
+        {tx.metadata.newThreshold_for_removal && (
+          <p className="text-[#6B7280] text-[11px]">
+            Threshold: {tx.metadata.newThreshold_for_removal}
+          </p>
+        )}
+
+        {tx.metadata.prevOwner_for_swap && (
+          <p className="text-[#6B7280] text-[11px]">
+            Previous Owner: {tx.metadata.prevOwner_for_swap}
+          </p>
+        )}
+        {tx.metadata.oldOwner_for_swap && (
+          <p className="text-[#6B7280] text-[11px]">
+            Old Owner: {tx.metadata.oldOwner_for_swap}
+          </p>
+        )}
+        {tx.metadata.newOwner_for_swap && (
+          <p className="text-[#6B7280] text-[11px]">
+            New Owner: {tx.metadata.newOwner_for_swap}
+          </p>
+        )}
+        {tx.metadata.new_threshold2 && (
+          <p className="text-[#6B7280] text-[11px]">
+            Threshold: {tx.metadata.new_threshold2}
+          </p>
+        )}
+
+        {tx.metadata.guard_address && (
+          <p className="text-[#6B7280] text-[11px]">
+            Guard Address: {tx.metadata.guard_address}
+          </p>
         )}
 
         <div className="flex justify-between text-xs">

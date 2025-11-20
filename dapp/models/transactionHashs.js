@@ -52,10 +52,24 @@ export async function queueTransaction({
 
 export async function getTransactions() {
   try {
-    const result = await pool.query("SELECT * FROM  queued_transactions");
+    const result = await pool.query(`
+      SELECT 
+        qt.*,
+        COALESCE(
+          jsonb_object_agg(qtm.key, qtm.value) 
+          FILTER (WHERE qtm.key IS NOT NULL), 
+        '{}'::jsonb
+        ) AS metadata
+      FROM queued_transactions qt
+      LEFT JOIN queued_transaction_metadata qtm
+        ON qt.tx_hash = qtm.tx_hash
+      GROUP BY qt.tx_id
+      ORDER BY qt.tx_id DESC;
+    `);
+
     return result.rows;
   } catch (error) {
-    console.error("Error fetching safes:", error);
+    console.error("Error fetching transactions:", error);
     throw error;
   }
 }
