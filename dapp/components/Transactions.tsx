@@ -22,6 +22,7 @@ import useSafeInstance from "@/blockchain-interaction/hooks/smartAccount/useSafe
 import useSafeSignatureCount from "@/blockchain-interaction/hooks/smartAccount/useSafeSignatureCount";
 import useSignTransaction from "@/blockchain-interaction/hooks/smartAccount/useSignTransaction";
 import { toast } from "sonner";
+import { useAppKitAccount } from "@reown/appkit/react";
 
 type safeAddressInterface = {
   safeAddress: String;
@@ -32,6 +33,8 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
   const [threshold, setThreshold] = useState<string>();
   const [activeTab, setActiveTab] = useState("pending");
   const router = useRouter();
+
+  const { isConnected, address } = useAppKitAccount();
 
   const safeInstance = useSafeInstance(safeAddress);
   const safeSignatureCount = useSafeSignatureCount();
@@ -72,10 +75,14 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
     init();
   }, [activeTab, safeInstance]);
 
-  const handleTransactionSignature = (txHash) => {
+  const handleTransactionSignature = (tx_hash: string) => {
     const init = async () => {
-      console.log(txHash);
-      await signTransaction(txHash);
+      if (!isConnected || !address) {
+        toast.error("wallet is not connected!", { action: { label: "Close" } });
+        return;
+      } else {
+        await signTransaction(tx_hash, address);
+      }
     };
     init();
   };

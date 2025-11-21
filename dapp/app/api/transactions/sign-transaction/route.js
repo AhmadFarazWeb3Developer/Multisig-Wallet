@@ -1,3 +1,5 @@
+import { signTransaction } from "../../../../models/transactions.model";
+
 export async function POST(req) {
   try {
     const payload = await req.json();
@@ -23,7 +25,7 @@ export async function POST(req) {
 
     if (err.code === "23505") {
       return Response.json(
-        { status: 409, error: "This transaction hash is already queued." },
+        { status: 409, error: "You have already signed this transaction." },
         { status: 409 }
       );
     }

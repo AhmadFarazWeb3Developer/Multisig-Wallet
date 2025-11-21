@@ -9,19 +9,21 @@ const useSafeSignatureCount = () => {
     }
 
     const threshold = await safeInstance.getThreshold();
-    const signaturesCount = [];
 
     const hashes = data.map((tx) => tx.tx_hash);
     const owners = await safeInstance.getOwners();
 
-    for (const owner of owners) {
-      for (const hash of hashes) {
-        const hashBytes = ethers.utils.arrayify(hash);
-        const approved = await safeInstance.approvedHashes(owner, hashBytes);
-        console.log(approved);
-        signaturesCount.push(approved.toNumber());
-      }
-    }
+    const response = await fetch("/api/transactions/get-sign-transactions", {
+      method: "GET",
+    });
+
+    const safe_transaction_signatures = await response.json();
+
+    const signaturesCount = hashes.map((hash) => {
+      return safe_transaction_signatures.filter((sig) => sig.tx_hash === hash)
+        .length;
+    });
+    console.log(signaturesCount);
 
     return { signaturesCount, threshold };
   };

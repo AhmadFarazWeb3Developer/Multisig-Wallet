@@ -1,4 +1,4 @@
-import { queueTransaction } from "../../../../models/transactionHashs";
+import { queueTransaction } from "../../../../models/transactions.model";
 
 export async function POST(req) {
   try {

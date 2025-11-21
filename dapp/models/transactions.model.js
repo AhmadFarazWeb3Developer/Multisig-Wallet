@@ -50,6 +50,37 @@ export async function queueTransaction({
   }
 }
 
+export async function signTransaction({ tx_hash, owner_address, signature }) {
+  const client = await pool.connect();
+
+  try {
+    const result = await client.query(
+      "INSERT INTO safe_transaction_signatures(tx_hash,owner_address,signature) VALUES($1, $2, $3) RETURNING*",
+      [tx_hash, owner_address, signature]
+    );
+
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error queueing transaction:", error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+export async function getSignedTransactions() {
+  try {
+    const result = await pool.query(
+      "SELECT * FROM safe_transaction_signatures"
+    );
+
+    return result.rows;
+  } catch (error) {
+    console.error("Error fetching transactions:", error);
+    throw error;
+  }
+}
+
 export async function getTransactions() {
   try {
     const result = await pool.query(`
