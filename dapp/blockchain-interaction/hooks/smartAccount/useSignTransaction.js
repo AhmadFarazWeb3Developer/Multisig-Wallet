@@ -41,9 +41,7 @@ const useSignTransaction = () => {
     }
     const Bytes32Hash = hexZeroPad(tx_hash);
 
-    console.log("signer ", await signer);
     const signature = await signer.signMessage(Bytes32Hash);
-    console.log(signature);
 
     await submitSignature(tx_hash, sender_address, signature);
   };

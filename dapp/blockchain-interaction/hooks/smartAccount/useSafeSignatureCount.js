@@ -1,10 +1,9 @@
-import { ethers } from "ethers";
 import { toast } from "sonner";
 
 const useSafeSignatureCount = () => {
   const safeSignatureCount = async (safeInstance, data) => {
     if (!safeInstance) {
-      toast.error("wait for instance");
+      toast.error("wait for instance", { action: { label: "Close" } });
       return { signaturesCount: [], threshold: 0 };
     }
 
@@ -23,9 +22,14 @@ const useSafeSignatureCount = () => {
       return safe_transaction_signatures.filter((sig) => sig.tx_hash === hash)
         .length;
     });
-    console.log(signaturesCount);
 
-    return { signaturesCount, threshold };
+    console.log("data : ", data);
+    console.log("hashes : ", hashes);
+    console.log("signature count  : ", signaturesCount);
+
+    console.log("safe signatures :", safe_transaction_signatures);
+
+    return { signaturesCount, threshold, safe_transaction_signatures };
   };
 
   return safeSignatureCount;

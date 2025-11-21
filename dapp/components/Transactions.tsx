@@ -29,30 +29,29 @@ type safeAddressInterface = {
 };
 
 export default function Transactions({ safeAddress }: safeAddressInterface) {
-  const [queuedTransaction, setQueuedTransactions] = useState([]);
-  const [threshold, setThreshold] = useState<string>();
-  const [activeTab, setActiveTab] = useState("pending");
+  const { isConnected, address } = useAppKitAccount();
   const router = useRouter();
 
-  const { isConnected, address } = useAppKitAccount();
+  const [toBeSignedTransactions, setToBeSignedTransactions] = useState([]);
+  const [pendingTransactions, setPendingTransactions] = useState([]);
+  const [threshold, setThreshold] = useState<string>();
+  const [activeTab, setActiveTab] = useState("signatures");
 
   const safeInstance = useSafeInstance(safeAddress);
   const safeSignatureCount = useSafeSignatureCount();
   const getQueuedTxs = useGetQueuedTxs();
-
   const signTransaction = useSignTransaction();
 
   useEffect(() => {
     const init = async () => {
-      if (activeTab == "pending") {
+      if (!safeInstance) {
+        toast.error("wait for safe instance");
+      } else {
       }
-      if (activeTab == "signatures") {
-        if (!safeInstance) {
-          toast.error("wait for safe instance");
-        }
 
+      if (activeTab == "pending") {
         const data = await getQueuedTxs();
-        const { signaturesCount, threshold } = await safeSignatureCount(
+        const { signaturesCount } = await safeSignatureCount(
           safeInstance,
           data
         );
@@ -62,13 +61,31 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
           signaturesCount: signaturesCount[index],
         }));
 
-        console.log(formatedData);
+        setPendingTransactions(formatedData);
+      }
+      if (activeTab == "signatures") {
+        const data = await getQueuedTxs();
+
+        const { threshold, safe_transaction_signatures } =
+          await safeSignatureCount(safeInstance, data);
+
+        const filterNotSignedOnes = data.filter((tx) => {
+          const hasSigned = safe_transaction_signatures.some(
+            (sig) =>
+              sig.tx_hash === tx.tx_hash &&
+              sig.owner_address.toLowerCase() === address.toLowerCase()
+          );
+
+          // only include if user hasn't signed yet
+          return !hasSigned;
+        });
 
         setThreshold(threshold.toNumber());
-        setQueuedTransactions(formatedData);
+        setToBeSignedTransactions(filterNotSignedOnes);
       }
       if (activeTab == "executed") {
       }
+
       if (activeTab == "rejected") {
       }
     };
@@ -444,7 +461,7 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
                     : "text-[#A0A0A0] hover:text-white"
                 }`}
               >
-                Sign ({queuedTransaction.length})
+                Sign ({toBeSignedTransactions.length})
               </button>
 
               <button
@@ -455,7 +472,7 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
                     : "text-[#A0A0A0] hover:text-white"
                 }`}
               >
-                Pending ({queuedTransaction.length})
+                Pending ({pendingTransactions.length})
               </button>
               <button
                 onClick={() => setActiveTab("executed")}
@@ -481,12 +498,12 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
 
             <div className="space-y-3">
               {activeTab === "signatures" &&
-                queuedTransaction.map((tx, index) => (
+                toBeSignedTransactions.map((tx, index) => (
                   <SignatureCard key={index} tx={tx} />
                 ))}
 
               {activeTab === "pending" &&
-                queuedTransaction.map((tx, index) => (
+                pendingTransactions.map((tx, index) => (
                   <TransactionCard key={index} tx={tx} isPending={true} />
                 ))}
               {activeTab === "executed" &&
