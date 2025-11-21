@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import useGetQueuedTxs from "../app/hooks/useGetQueuedTxs";
 import useSafeInstance from "@/blockchain-interaction/hooks/smartAccount/useSafeInstance";
 import useSafeSignatureCount from "@/blockchain-interaction/hooks/smartAccount/useSafeSignatureCount";
+import useSignTransaction from "@/blockchain-interaction/hooks/smartAccount/useSignTransaction";
 import { toast } from "sonner";
 
 type safeAddressInterface = {
@@ -30,13 +31,13 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
   const [queuedTransaction, setQueuedTransactions] = useState([]);
   const [threshold, setThreshold] = useState<string>();
   const [activeTab, setActiveTab] = useState("pending");
+  const router = useRouter();
+
   const safeInstance = useSafeInstance(safeAddress);
-
   const safeSignatureCount = useSafeSignatureCount();
-
   const getQueuedTxs = useGetQueuedTxs();
 
-  const router = useRouter();
+  const signTransaction = useSignTransaction();
 
   useEffect(() => {
     const init = async () => {
@@ -71,10 +72,19 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
     init();
   }, [activeTab, safeInstance]);
 
+  const handleTransactionSignature = (txHash) => {
+    const init = async () => {
+      console.log(txHash);
+      await signTransaction(txHash);
+    };
+    init();
+  };
+
   function timeAgo(timestamp) {
     const date = new Date(timestamp);
+    // console.log(date);
     const now = new Date();
-
+    // console.log(now);
     const diffMs = now - date;
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
 
@@ -244,7 +254,10 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
       </div>
 
       <div className="flex justify-end mt-3">
-        <button className="bg-[#eb5e28] hover:bg-[#d54e20] text-white flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer">
+        <button
+          onClick={() => handleTransactionSignature(tx.tx_hash)}
+          className="bg-[#eb5e28] hover:bg-[#d54e20] text-white flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer"
+        >
           <Key size={14} />
           Sign
         </button>

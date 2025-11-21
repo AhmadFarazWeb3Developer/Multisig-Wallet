@@ -64,7 +64,9 @@ const useInstancesSigner = () => {
         safeProxyFactoryIntance,
         compatibilityFallbackHandlerInstace,
       };
-    } catch (error) {}
+    } catch (error) {
+      console.log("error in signers : ", error);
+    }
   };
 
   return InstancesSigner;

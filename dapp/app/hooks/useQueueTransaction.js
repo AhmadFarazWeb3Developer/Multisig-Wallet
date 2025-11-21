@@ -84,7 +84,7 @@ const useQueueTransaction = () => {
       metadata, // metadata
     };
 
-    const response = await fetch("/api/transactions/queueTransaction", {
+    const response = await fetch("/api/transactions/queue-transaction", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

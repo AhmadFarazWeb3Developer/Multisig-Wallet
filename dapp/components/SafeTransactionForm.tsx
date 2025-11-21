@@ -21,7 +21,7 @@ import useSetGuard from "../blockchain-interaction/hooks/smartAccount/useSetGuar
 import useMintTokens from "../blockchain-interaction/hooks/smartAccount/useMintTokens";
 import useSwapOwner from "../blockchain-interaction/hooks/smartAccount/useSwapOwner";
 
-import useQueueTransaction from "../queue-transactions/useQueueTransaction";
+import useQueueTransaction from "../app/hooks/useQueueTransaction";
 
 type safeAddressInterface = {
   safeAddress: string;
