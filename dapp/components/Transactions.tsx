@@ -21,6 +21,8 @@ import useGetQueuedTxs from "../app/hooks/useGetQueuedTxs";
 import useSafeInstance from "@/blockchain-interaction/hooks/smartAccount/useSafeInstance";
 import useSafeSignatureCount from "@/blockchain-interaction/hooks/smartAccount/useSafeSignatureCount";
 import useSignTransaction from "@/blockchain-interaction/hooks/smartAccount/useSignTransaction";
+import useExecuteTransaction from "../blockchain-interaction/hooks/smartAccount/useExecuteTransaction";
+
 import { toast } from "sonner";
 import { useAppKitAccount } from "@reown/appkit/react";
 
@@ -40,21 +42,20 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
   const safeInstance = useSafeInstance(safeAddress);
   const safeSignatureCount = useSafeSignatureCount();
   const getQueuedTxs = useGetQueuedTxs();
+
   const signTransaction = useSignTransaction();
+  const executeTransaction = useExecuteTransaction();
 
   useEffect(() => {
     const init = async () => {
       if (!safeInstance) {
         toast.error("wait for safe instance");
-      } else {
       }
 
       if (activeTab == "pending") {
         const data = await getQueuedTxs();
-        const { signaturesCount } = await safeSignatureCount(
-          safeInstance,
-          data
-        );
+        const { signaturesCount, safe_transaction_signatures } =
+          await safeSignatureCount(safeInstance, data);
 
         const formatedData = data.map((tx, index) => ({
           ...tx,
@@ -65,7 +66,6 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
       }
       if (activeTab == "signatures") {
         const data = await getQueuedTxs();
-
         const { threshold, safe_transaction_signatures } =
           await safeSignatureCount(safeInstance, data);
 
@@ -99,6 +99,18 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
         return;
       } else {
         await signTransaction(tx_hash, address);
+      }
+    };
+    init();
+  };
+
+  const handleExecutedTransaction = (tx_hash: string) => {
+    const init = async () => {
+      if (!safeInstance) {
+        toast.error("wait for safe instance");
+        return;
+      } else {
+        await executeTransaction(tx_hash, safeInstance);
       }
     };
     init();
@@ -403,7 +415,10 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
 
       {isPending && (
         <div className="flex gap-2">
-          <button className="flex-1 bg-[#eb5e28] hover:bg-[#d54e20] text-white py-1.5 sm:py-2 rounded-lg  text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+          <button
+            onClick={handleExecutedTransaction(tx.tx_hash)}
+            className="flex-1 bg-[#eb5e28] hover:bg-[#d54e20] text-white py-1.5 sm:py-2 rounded-lg  text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+          >
             <CheckCircle className="  size-4" />
             Approve
           </button>

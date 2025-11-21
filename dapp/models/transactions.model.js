@@ -81,6 +81,24 @@ export async function getSignedTransactions() {
   }
 }
 
+export async function getSingleHashSignature(tx_hash) {
+  const client = await pool.connect();
+
+  try {
+    const result = await client.query(
+      "SELECT * FROM safe_transaction_signatures WHERE tx_hash = $1 ",
+      [tx_hash]
+    );
+
+    return result;
+  } catch (error) {
+    console.error("Error queueing transaction:", error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
 export async function getTransactions() {
   try {
     const result = await pool.query(`
