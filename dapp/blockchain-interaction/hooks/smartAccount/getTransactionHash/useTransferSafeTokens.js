@@ -1,41 +1,35 @@
 import { ethers } from "ethers";
 
-import Interfaces from "../../helper/interfaces";
-
-import useSafeInstance from "./useSafeInstance";
+import Interfaces from "@/blockchain-interaction/helper/interfaces";
+import DeterministicAddresses from "@/blockchain-interaction/helper/deterministicAddresses";
+import useSafeInstance from "../useSafeInstance";
 import { toast } from "sonner";
-import { isAddress } from "ethers/lib/utils";
 
-const useAddOwnerWithThreshold = (safeAddress) => {
+const useTransferSafeTokens = (safeAddress) => {
   const iface = Interfaces();
+  const addresses = DeterministicAddresses();
   const safeInstance = useSafeInstance(safeAddress);
 
-  const addOwnerWithThreshold = async (formData) => {
+  const transferSafeTokens = async (formData) => {
     try {
       if (!safeInstance) {
-        toast.error("Safe is not ready");
+        toast.error("Safe is not ready", {
+          action: {
+            label: "Close",
+          },
+        });
         return;
       }
 
-      if (!formData.newOwner_with_threshold || !formData.new_threshold1) {
-        toast.error("Fill the form before proceeding");
-        return;
-      }
-
-      if (!isAddress(formData.newOwner_with_threshold)) {
-        toast.error("owner must be a valid address");
-        return;
-      }
-
-      const interfaceOf = iface.safeSingltonInterface;
+      const interfaceOf = iface.safeTokensInterface;
 
       // data
-      const data = interfaceOf.encodeFunctionData("addOwnerWithThreshold", [
-        formData.newOwner_with_threshold,
-        formData.new_threshold1,
+      const data = interfaceOf.encodeFunctionData("transfer", [
+        formData.token_recipient,
+        formData.token_amount,
       ]);
 
-      const to = safeAddress;
+      const safeTokensAddress = addresses.safeTokensMockAddress;
       const value = 0;
       const operation = 0; // Enum.Operation.Call
       const safeTxGas = 0;
@@ -47,7 +41,7 @@ const useAddOwnerWithThreshold = (safeAddress) => {
 
       // transaction hash
       const txHash = await safeInstance.getTransactionHash(
-        to,
+        safeTokensAddress,
         value,
         data,
         operation,
@@ -67,11 +61,15 @@ const useAddOwnerWithThreshold = (safeAddress) => {
       return txHash;
     } catch (error) {
       console.error(error);
-      toast.error(`Error sending tokens: ${error.message || error}`);
+      toast.error(`Error sending tokens: ${error.message || error}`, {
+        action: {
+          label: "Close",
+        },
+      });
     }
   };
 
-  return addOwnerWithThreshold;
+  return transferSafeTokens;
 };
 
-export default useAddOwnerWithThreshold;
+export default useTransferSafeTokens;

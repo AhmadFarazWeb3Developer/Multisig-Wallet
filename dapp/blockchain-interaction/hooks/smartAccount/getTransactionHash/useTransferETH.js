@@ -1,6 +1,6 @@
 import { toast } from "sonner";
-import Interfaces from "../../helper/interfaces";
-import useSafeInstance from "./useSafeInstance";
+import Interfaces from "../../../helper/interfaces";
+import useSafeInstance from "../useSafeInstance";
 import { ethers } from "ethers";
 import { isAddress } from "ethers/lib/utils";
 

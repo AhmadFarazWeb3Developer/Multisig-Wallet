@@ -39,7 +39,7 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
   const [threshold, setThreshold] = useState<string>();
   const [activeTab, setActiveTab] = useState("signatures");
 
-  const safeInstance = useSafeInstance(safeAddress);
+  const { safeWriteInstace, safeReadInstance } = useSafeInstance(safeAddress);
   const safeSignatureCount = useSafeSignatureCount();
   const getQueuedTxs = useGetQueuedTxs();
 
@@ -48,14 +48,14 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
 
   useEffect(() => {
     const init = async () => {
-      if (!safeInstance) {
+      if (!safeReadInstance) {
         toast.error("wait for safe instance");
       }
 
       if (activeTab == "pending") {
         const data = await getQueuedTxs();
         const { signaturesCount, safe_transaction_signatures } =
-          await safeSignatureCount(safeInstance, data);
+          await safeSignatureCount(safeReadInstance, data);
 
         const formatedData = data.map((tx, index) => ({
           ...tx,
@@ -66,8 +66,9 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
       }
       if (activeTab == "signatures") {
         const data = await getQueuedTxs();
+
         const { threshold, safe_transaction_signatures } =
-          await safeSignatureCount(safeInstance, data);
+          await safeSignatureCount(safeReadInstance, data);
 
         const filterNotSignedOnes = data.filter((tx) => {
           const hasSigned = safe_transaction_signatures.some(
@@ -90,7 +91,7 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
       }
     };
     init();
-  }, [activeTab, safeInstance]);
+  }, [activeTab, safeReadInstance]);
 
   const handleTransactionSignature = (tx_hash: string) => {
     const init = async () => {
@@ -106,11 +107,13 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
 
   const handleExecutedTransaction = (tx_hash: string) => {
     const init = async () => {
-      if (!safeInstance) {
+      if (!safeWriteInstace) {
         toast.error("wait for safe instance");
         return;
       } else {
-        await executeTransaction(tx_hash, safeInstance);
+        const data = await getQueuedTxs();
+
+        await executeTransaction(tx_hash, safeWriteInstace, data);
       }
     };
     init();
@@ -416,7 +419,7 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
       {isPending && (
         <div className="flex gap-2">
           <button
-            onClick={handleExecutedTransaction(tx.tx_hash)}
+            onClick={() => handleExecutedTransaction(tx.tx_hash)}
             className="flex-1 bg-[#eb5e28] hover:bg-[#d54e20] text-white py-1.5 sm:py-2 rounded-lg  text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
           >
             <CheckCircle className="  size-4" />

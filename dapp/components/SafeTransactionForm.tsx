@@ -12,14 +12,14 @@ import RemoveOwner from "./transactions/RemoveOwner";
 import MintTokens from "./transactions/MintTokens";
 import SwapOwner from "./transactions/SwapOwner";
 
-import useTransferETH from "../blockchain-interaction/hooks/smartAccount/useTransferETH";
-import useTransferSafeTokens from "../blockchain-interaction/hooks/smartAccount/useTransferSafeTokens";
-import useChangeThreshold from "../blockchain-interaction/hooks/smartAccount/useChangeThreshold";
-import useAddOwnerWithThreshold from "../blockchain-interaction/hooks/smartAccount/useAddOwnerWithThreshold";
-import useRemoveOwner from "../blockchain-interaction/hooks/smartAccount/useRemoveOwner";
-import useSetGuard from "../blockchain-interaction/hooks/smartAccount/useSetGuard";
-import useMintTokens from "../blockchain-interaction/hooks/smartAccount/useMintTokens";
-import useSwapOwner from "../blockchain-interaction/hooks/smartAccount/useSwapOwner";
+import useTransferETH from "../blockchain-interaction/hooks/smartAccount/getTransactionHash/useTransferETH";
+import useTransferSafeTokens from "../blockchain-interaction/hooks/smartAccount/getTransactionHash/useTransferSafeTokens";
+import useChangeThreshold from "../blockchain-interaction/hooks/smartAccount/getTransactionHash/useChangeThreshold";
+import useAddOwnerWithThreshold from "../blockchain-interaction/hooks/smartAccount/getTransactionHash/useAddOwnerWithThreshold";
+import useRemoveOwner from "../blockchain-interaction/hooks/smartAccount/getTransactionHash/useRemoveOwner";
+import useSetGuard from "../blockchain-interaction/hooks/smartAccount/getTransactionHash/useSetGuard";
+import useMintTokens from "../blockchain-interaction/hooks/smartAccount/getTransactionHash/useMintTokens";
+import useSwapOwner from "../blockchain-interaction/hooks/smartAccount/getTransactionHash/useSwapOwner";
 
 import useQueueTransaction from "../app/hooks/useQueueTransaction";
 

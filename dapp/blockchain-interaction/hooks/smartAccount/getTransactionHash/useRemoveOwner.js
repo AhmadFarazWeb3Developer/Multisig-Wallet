@@ -1,35 +1,49 @@
 import { ethers } from "ethers";
 
-import Interfaces from "@/blockchain-interaction/helper/interfaces";
-import DeterministicAddresses from "@/blockchain-interaction/helper/deterministicAddresses";
-import useSafeInstance from "./useSafeInstance";
-import { toast } from "sonner";
+import Interfaces from "../../../helper/interfaces";
 
-const useTransferSafeTokens = (safeAddress) => {
+import useSafeInstance from "../useSafeInstance";
+import { toast } from "sonner";
+import { isAddress } from "ethers/lib/utils";
+
+const useRemoveOwner = (safeAddress) => {
   const iface = Interfaces();
-  const addresses = DeterministicAddresses();
   const safeInstance = useSafeInstance(safeAddress);
 
-  const transferSafeTokens = async (formData) => {
+  const removeOwner = async (formData) => {
     try {
       if (!safeInstance) {
-        toast.error("Safe is not ready", {
-          action: {
-            label: "Close",
-          },
-        });
+        toast.error("Safe is not ready");
         return;
       }
 
-      const interfaceOf = iface.safeTokensInterface;
+      if (
+        !formData.prevOwner_for_removal ||
+        !formData.newOwner_for_removal ||
+        !formData.newThreshold_for_removal
+      ) {
+        toast.error("Fill the form before proceeding");
+        return;
+      }
+
+      if (
+        !isAddress(formData.prevOwner_for_removal) ||
+        !isAddress(formData.newOwner_for_removal)
+      ) {
+        toast.error("owners must be a valid addresses");
+        return;
+      }
+
+      const interfaceOf = iface.safeSingltonInterface;
 
       // data
-      const data = interfaceOf.encodeFunctionData("transfer", [
-        formData.token_recipient,
-        formData.token_amount,
+      const data = interfaceOf.encodeFunctionData("removeOwner", [
+        formData.prevOwner_for_removal,
+        formData.newOwner_for_removal,
+        formData.newThreshold_for_removal,
       ]);
 
-      const safeTokensAddress = addresses.safeTokensMockAddress;
+      const to = safeAddress;
       const value = 0;
       const operation = 0; // Enum.Operation.Call
       const safeTxGas = 0;
@@ -41,7 +55,7 @@ const useTransferSafeTokens = (safeAddress) => {
 
       // transaction hash
       const txHash = await safeInstance.getTransactionHash(
-        safeTokensAddress,
+        to,
         value,
         data,
         operation,
@@ -69,7 +83,7 @@ const useTransferSafeTokens = (safeAddress) => {
     }
   };
 
-  return transferSafeTokens;
+  return removeOwner;
 };
 
-export default useTransferSafeTokens;
+export default useRemoveOwner;

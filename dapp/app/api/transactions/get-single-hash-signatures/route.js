@@ -7,7 +7,6 @@ export async function GET(req) {
 
   try {
     const signatures = await getSingleHashSignature(tx_hash);
-
     console.log(signatures);
     return Response.json(signatures, { status: 200 });
   } catch (err) {

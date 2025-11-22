@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 
-import Interfaces from "../../helper/interfaces";
-import useSafeInstance from "./useSafeInstance";
+import Interfaces from "../../../helper/interfaces";
+import useSafeInstance from "../useSafeInstance";
 import { toast } from "sonner";
 
 const useMintTokens = (safeAddress) => {

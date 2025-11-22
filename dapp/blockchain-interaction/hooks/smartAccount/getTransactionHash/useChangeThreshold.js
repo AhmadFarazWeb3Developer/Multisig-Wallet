@@ -1,8 +1,8 @@
 import { ethers } from "ethers";
 
-import Interfaces from "../../../blockchain-interaction/helper/interfaces";
+import Interfaces from "../../../helper/interfaces";
 
-import useSafeInstance from "./useSafeInstance";
+import useSafeInstance from "../useSafeInstance";
 import { toast } from "sonner";
 
 const useChangeThreshold = (safeAddress) => {

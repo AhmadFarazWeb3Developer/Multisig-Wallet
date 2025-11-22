@@ -25,7 +25,7 @@ type Owners = {
 };
 
 export default function Home({ safeAddress }: safeAddressInterface) {
-  const safeInstance = useSafeInstance(safeAddress);
+  const { safeReadInstance } = useSafeInstance(safeAddress);
   const { walletProvider } = useAppKitProvider("eip155");
   const { address, isConnected } = useAppKitAccount();
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
@@ -55,11 +55,11 @@ export default function Home({ safeAddress }: safeAddressInterface) {
   };
 
   useEffect(() => {
-    if (!safeAddress || !safeInstance) return;
+    if (!safeAddress || !safeReadInstance) return;
     if (!isConnected || !walletProvider) return;
     const fetchOwners = async () => {
       try {
-        const blockchainOwners: string[] = await safeInstance.getOwners();
+        const blockchainOwners: string[] = await safeReadInstance.getOwners();
 
         const response = await fetch("api/owners/", {
           method: "GET",
@@ -85,7 +85,7 @@ export default function Home({ safeAddress }: safeAddressInterface) {
           };
         });
 
-        const threshold: string = await safeInstance.getThreshold();
+        const threshold: string = await safeReadInstance.getThreshold();
 
         setSafeOwners(formattedOwners);
         setThreshold(threshold);
@@ -95,7 +95,7 @@ export default function Home({ safeAddress }: safeAddressInterface) {
     };
 
     fetchOwners();
-  }, [safeAddress, safeInstance, isConnected, walletProvider]);
+  }, [safeAddress, safeReadInstance, isConnected, walletProvider]);
 
   return (
     <main className="flex flex-col max-w-3xl gap-4 sm:gap-6 p-4 ">

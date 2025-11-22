@@ -1,46 +1,38 @@
 import { ethers } from "ethers";
 
-import Interfaces from "../../helper/interfaces";
+import Interfaces from "../../../helper/interfaces";
 
-import useSafeInstance from "./useSafeInstance";
+import useSafeInstance from "../useSafeInstance";
 import { toast } from "sonner";
 import { isAddress } from "ethers/lib/utils";
 
-const useRemoveOwner = (safeAddress) => {
+const useAddOwnerWithThreshold = (safeAddress) => {
   const iface = Interfaces();
   const safeInstance = useSafeInstance(safeAddress);
 
-  const removeOwner = async (formData) => {
+  const addOwnerWithThreshold = async (formData) => {
     try {
       if (!safeInstance) {
         toast.error("Safe is not ready");
         return;
       }
 
-      if (
-        !formData.prevOwner_for_removal ||
-        !formData.newOwner_for_removal ||
-        !formData.newThreshold_for_removal
-      ) {
+      if (!formData.newOwner_with_threshold || !formData.new_threshold1) {
         toast.error("Fill the form before proceeding");
         return;
       }
 
-      if (
-        !isAddress(formData.prevOwner_for_removal) ||
-        !isAddress(formData.newOwner_for_removal)
-      ) {
-        toast.error("owners must be a valid addresses");
+      if (!isAddress(formData.newOwner_with_threshold)) {
+        toast.error("owner must be a valid address");
         return;
       }
 
       const interfaceOf = iface.safeSingltonInterface;
 
       // data
-      const data = interfaceOf.encodeFunctionData("removeOwner", [
-        formData.prevOwner_for_removal,
-        formData.newOwner_for_removal,
-        formData.newThreshold_for_removal,
+      const data = interfaceOf.encodeFunctionData("addOwnerWithThreshold", [
+        formData.newOwner_with_threshold,
+        formData.new_threshold1,
       ]);
 
       const to = safeAddress;
@@ -75,15 +67,11 @@ const useRemoveOwner = (safeAddress) => {
       return txHash;
     } catch (error) {
       console.error(error);
-      toast.error(`Error sending tokens: ${error.message || error}`, {
-        action: {
-          label: "Close",
-        },
-      });
+      toast.error(`Error sending tokens: ${error.message || error}`);
     }
   };
 
-  return removeOwner;
+  return addOwnerWithThreshold;
 };
 
-export default useRemoveOwner;
+export default useAddOwnerWithThreshold;
