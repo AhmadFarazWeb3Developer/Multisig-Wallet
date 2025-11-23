@@ -5,9 +5,9 @@ import { ethers } from "ethers";
 import { isAddress } from "ethers/lib/utils";
 
 const useTransferETH = (safeAddress) => {
-  const safeInstance = useSafeInstance(safeAddress);
+  const { safeReadInstance } = useSafeInstance(safeAddress);
   const transferETH = async (formData) => {
-    if (!safeInstance) {
+    if (!safeReadInstance) {
       toast.error("safe is not ready", {
         action: {
           label: "Close",
@@ -38,9 +38,9 @@ const useTransferETH = (safeAddress) => {
       const gasPrice = 0;
       const gasToken = ethers.constants.AddressZero;
       const refundReceiver = ethers.constants.AddressZero;
-      const nonce = await safeInstance.nonce();
+      const nonce = await safeReadInstance.nonce();
 
-      const txHash = await safeInstance.getTransactionHash(
+      const txHash = await safeReadInstance.getTransactionHash(
         to,
         value,
         data,

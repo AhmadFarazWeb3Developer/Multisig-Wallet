@@ -62,12 +62,10 @@ const useExecuteTransferETH = () => {
         capturedErrorCode = data;
       }
 
-      const Error = SAFE_ERRORS.filter((errorCode) => {
-        return capturedErrorCode === errorCode;
-      });
-
+      console.log("error : ", error);
+      const Error = SAFE_ERRORS[capturedErrorCode];
       console.log("error : ", Error);
-      toast.error("Failed to create transaction hash.", {
+      toast.error(Error, {
         action: {
           label: "Close",
         },

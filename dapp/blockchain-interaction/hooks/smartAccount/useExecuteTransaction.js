@@ -18,9 +18,14 @@ const useExecuteTransaction = () => {
 
     const { rows } = await response.json();
 
-    const bytesSignatures = rows.map((row) => arrayify(row.signature));
+    const sorted = rows
+      .map((row) => ({
+        owner: row.owner_address.toLowerCase(),
+        sig: arrayify(row.signature),
+      }))
+      .sort((a, b) => (a.owner > b.owner ? 1 : -1)); // ascending sorting
 
-    const aggregatedSignature = utils.concat(bytesSignatures);
+    const aggregatedSignature = utils.concat(sorted.map((x) => x.sig));
 
     const transaction = data.filter((tx) => {
       return tx.tx_hash === tx_hash;

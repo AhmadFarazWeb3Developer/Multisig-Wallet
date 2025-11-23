@@ -7,11 +7,11 @@ import { toast } from "sonner";
 
 const useChangeThreshold = (safeAddress) => {
   const iface = Interfaces();
-  const safeInstance = useSafeInstance(safeAddress);
+  const { safeReadInstance } = useSafeInstance(safeAddress);
 
   const changeThreshold = async (formData) => {
     try {
-      if (!safeInstance) {
+      if (!safeReadInstance) {
         toast.error("Safe is not ready");
         return;
       }
@@ -35,10 +35,10 @@ const useChangeThreshold = (safeAddress) => {
       const gasPrice = 0;
       const gasToken = ethers.constants.AddressZero;
       const refundReceiver = ethers.constants.AddressZero;
-      const nonce = await safeInstance.nonce();
+      const nonce = await safeReadInstance.nonce();
 
       // transaction hash
-      const txHash = await safeInstance.getTransactionHash(
+      const txHash = await safeReadInstance.getTransactionHash(
         to,
         value,
         data,
