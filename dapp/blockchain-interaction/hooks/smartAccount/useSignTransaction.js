@@ -1,5 +1,6 @@
 import useInstancesSigner from "@/blockchain-interaction/helper/instancesSigner";
-import { hexZeroPad } from "ethers/lib/utils";
+import { ethers } from "ethers";
+import { arrayify, joinSignature, splitSignature } from "ethers/lib/utils";
 import { toast } from "sonner";
 
 const useSignTransaction = () => {
@@ -37,15 +38,46 @@ const useSignTransaction = () => {
   const signTransaction = async (tx_hash, sender_address) => {
     const { signer } = await InstancesSigner();
     if (!signer) {
-      ("no signer");
+      toast.error("No signer available");
+      return;
     }
-    const Bytes32Hash = hexZeroPad(tx_hash);
 
-    const signature = await signer.signMessage(Bytes32Hash);
+    const Bytes32Hash = arrayify(tx_hash);
+    console.log("Signing hash:", tx_hash);
 
-    await submitSignature(tx_hash, sender_address, signature);
+    const rawSig = await signer.signMessage(Bytes32Hash);
+    console.log("Raw signature from MetaMask:", rawSig);
+
+    const sigObj = splitSignature(rawSig);
+    console.log(
+      "Split signature - r:",
+      sigObj.r,
+      "s:",
+      sigObj.s,
+      "v:",
+      sigObj.v
+    );
+
+    // Adjust v value for Safe's eth_sign format
+    let vSafe = sigObj.v;
+    if (vSafe < 27) vSafe += 27;
+    vSafe += 4; // Makes it 31 or 32
+
+    console.log("Adjusted v for Safe:", vSafe);
+
+    const r = sigObj.r;
+    const s = sigObj.s;
+    const vHex = ethers.utils.hexZeroPad(ethers.utils.hexlify(vSafe), 1);
+
+    const safeSig = r + s.slice(2) + vHex.slice(2);
+
+    console.log("r:", r);
+    console.log("s:", s);
+    console.log("v (hex):", vHex, "= decimal", vSafe);
+    console.log("Final signature (should end with 1f or 20):", safeSig);
+
+    await submitSignature(tx_hash, sender_address, safeSig);
   };
-
   return signTransaction;
 };
 

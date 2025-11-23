@@ -14,6 +14,8 @@ import {
 import { useAppKitAccount, useAppKitProvider } from "@reown/appkit/react";
 
 import useSafeInstance from "../blockchain-interaction/hooks/smartAccount/useSafeInstance";
+import { ethers } from "ethers";
+import { formatEther } from "ethers/lib/utils";
 
 type safeAddressInterface = {
   safeAddress: String;
@@ -27,11 +29,15 @@ type Owners = {
 export default function Home({ safeAddress }: safeAddressInterface) {
   const { safeReadInstance } = useSafeInstance(safeAddress);
   const { walletProvider } = useAppKitProvider("eip155");
+
   const { address, isConnected } = useAppKitAccount();
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [safeOwners, setSafeOwners] = useState<Owners[]>([]);
-  const [threshold, setThreshold] = useState<string | null>();
+
+  const [safeETH, setSafeETH] = useState<string>("0");
+
+  const [threshold, setThreshold] = useState<String | null>();
 
   const itemsPerPage = 5;
 
@@ -87,8 +93,12 @@ export default function Home({ safeAddress }: safeAddressInterface) {
 
         const threshold: string = await safeReadInstance.getThreshold();
 
+        const balance = await safeReadInstance.provider.getBalance(safeAddress);
+        const formattedBalance = formatEther(balance);
+
         setSafeOwners(formattedOwners);
         setThreshold(threshold);
+        setSafeETH(formattedBalance);
       } catch (err) {
         console.error("Error fetching owners:", err);
       }
@@ -105,7 +115,8 @@ export default function Home({ safeAddress }: safeAddressInterface) {
             Total Locked Value
           </p>
           <h3 className="text-white text-2xl sm:text-5xl font-bold mb-1">
-            0.0 <span className="text-xl sm:text-3xl text-[#A0A0A0]">ETH</span>
+            {safeETH || "0"}
+            <span className="text-xl sm:text-3xl text-[#A0A0A0]">ETH</span>
           </h3>
         </div>
 

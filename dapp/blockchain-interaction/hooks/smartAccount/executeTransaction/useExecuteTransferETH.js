@@ -6,7 +6,8 @@ const useExecuteTransferETH = () => {
   const executeTransferETH = async (
     safeWriteInstace,
     metadata,
-    aggregatedSignature
+    aggregatedSignature,
+    tx_hash
   ) => {
     try {
       const to = metadata.eth_recipient;
@@ -19,7 +20,42 @@ const useExecuteTransferETH = () => {
       const gasToken = ethers.constants.AddressZero;
       const refundReceiver = ethers.constants.AddressZero;
 
-      const txHash = await safeWriteInstace.execTransaction(
+      // Get current nonce
+      const nonce = await safeWriteInstace.nonce();
+      console.log("Current Safe nonce:", nonce.toString());
+
+      // Recalculate hash with current nonce to verify
+      const currentHash = await safeWriteInstace.getTransactionHash(
+        to,
+        value,
+        data,
+        operation,
+        safeTxGas,
+        baseGas,
+        gasPrice,
+        gasToken,
+        refundReceiver,
+        nonce
+      );
+
+      console.log("Stored tx_hash:     ", tx_hash);
+      console.log("Recalculated hash:  ", currentHash);
+      console.log("Aggregated signature:", utils.hexlify(aggregatedSignature));
+
+      if (currentHash !== tx_hash) {
+        toast.error(
+          "Transaction hash mismatch! The nonce may have changed. Please create a new transaction.",
+          {
+            action: { label: "Close" },
+          }
+        );
+        return;
+      }
+
+      console.log("✓ Hash verified! Executing transaction...");
+
+      // Execute the transaction with manual gas limit
+      const tx = await safeWriteInstace.execTransaction(
         to,
         value,
         data,
@@ -32,46 +68,69 @@ const useExecuteTransferETH = () => {
         aggregatedSignature
       );
 
-      if (txHash) {
-        toast.success(`${metadata.eth_amount} transferd to ${to}`, {
-          action: {
-            label: "Close",
-          },
-        });
-      }
+      console.log("Transaction submitted:", tx.hash);
 
-      return txHash;
+      toast.info("Transaction submitted! Waiting for confirmation...", {
+        action: { label: "Close" },
+      });
+
+      // Wait for transaction confirmation
+      const receipt = await tx.wait();
+      console.log("Transaction confirmed!", receipt);
+
+      toast.success(`${metadata.eth_amount} ETH transferred to ${to}`, {
+        action: {
+          label: "Close",
+        },
+      });
+
+      return receipt;
     } catch (error) {
       let capturedErrorCode = "Unknown";
 
       const data =
         error?.error?.data?.data?.data ||
+        error?.error?.data?.data ||
         error?.error?.data ||
         error?.data ||
         error?.reason;
 
-      if (!data) return capturedErrorCode;
+      console.log("Error data:", data);
 
-      if (typeof data === "string" && data.startsWith("0x08c379a0")) {
-        const reason = ethers.utils.defaultAbiCoder.decode(
-          ["string"],
-          "0x" + data.slice(10) // remove selector
-        );
-        capturedErrorCode = reason[0];
-      } else if (typeof data === "string") {
-        capturedErrorCode = data;
+      if (data) {
+        if (typeof data === "string" && data.startsWith("0x08c379a0")) {
+          try {
+            const reason = ethers.utils.defaultAbiCoder.decode(
+              ["string"],
+              "0x" + data.slice(10)
+            );
+            capturedErrorCode = reason[0];
+          } catch (e) {
+            console.log("Failed to decode error:", e);
+          }
+        } else if (typeof data === "string") {
+          capturedErrorCode = data;
+        }
       }
 
-      console.log("error : ", error);
-      const Error = SAFE_ERRORS[capturedErrorCode];
-      console.log("error : ", Error);
-      toast.error(Error, {
+      console.error("Execution error:", error);
+      console.error("Captured error code:", capturedErrorCode);
+
+      const errorMessage =
+        SAFE_ERRORS[capturedErrorCode] ||
+        capturedErrorCode ||
+        "Transaction execution failed";
+
+      toast.error(`Execution failed: ${errorMessage}`, {
         action: {
           label: "Close",
         },
       });
+
+      throw error;
     }
   };
+
   return executeTransferETH;
 };
 
