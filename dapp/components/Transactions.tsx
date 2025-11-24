@@ -113,7 +113,7 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
       } else {
         const data = await getQueuedTxs();
 
-        await executeTransaction(tx_hash, safeWriteInstace, data);
+        await executeTransaction(tx_hash, safeWriteInstace, data, safeAddress);
       }
     };
     init();

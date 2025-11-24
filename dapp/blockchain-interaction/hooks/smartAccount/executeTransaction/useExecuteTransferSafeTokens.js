@@ -1,18 +1,27 @@
 import { toast } from "sonner";
 import { ethers, utils } from "ethers";
 import { SAFE_ERRORS } from "../../../helper/safeErrorCodes";
+import Interfaces from "@/blockchain-interaction/helper/interfaces";
+import DeterministicAddresses from "@/blockchain-interaction/helper/deterministicAddresses";
 
-const useExecuteTransferETH = () => {
-  const executeTransferETH = async (
+const useExecuteTransferSafeTokens = () => {
+  const { safeSingltonInterface } = Interfaces();
+  const addresses = DeterministicAddresses();
+
+  const executeTransferSafeTokens = async (
     safeWriteInstace,
     metadata,
     aggregatedSignature,
     tx_hash
   ) => {
     try {
-      const to = metadata.eth_recipient;
-      const value = ethers.utils.parseEther(metadata.eth_amount.toString());
-      const data = "0x";
+      const data = safeSingltonInterface.encodeFunctionData("transfer", [
+        metadata.token_recipient,
+        metadata.token_amount,
+      ]);
+
+      const to = addresses.safeTokensMockAddress;
+      const value = 0;
       const operation = 0; // Enum.Operation.Call
       const safeTxGas = 0;
       const baseGas = 0;
@@ -20,8 +29,7 @@ const useExecuteTransferETH = () => {
       const gasToken = ethers.constants.AddressZero;
       const refundReceiver = ethers.constants.AddressZero;
 
-      // Get current nonce
-      const nonce = await safeWriteInstace.nonce();
+      const nonce = await safeInstance.nonce();
       console.log("Current Safe nonce:", nonce.toString());
 
       // Recalculate hash with current nonce to verify
@@ -137,7 +145,7 @@ const useExecuteTransferETH = () => {
     }
   };
 
-  return executeTransferETH;
+  return executeTransferSafeTokens;
 };
 
-export default useExecuteTransferETH;
+export default useExecuteTransferSafeTokens;

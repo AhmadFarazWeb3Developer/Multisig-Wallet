@@ -1,18 +1,24 @@
 import { toast } from "sonner";
 import { ethers, utils } from "ethers";
 import { SAFE_ERRORS } from "../../../helper/safeErrorCodes";
+import Interfaces from "@/blockchain-interaction/helper/interfaces";
 
-const useExecuteTransferETH = () => {
-  const executeTransferETH = async (
+const useExecuteSetGuard = () => {
+  const { safeSingltonInterface } = Interfaces();
+
+  const executeSetGuard = async (
     safeWriteInstace,
     metadata,
     aggregatedSignature,
-    tx_hash
+    tx_hash,
+    safeAddress
   ) => {
     try {
-      const to = metadata.eth_recipient;
-      const value = ethers.utils.parseEther(metadata.eth_amount.toString());
-      const data = "0x";
+      const to = safeAddress;
+      const value = 0;
+      const data = safeSingltonInterface.encodeFunctionData("setGuard", [
+        metadata.guardAddress,
+      ]);
       const operation = 0; // Enum.Operation.Call
       const safeTxGas = 0;
       const baseGas = 0;
@@ -83,7 +89,7 @@ const useExecuteTransferETH = () => {
       const getData = await response.json();
 
       if (receipt && getData.ok) {
-        toast.success(`${metadata.eth_amount} ETH transferred to ${to}`, {
+        toast.success(`Guard set to ${metadata.guardAddress}`, {
           action: {
             label: "Close",
           },
@@ -137,7 +143,7 @@ const useExecuteTransferETH = () => {
     }
   };
 
-  return executeTransferETH;
+  return executeSetGuard;
 };
 
-export default useExecuteTransferETH;
+export default useExecuteSetGuard;

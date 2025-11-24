@@ -2,14 +2,14 @@ const hre = require("hardhat");
 
 async function main() {
   const [signer] = await hre.ethers.getSigners();
-  const safeAddress = "0xbc4DD66209dF49fA3DEE9FF921ce0e7B1286e4F6";
+  const safeAddress = "0x7c520214c71ccd2554054f64a11145c1a299e616";
 
   console.log("Funding Safe from:", signer.address);
   console.log("Safe address:", safeAddress);
 
   const tx = await signer.sendTransaction({
     to: safeAddress,
-    value: hre.ethers.parseEther("1.0"),
+    value: hre.ethers.parseEther("4"),
   });
 
   console.log("Transaction hash:", tx.hash);

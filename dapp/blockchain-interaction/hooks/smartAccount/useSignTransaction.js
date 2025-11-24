@@ -43,10 +43,8 @@ const useSignTransaction = () => {
     }
 
     const Bytes32Hash = arrayify(tx_hash);
-    console.log("Signing hash:", tx_hash);
 
     const rawSig = await signer.signMessage(Bytes32Hash);
-    console.log("Raw signature from MetaMask:", rawSig);
 
     const sigObj = splitSignature(rawSig);
     console.log(
@@ -63,18 +61,11 @@ const useSignTransaction = () => {
     if (vSafe < 27) vSafe += 27;
     vSafe += 4; // Makes it 31 or 32
 
-    console.log("Adjusted v for Safe:", vSafe);
-
     const r = sigObj.r;
     const s = sigObj.s;
     const vHex = ethers.utils.hexZeroPad(ethers.utils.hexlify(vSafe), 1);
 
     const safeSig = r + s.slice(2) + vHex.slice(2);
-
-    console.log("r:", r);
-    console.log("s:", s);
-    console.log("v (hex):", vHex, "= decimal", vSafe);
-    console.log("Final signature (should end with 1f or 20):", safeSig);
 
     await submitSignature(tx_hash, sender_address, safeSig);
   };

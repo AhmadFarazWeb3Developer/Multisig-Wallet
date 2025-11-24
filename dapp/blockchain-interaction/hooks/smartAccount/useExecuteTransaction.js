@@ -1,12 +1,29 @@
 import { utils } from "ethers";
 import { arrayify } from "ethers/lib/utils";
 import useExecuteTransferETH from "../smartAccount/executeTransaction/useExecuteTransferETH";
+import useExecuteAddOwnerWithThreshold from "../smartAccount/executeTransaction/useExecuteAddOwnerWithThreshold";
+import useExecuteRemoveOwner from "../smartAccount/executeTransaction/useExecuteRemoveOwner";
+import useExecuteSetGuard from "../smartAccount/executeTransaction/useExecuteSetGuard";
+import useExecuteMintTokens from "../smartAccount/executeTransaction/useExecuteMintTokens";
+import useExecuteTransferSafeTokens from "../smartAccount/executeTransaction/useExecuteTransferSafeTokens";
+import useExecuteChangeThreshold from "../smartAccount/executeTransaction/useExecuteChangeThreshold";
 import { toast } from "sonner";
 
 const useExecuteTransaction = () => {
   const executeTransferETH = useExecuteTransferETH();
+  const executeAddOwnerWithThreshold = useExecuteAddOwnerWithThreshold();
+  const executeRemoveOwner = useExecuteRemoveOwner();
+  const executeSetGuard = useExecuteSetGuard();
+  const executeMintTokens = useExecuteMintTokens();
+  const executeTransferSafeTokens = useExecuteTransferSafeTokens();
+  const executeChangeThreshold = useExecuteChangeThreshold();
 
-  const executeTransaction = async (tx_hash, safeWriteInstace, data) => {
+  const executeTransaction = async (
+    tx_hash,
+    safeWriteInstace,
+    data,
+    safeAddress
+  ) => {
     const response = await fetch(
       `/api/transactions/get-single-hash-signatures?tx_hash=${encodeURIComponent(
         tx_hash
@@ -88,31 +105,65 @@ const useExecuteTransaction = () => {
     }
 
     if (txOpName === "Transfer Safe Tokens") {
-      // TODO
+      await executeTransferSafeTokens(
+        safeWriteInstace,
+        metadata,
+        aggregatedSignature,
+        tx_hash
+      );
     }
 
     if (txOpName === "Add Owner with Threshold") {
-      // TODO
+      await executeAddOwnerWithThreshold(
+        safeWriteInstace,
+        metadata,
+        aggregatedSignature,
+        tx_hash,
+        safeAddress
+      );
     }
 
     if (txOpName === "Remove Owner") {
-      // TODO
+      await executeRemoveOwner(
+        safeWriteInstace,
+        metadata,
+        aggregatedSignature,
+        tx_hash,
+        safeAddress
+      );
     }
 
     if (txOpName === "Change Threshold") {
-      // TODO
+      await executeChangeThreshold(
+        safeWriteInstace,
+        metadata,
+        aggregatedSignature,
+        tx_hash,
+        safeAddress
+      );
     }
 
     if (txOpName === "Set Guard") {
-      // TODO
+      await executeSetGuard(
+        safeWriteInstace,
+        metadata,
+        aggregatedSignature,
+        tx_hash,
+        safeAddress
+      );
     }
 
     if (txOpName === "Mint Tokens") {
-      // TODO
+      await executeMintTokens(
+        safeWriteInstace,
+        metadata,
+        aggregatedSignature,
+        tx_hash,
+        safeAddress
+      );
     }
 
     if (txOpName === "Swap Owner") {
-      // TODO
     }
   };
 

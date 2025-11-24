@@ -68,6 +68,25 @@ export async function signTransaction({ tx_hash, owner_address, signature }) {
   }
 }
 
+export async function storeExecutedTransaction({ tx_hash }) {
+  const client = await pool.connect();
+  try {
+    try {
+      const result = await client.query(
+        "INSERT INTO executed_transaction(tx_hash) VALUES($1) RETURNING*",
+        [tx_hash]
+      );
+
+      return result.rows[0];
+    } catch (error) {
+      console.error("Error queueing transaction:", error);
+      throw error;
+    } finally {
+      client.release();
+    }
+  } catch (error) {}
+}
+
 export async function getSignedTransactions() {
   try {
     const result = await pool.query(
