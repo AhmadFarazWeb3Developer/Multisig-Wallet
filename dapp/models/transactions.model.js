@@ -1,11 +1,11 @@
 import pool from "../lib/db";
 
 export async function queueTransaction({
+  tx_id,
   operation_name,
   operation_description,
   sender_address,
   sender_name,
-  tx_hash,
   metadata = {},
 }) {
   const client = await pool.connect();
@@ -13,18 +13,18 @@ export async function queueTransaction({
   try {
     const txResult = await client.query(
       `INSERT INTO queued_transactions(
+        tx_id
         operation_name,
         operation_description,
         sender_address,
         sender_name,
-        tx_hash
       ) VALUES($1,$2,$3,$4,$5) RETURNING tx_id`,
       [
+        tx_id,
         operation_name,
         operation_description,
         sender_address,
         sender_name,
-        tx_hash,
       ]
     );
 
@@ -34,7 +34,7 @@ export async function queueTransaction({
     for (const [key, value] of Object.entries(metadata)) {
       if (value !== null && value !== undefined) {
         await client.query(
-          `INSERT INTO queued_transaction_metadata(tx_hash, key, value)
+          `INSERT INTO queued_transaction_metadata(tx_id, key, value)
            VALUES($1, $2, $3)`,
           [tx_hash, key, value]
         );
@@ -130,7 +130,7 @@ export async function getTransactions() {
         ) AS metadata
       FROM queued_transactions qt
       LEFT JOIN queued_transaction_metadata qtm
-        ON qt.tx_hash = qtm.tx_hash
+        ON qt.tx_id = qtm.tx_id
       GROUP BY qt.tx_id
       ORDER BY qt.tx_id DESC;
     `);

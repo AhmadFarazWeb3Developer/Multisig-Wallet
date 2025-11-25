@@ -5,11 +5,11 @@ export async function POST(req) {
     const payload = await req.json();
 
     const {
+      tx_id,
       operation_name,
       operation_description,
       sender_address,
       sender_name,
-      tx_hash,
       metadata = {},
     } = payload;
 
@@ -18,7 +18,7 @@ export async function POST(req) {
       !operation_description ||
       !sender_address ||
       !sender_name ||
-      !tx_hash
+      !tx_id
     ) {
       return Response.json(
         { status: 400, error: "Missing required fields" },
@@ -27,11 +27,11 @@ export async function POST(req) {
     }
 
     const result = await queueTransaction({
+      tx_id,
       operation_name,
       operation_description,
       sender_address,
       sender_name,
-      tx_hash,
       metadata,
     });
 

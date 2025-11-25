@@ -12,15 +12,6 @@ import RemoveOwner from "./transactions/RemoveOwner";
 import MintTokens from "./transactions/MintTokens";
 import SwapOwner from "./transactions/SwapOwner";
 
-import useTransferETH from "../blockchain-interaction/hooks/smartAccount/getTransactionHash/useTransferETH";
-import useTransferSafeTokens from "../blockchain-interaction/hooks/smartAccount/getTransactionHash/useTransferSafeTokens";
-import useChangeThreshold from "../blockchain-interaction/hooks/smartAccount/getTransactionHash/useChangeThreshold";
-import useAddOwnerWithThreshold from "../blockchain-interaction/hooks/smartAccount/getTransactionHash/useAddOwnerWithThreshold";
-import useRemoveOwner from "../blockchain-interaction/hooks/smartAccount/getTransactionHash/useRemoveOwner";
-import useSetGuard from "../blockchain-interaction/hooks/smartAccount/getTransactionHash/useSetGuard";
-import useMintTokens from "../blockchain-interaction/hooks/smartAccount/getTransactionHash/useMintTokens";
-import useSwapOwner from "../blockchain-interaction/hooks/smartAccount/getTransactionHash/useSwapOwner";
-
 import useQueueTransaction from "../app/hooks/useQueueTransaction";
 
 type safeAddressInterface = {
@@ -37,60 +28,11 @@ export default function SafeTransactionForm({
   const [operation, setOperation] = useState("");
   const [formData, setForm] = useState<FormData>({});
 
-  const transferETH = useTransferETH(safeAddress);
-  const transferSafeTokens = useTransferSafeTokens(safeAddress);
-  const addOwnerWithThreshold = useAddOwnerWithThreshold(safeAddress);
-  const removeAddress = useRemoveOwner(safeAddress);
-  const changeThreshold = useChangeThreshold(safeAddress);
-  const setGuard = useSetGuard(safeAddress);
-  const mintTokens = useMintTokens(safeAddress);
-  const swapOwner = useSwapOwner(safeAddress);
-
   const queueTransaction = useQueueTransaction();
 
-  const handleSubmit = async () => {
-    if (operation === "Transfer ETH") {
-      const txHash = await transferETH(formData);
-      await queueTransaction(operation, formData, txHash);
-    }
-
-    if (operation === "Transfer Safe Tokens") {
-      if (!formData.token_recipient || !formData.token_amount) {
-        toast.error("Fill the form before proceeding");
-        return;
-      }
-
-      const txHash = await transferSafeTokens(formData);
-      await queueTransaction(operation, formData, txHash);
-    }
-
-    if (operation === "Add Owner with Threshold") {
-      const txHash = await addOwnerWithThreshold(formData);
-      await queueTransaction(operation, formData, txHash);
-    }
-    if (operation === "Remove Owner") {
-      const txHash = await removeAddress(formData);
-      await queueTransaction(operation, formData, txHash);
-    }
-
-    if (operation === "Change Threshold") {
-      const txHash = await changeThreshold(formData);
-      await queueTransaction(operation, formData, txHash);
-    }
-
-    if (operation === "Set Guard") {
-      const txHash = await setGuard(formData);
-      await queueTransaction(operation, formData, txHash);
-    }
-
-    if (operation === "Mint Tokens") {
-      const txHash = await mintTokens(formData);
-      await queueTransaction(operation, formData, txHash);
-    }
-
-    if (operation === "Swap Owner") {
-      const txHash = await swapOwner(formData);
-      await queueTransaction(operation, formData, txHash);
+  const handleQueueTransaction = async () => {
+    if (operation) {
+      await queueTransaction(operation, formData);
     }
   };
 
@@ -131,7 +73,7 @@ export default function SafeTransactionForm({
 
           <div className="pt-4">
             <button
-              onClick={handleSubmit}
+              onClick={handleQueueTransaction}
               className="w-full bg-[#eb5e28] text-white  text-xs py-3 sm:py-4 sm:text-sm font-medium uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 cursor-pointer rounded-sm"
             >
               Queue Transaction

@@ -1,10 +1,28 @@
-import useInstancesSigner from "@/blockchain-interaction/helper/instancesSigner";
 import { ethers } from "ethers";
 import { arrayify, joinSignature, splitSignature } from "ethers/lib/utils";
 import { toast } from "sonner";
 
-const useSignTransaction = () => {
+import useInstancesSigner from "@/blockchain-interaction/helper/instancesSigner";
+import useTransferETH from "./getTransactionHash/useTransferETH";
+import useTransferSafeTokens from "./getTransactionHash/useTransferSafeTokens";
+import useChangeThreshold from "./getTransactionHash/useChangeThreshold";
+import useAddOwnerWithThreshold from "./getTransactionHash/useAddOwnerWithThreshold";
+import useRemoveOwner from "./getTransactionHash/useRemoveOwner";
+import useSetGuard from "./getTransactionHash/useSetGuard";
+import useMintTokens from "./getTransactionHash/useMintTokens";
+import useSwapOwner from "./getTransactionHash/useSwapOwner";
+
+const useSignTransaction = (safeAddress) => {
   const InstancesSigner = useInstancesSigner();
+
+  const transferETH = useTransferETH(safeAddress);
+  const transferSafeTokens = useTransferSafeTokens(safeAddress);
+  const changeThreshold = useChangeThreshold(safeAddress);
+  const addOwnerWithThreshold = useAddOwnerWithThreshold(safeAddress);
+  const removeOwner = useRemoveOwner(safeAddress);
+  const setGuard = useSetGuard(safeAddress);
+  const mintTokens = useMintTokens(safeAddress);
+  const swapOwner = useSwapOwner(safeAddress);
 
   const submitSignature = async (tx_hash, owner_address, signature) => {
     const payload = {
@@ -35,14 +53,48 @@ const useSignTransaction = () => {
     });
   };
 
-  const signTransaction = async (tx_hash, sender_address) => {
+  const signTransaction = async (tx, sender_address) => {
     const { signer } = await InstancesSigner();
     if (!signer) {
       toast.error("No signer available");
       return;
     }
 
-    const Bytes32Hash = arrayify(tx_hash);
+    let txHash;
+
+    if (tx.operation_name == "Transfer ETH") {
+      txHash = await transferETH(tx.metadata);
+    }
+
+    if (tx.operation_name == "Transfer Safe Tokens") {
+      txHash = await transferSafeTokens(tx.metadata);
+    }
+
+    if (tx.operation_name == "Add Owner with Threshold") {
+      txHash = await addOwnerWithThreshold(tx.metadata);
+    }
+
+    if (tx.operation_name == "Remove Owner") {
+      txHash = await removeOwner(tx.metadata);
+    }
+
+    if (tx.operation_name == "Set Guard") {
+      txHash = await setGuard(tx.metadata);
+    }
+
+    if (tx.operation_name == "Change Threshold") {
+      txHash = await changeThreshold(tx.metadata);
+    }
+
+    if (tx.operation_name == "Mint Tokens") {
+      txHash = await mintTokens(tx.metadata);
+    }
+
+    if (tx.operation_name == "Swap Owner") {
+      txHash = await swapOwner(tx.metadata);
+    }
+
+    const Bytes32Hash = arrayify(txHash);
 
     const rawSig = await signer.signMessage(Bytes32Hash);
 
@@ -67,7 +119,7 @@ const useSignTransaction = () => {
 
     const safeSig = r + s.slice(2) + vHex.slice(2);
 
-    await submitSignature(tx_hash, sender_address, safeSig);
+    await submitSignature(txHash, sender_address, safeSig);
   };
   return signTransaction;
 };

@@ -43,7 +43,7 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
   const safeSignatureCount = useSafeSignatureCount();
   const getQueuedTxs = useGetQueuedTxs();
 
-  const signTransaction = useSignTransaction();
+  const signTransaction = useSignTransaction(safeAddress);
   const executeTransaction = useExecuteTransaction();
 
   useEffect(() => {
@@ -73,7 +73,7 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
         const filterNotSignedOnes = data.filter((tx) => {
           const hasSigned = safe_transaction_signatures.some(
             (sig) =>
-              sig.tx_hash === tx.tx_hash &&
+              sig.tx_id === tx.tx_id &&
               sig.owner_address.toLowerCase() === address.toLowerCase()
           );
 
@@ -84,6 +84,7 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
         setThreshold(threshold.toNumber());
         setToBeSignedTransactions(filterNotSignedOnes);
       }
+
       if (activeTab == "executed") {
       }
 
@@ -93,19 +94,19 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
     init();
   }, [activeTab, safeReadInstance]);
 
-  const handleTransactionSignature = (tx_hash: string) => {
+  const handleTransactionSignature = (tx: any) => {
     const init = async () => {
       if (!isConnected || !address) {
         toast.error("wallet is not connected!", { action: { label: "Close" } });
         return;
       } else {
-        await signTransaction(tx_hash, address);
+        await signTransaction(tx, address);
       }
     };
     init();
   };
 
-  const handleExecutedTransaction = (tx_hash: string) => {
+  const handleExecutedTransaction = (tx_id: string) => {
     const init = async () => {
       if (!safeWriteInstace) {
         toast.error("wait for safe instance");
@@ -113,7 +114,7 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
       } else {
         const data = await getQueuedTxs();
 
-        await executeTransaction(tx_hash, safeWriteInstace, data, safeAddress);
+        await executeTransaction(tx_id, safeWriteInstace, data, safeAddress);
       }
     };
     init();
@@ -287,14 +288,14 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
 
           <p className="text-white font-mono text-xs">
             <span className="text-[#6B7280] mr-1">Tx:</span>
-            {tx.tx_hash.slice(0, 10)}...{tx.tx_hash.slice(-6)}
+            {tx.tx_id.slice(0, 10)}...{tx.tx_id.slice(-6)}
           </p>
         </div>
       </div>
 
       <div className="flex justify-end mt-3">
         <button
-          onClick={() => handleTransactionSignature(tx.tx_hash)}
+          onClick={() => handleTransactionSignature(tx)}
           className="bg-[#eb5e28] hover:bg-[#d54e20] text-white flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer"
         >
           <Key size={14} />
@@ -419,7 +420,7 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
       {isPending && (
         <div className="flex gap-2">
           <button
-            onClick={() => handleExecutedTransaction(tx.tx_hash)}
+            onClick={() => handleExecutedTransaction(tx.tx_id)}
             className="flex-1 bg-[#eb5e28] hover:bg-[#d54e20] text-white py-1.5 sm:py-2 rounded-lg  text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
           >
             <CheckCircle className="  size-4" />

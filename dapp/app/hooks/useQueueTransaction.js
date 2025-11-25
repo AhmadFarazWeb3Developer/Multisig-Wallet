@@ -1,10 +1,11 @@
 import { useAppKitAccount } from "@reown/appkit/react";
 import { toast } from "sonner";
+import { v4 as uuidv4 } from "uuid";
 
 const useQueueTransaction = () => {
   const { isConnected, address } = useAppKitAccount();
 
-  const queueTransaction = async (operation, formData, txHash) => {
+  const queueTransaction = async (operation, formData) => {
     if (!isConnected || !address) {
       toast.error("Wallet is not connected");
       return;
@@ -76,12 +77,12 @@ const useQueueTransaction = () => {
 
     // Main payload
     const payload = {
+      tx_id: uuidv4(),
       operation_name: operation,
       operation_description: formData.operation_description,
       sender_address: data.owner_address,
       sender_name: data.owner_name,
-      tx_hash: txHash,
-      metadata, // metadata
+      metadata,
     };
 
     const response = await fetch("/api/transactions/queue-transaction", {
