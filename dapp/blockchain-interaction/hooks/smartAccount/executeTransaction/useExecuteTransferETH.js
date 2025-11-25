@@ -1,14 +1,18 @@
 import { toast } from "sonner";
 import { ethers, utils } from "ethers";
 import { SAFE_ERRORS } from "../../../helper/safeErrorCodes";
+import { useState } from "react";
 
 const useExecuteTransferETH = () => {
+  const [isApproving, setIsApproving] = useState(false);
+
   const executeTransferETH = async (
-    safeWriteInstace,
+    safeWriteInstance,
     metadata,
     aggregatedSignature,
-    tx_hash
+    tx
   ) => {
+    setIsApproving(true);
     try {
       const to = metadata.eth_recipient;
       const value = ethers.utils.parseEther(metadata.eth_amount.toString());
@@ -21,11 +25,11 @@ const useExecuteTransferETH = () => {
       const refundReceiver = ethers.constants.AddressZero;
 
       // Get current nonce
-      const nonce = await safeWriteInstace.nonce();
+      const nonce = await safeWriteInstance.nonce();
       console.log("Current Safe nonce:", nonce.toString());
 
-      // Recalculate hash with current nonce to verify
-      const currentHash = await safeWriteInstace.getTransactionHash(
+      // Compute the transaction hash
+      const txHash = await safeWriteInstance.getTransactionHash(
         to,
         value,
         data,
@@ -37,22 +41,11 @@ const useExecuteTransferETH = () => {
         refundReceiver,
         nonce
       );
-
-      console.log("Stored tx_hash:     ", tx_hash);
-      console.log("Recalculated hash:  ", currentHash);
+      console.log("Transaction hash:", txHash);
       console.log("Aggregated signature:", utils.hexlify(aggregatedSignature));
 
-      if (currentHash !== tx_hash) {
-        toast.error(
-          "Transaction hash mismatch! The nonce may have changed. Please create a new transaction.",
-          {
-            action: { label: "Close" },
-          }
-        );
-        return;
-      }
-
-      const tx = await safeWriteInstace.execTransaction(
+      // Execute transaction
+      const execTransaction = await safeWriteInstance.execTransaction(
         to,
         value,
         data,
@@ -65,10 +58,17 @@ const useExecuteTransferETH = () => {
         aggregatedSignature
       );
 
-      const receipt = await tx.wait();
+      const receipt = await execTransaction.wait();
 
+      console.log("meta data : ", metadata);
+
+      // Prepare payload for DB
       const payload = {
-        tx_hash: tx_hash,
+        tx_id: tx.tx_id,
+        tx_hash: txHash,
+        metadata,
+        operation_name: tx.operation_name,
+        status: receipt.status, // 1 = success, 0 = fail
       };
 
       const response = await fetch(
@@ -81,13 +81,15 @@ const useExecuteTransferETH = () => {
       );
 
       const getData = await response.json();
+      console.log("get data : ", getData);
 
-      if (receipt && getData.ok) {
-        toast.success(`${metadata.eth_amount} ETH transferred to ${to}`, {
-          action: {
-            label: "Close",
-          },
-        });
+      console.log("receppit : ", receipt);
+
+      if (receipt && getData.status === 200) {
+        toast.success(
+          `${metadata.eth_amount} ETH transferred to ${metadata.eth_recipient}`,
+          { action: { label: "Close" } }
+        );
       }
 
       return receipt;
@@ -101,7 +103,7 @@ const useExecuteTransferETH = () => {
         error?.data ||
         error?.reason;
 
-      console.log("Error data:", data);
+      console.error("Error data:", data);
 
       if (data) {
         if (typeof data === "string" && data.startsWith("0x08c379a0")) {
@@ -112,15 +114,12 @@ const useExecuteTransferETH = () => {
             );
             capturedErrorCode = reason[0];
           } catch (e) {
-            console.log("Failed to decode error:", e);
+            console.error("Failed to decode error:", e);
           }
         } else if (typeof data === "string") {
           capturedErrorCode = data;
         }
       }
-
-      console.error("Execution error:", error);
-      console.error("Captured error code:", capturedErrorCode);
 
       const errorMessage =
         SAFE_ERRORS[capturedErrorCode] ||
@@ -128,16 +127,16 @@ const useExecuteTransferETH = () => {
         "Transaction execution failed";
 
       toast.error(`Execution failed: ${errorMessage}`, {
-        action: {
-          label: "Close",
-        },
+        action: { label: "Close" },
       });
 
       throw error;
+    } finally {
+      setIsApproving(false);
     }
   };
 
-  return executeTransferETH;
+  return { executeTransferETH, isApproving };
 };
 
 export default useExecuteTransferETH;

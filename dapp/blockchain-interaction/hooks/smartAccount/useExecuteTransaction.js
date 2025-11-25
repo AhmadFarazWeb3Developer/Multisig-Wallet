@@ -10,7 +10,7 @@ import useExecuteChangeThreshold from "../smartAccount/executeTransaction/useExe
 import { toast } from "sonner";
 
 const useExecuteTransaction = () => {
-  const executeTransferETH = useExecuteTransferETH();
+  const { executeTransferETH, isApproving } = useExecuteTransferETH();
   const executeAddOwnerWithThreshold = useExecuteAddOwnerWithThreshold();
   const executeRemoveOwner = useExecuteRemoveOwner();
   const executeSetGuard = useExecuteSetGuard();
@@ -19,19 +19,22 @@ const useExecuteTransaction = () => {
   const executeChangeThreshold = useExecuteChangeThreshold();
 
   const executeTransaction = async (
-    tx_hash,
+    tx,
     safeWriteInstace,
     data,
     safeAddress
   ) => {
     const response = await fetch(
-      `/api/transactions/get-single-hash-signatures?tx_hash=${encodeURIComponent(
-        tx_hash
+      `/api/transactions/get-single-hash-signatures?tx_id=${encodeURIComponent(
+        tx.tx_id
       )}`,
       {
         method: "GET",
       }
     );
+
+    console.log("data  : ", data);
+    console.log("tx  : ", tx);
 
     const { rows } = await response.json();
 
@@ -59,8 +62,9 @@ const useExecuteTransaction = () => {
     const aggregatedSignature = utils.concat(sorted.map((x) => x.sig));
     console.log("Aggregated signature:", utils.hexlify(aggregatedSignature));
 
+    const currentTxId = tx.tx_id;
     const transaction = data.filter((tx) => {
-      return tx.tx_hash === tx_hash;
+      return tx.tx_id === currentTxId;
     });
 
     if (transaction.length === 0) {
@@ -100,7 +104,7 @@ const useExecuteTransaction = () => {
         safeWriteInstace,
         metadata,
         aggregatedSignature,
-        tx_hash
+        tx
       );
     }
 
@@ -109,7 +113,7 @@ const useExecuteTransaction = () => {
         safeWriteInstace,
         metadata,
         aggregatedSignature,
-        tx_hash
+        tx
       );
     }
 
@@ -118,8 +122,8 @@ const useExecuteTransaction = () => {
         safeWriteInstace,
         metadata,
         aggregatedSignature,
-        tx_hash,
-        safeAddress
+        safeAddress,
+        tx
       );
     }
 
@@ -128,8 +132,8 @@ const useExecuteTransaction = () => {
         safeWriteInstace,
         metadata,
         aggregatedSignature,
-        tx_hash,
-        safeAddress
+        safeAddress,
+        tx
       );
     }
 
@@ -138,8 +142,8 @@ const useExecuteTransaction = () => {
         safeWriteInstace,
         metadata,
         aggregatedSignature,
-        tx_hash,
-        safeAddress
+        safeAddress,
+        tx
       );
     }
 
@@ -148,8 +152,8 @@ const useExecuteTransaction = () => {
         safeWriteInstace,
         metadata,
         aggregatedSignature,
-        tx_hash,
-        safeAddress
+        safeAddress,
+        tx
       );
     }
 
@@ -158,8 +162,8 @@ const useExecuteTransaction = () => {
         safeWriteInstace,
         metadata,
         aggregatedSignature,
-        tx_hash,
-        safeAddress
+        safeAddress,
+        tx
       );
     }
 
@@ -167,7 +171,7 @@ const useExecuteTransaction = () => {
     }
   };
 
-  return executeTransaction;
+  return { executeTransaction, isApproving };
 };
 
 export default useExecuteTransaction;

@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { toast } from "sonner";
+
+import { Loader2 } from "lucide-react";
+
 import CustomSelect from "./CustomSelect";
 import TransferETH from "./transactions/TransferETH";
 import TransferSafeTokens from "./transactions/TransferSafeTokens";
@@ -28,7 +30,7 @@ export default function SafeTransactionForm({
   const [operation, setOperation] = useState("");
   const [formData, setForm] = useState<FormData>({});
 
-  const queueTransaction = useQueueTransaction();
+  const { queueTransaction, IsLoading } = useQueueTransaction();
 
   const handleQueueTransaction = async () => {
     if (operation) {
@@ -61,22 +63,28 @@ export default function SafeTransactionForm({
           {operation === "Add Owner with Threshold" && (
             <AddOwnerWithThreshold setForm={setForm} />
           )}
-
           {operation === "Remove Owner" && <RemoveOwner setForm={setForm} />}
           {operation === "Set Guard" && <SetGuard setForm={setForm} />}
           {operation === "Change Threshold" && (
             <ChangeThreshold setForm={setForm} />
           )}
-
           {operation === "Mint Tokens" && <MintTokens setForm={setForm} />}
           {operation === "Swap Owner" && <SwapOwner setForm={setForm} />}
 
           <div className="pt-4">
             <button
               onClick={handleQueueTransaction}
-              className="w-full bg-[#eb5e28] text-white  text-xs py-3 sm:py-4 sm:text-sm font-medium uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 cursor-pointer rounded-sm"
+              disabled={IsLoading}
+              className="w-full bg-[#eb5e28] text-white text-xs py-3 sm:py-4 sm:text-sm font-medium uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 cursor-pointer rounded-sm disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Queue Transaction
+              {IsLoading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <Loader2 className="animate-spin w-4 h-4" />
+                  Queuing...
+                </div>
+              ) : (
+                "Queue Transaction"
+              )}
             </button>
           </div>
         </div>

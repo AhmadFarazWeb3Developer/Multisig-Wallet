@@ -1,8 +1,8 @@
-import { getSignedTransactions } from "../../../../models/transactions.model";
+import { getExecutedTransactions } from "../../../../models/transactions.model";
 
 export async function GET() {
   try {
-    const transactions = await getSignedTransactions();
+    const transactions = await getExecutedTransactions();
 
     return Response.json(transactions, { status: 200 });
   } catch (err) {

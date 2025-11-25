@@ -4,9 +4,9 @@ export async function POST(req) {
   try {
     const payload = await req.json();
 
-    const { tx_hash, owner_address, signature } = payload;
+    const { tx_id, owner_address, signature } = payload;
 
-    if (!signature || !owner_address || !tx_hash) {
+    if (!signature || !owner_address || !tx_id) {
       return Response.json(
         { status: 400, error: "Missing required fields" },
         { status: 400 }
@@ -14,9 +14,9 @@ export async function POST(req) {
     }
 
     const result = await signTransaction({
-      signature,
+      tx_id,
       owner_address,
-      tx_hash,
+      signature,
     });
 
     return Response.json({ status: 200, data: result });

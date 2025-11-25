@@ -94,6 +94,9 @@ export default function Home({ safeAddress }: safeAddressInterface) {
         const threshold: string = await safeReadInstance.getThreshold();
 
         const balance = await safeReadInstance.provider.getBalance(safeAddress);
+
+        console.log("balance : ", balance);
+
         const formattedBalance = formatEther(balance);
 
         setSafeOwners(formattedOwners);

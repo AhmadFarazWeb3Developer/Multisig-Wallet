@@ -1,7 +1,6 @@
 import pool from "../lib/db";
 
 export async function queueTransaction({
-  tx_id,
   operation_name,
   operation_description,
   sender_address,
@@ -13,30 +12,22 @@ export async function queueTransaction({
   try {
     const txResult = await client.query(
       `INSERT INTO queued_transactions(
-        tx_id
         operation_name,
         operation_description,
         sender_address,
-        sender_name,
-      ) VALUES($1,$2,$3,$4,$5) RETURNING tx_id`,
-      [
-        tx_id,
-        operation_name,
-        operation_description,
-        sender_address,
-        sender_name,
-      ]
+        sender_name
+      ) VALUES($1,$2,$3,$4) RETURNING tx_id`,
+      [operation_name, operation_description, sender_address, sender_name]
     );
 
     const txId = txResult.rows[0].tx_id;
 
-    // Insert metadata dynamically
     for (const [key, value] of Object.entries(metadata)) {
       if (value !== null && value !== undefined) {
         await client.query(
-          `INSERT INTO queued_transaction_metadata(tx_id, key, value)
+          `INSERT INTO queued_transaction_metadata(tx_id, meta_key, meta_value)
            VALUES($1, $2, $3)`,
-          [tx_hash, key, value]
+          [txId, key, value]
         );
       }
     }
@@ -50,13 +41,13 @@ export async function queueTransaction({
   }
 }
 
-export async function signTransaction({ tx_hash, owner_address, signature }) {
+export async function signTransaction({ tx_id, owner_address, signature }) {
   const client = await pool.connect();
 
   try {
     const result = await client.query(
-      "INSERT INTO safe_transaction_signatures(tx_hash,owner_address,signature) VALUES($1, $2, $3) RETURNING*",
-      [tx_hash, owner_address, signature]
+      "INSERT INTO safe_transaction_signatures(tx_id,owner_address,signature) VALUES($1, $2, $3) RETURNING*",
+      [tx_id, owner_address, signature]
     );
 
     return result.rows[0];
@@ -68,23 +59,31 @@ export async function signTransaction({ tx_hash, owner_address, signature }) {
   }
 }
 
-export async function storeExecutedTransaction({ tx_hash }) {
+export async function storeExecutedTransaction({
+  tx_id,
+  tx_hash,
+  metadata,
+  operation_name,
+  status,
+}) {
   const client = await pool.connect();
-  try {
-    try {
-      const result = await client.query(
-        "INSERT INTO executed_transaction(tx_hash) VALUES($1) RETURNING*",
-        [tx_hash]
-      );
 
-      return result.rows[0];
-    } catch (error) {
-      console.error("Error queueing transaction:", error);
-      throw error;
-    } finally {
-      client.release();
-    }
-  } catch (error) {}
+  try {
+    const result = await client.query(
+      `INSERT INTO executed_transactions
+        (tx_id, tx_hash, metadata, operation_name, status)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING *`,
+      [tx_id, tx_hash, JSON.stringify(metadata), operation_name, status]
+    );
+
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error storing executed transaction:", error);
+    throw error;
+  } finally {
+    client.release();
+  }
 }
 
 export async function getSignedTransactions() {
@@ -100,13 +99,13 @@ export async function getSignedTransactions() {
   }
 }
 
-export async function getSingleHashSignature(tx_hash) {
+export async function getSingleHashSignature(tx_id) {
   const client = await pool.connect();
 
   try {
     const result = await client.query(
-      "SELECT * FROM safe_transaction_signatures WHERE tx_hash = $1 ",
-      [tx_hash]
+      "SELECT * FROM safe_transaction_signatures WHERE tx_id = $1 ",
+      [tx_id]
     );
 
     return result;
@@ -124,8 +123,8 @@ export async function getTransactions() {
       SELECT 
         qt.*,
         COALESCE(
-          jsonb_object_agg(qtm.key, qtm.value) 
-          FILTER (WHERE qtm.key IS NOT NULL), 
+          jsonb_object_agg(qtm.meta_key, qtm.meta_value) 
+          FILTER (WHERE qtm.meta_key IS NOT NULL), 
         '{}'::jsonb
         ) AS metadata
       FROM queued_transactions qt
@@ -134,6 +133,17 @@ export async function getTransactions() {
       GROUP BY qt.tx_id
       ORDER BY qt.tx_id DESC;
     `);
+
+    return result.rows;
+  } catch (error) {
+    console.error("Error fetching transactions:", error);
+    throw error;
+  }
+}
+
+export async function getExecutedTransactions() {
+  try {
+    const result = await pool.query("SELECT * FROM executed_transactions");
 
     return result.rows;
   } catch (error) {
