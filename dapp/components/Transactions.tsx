@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import SignatureCard from "./cards/SignatureTxCard";
 import PendingTxCard from "./cards/PendingTxCard";
 import ExecutedTxCard from "./cards/ExecutedTxCard";
+import QueuedTxCard from "./cards/QueuedTxCard";
 
 type safeAddressInterface = {
   safeAddress: String;
@@ -14,16 +15,10 @@ type safeAddressInterface = {
 export default function Transactions({ safeAddress }: safeAddressInterface) {
   const router = useRouter();
 
-  const [activeTab, setActiveTab] = useState("signatures");
+  const [activeTab, setActiveTab] = useState("queued");
 
   useEffect(() => {
-    const init = async () => {
-      if (activeTab == "executed") {
-      }
-
-      if (activeTab == "rejected") {
-      }
-    };
+    const init = async () => {};
     init();
   }, [activeTab]);
 
@@ -50,6 +45,17 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
             </div>
 
             <div className="flex gap-2 border-b border-[#333333]">
+              <button
+                onClick={() => setActiveTab("queued")}
+                className={`flex-1 py-2.5 px-4 text-xs sm:text-sm font-semibold transition-all relative cursor-pointer ${
+                  activeTab === "queued"
+                    ? "text-white after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-[#eb5e28]"
+                    : "text-[#A0A0A0] hover:text-white"
+                }`}
+              >
+                Queued ({1})
+              </button>
+
               <button
                 onClick={() => setActiveTab("signatures")}
                 className={`flex-1 py-2.5 px-4 text-xs sm:text-sm font-semibold transition-all relative cursor-pointer ${
@@ -94,6 +100,8 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
             </div>
 
             <div className="flex items-center  flex-col w-full ">
+              {activeTab === "queued" && <QueuedTxCard />}
+
               {activeTab === "signatures" && (
                 <SignatureCard safeAddress={safeAddress} />
               )}
