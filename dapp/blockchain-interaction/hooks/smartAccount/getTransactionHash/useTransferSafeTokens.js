@@ -10,7 +10,7 @@ const useTransferSafeTokens = (safeAddress) => {
   const addresses = DeterministicAddresses();
   const safeInstance = useSafeInstance(safeAddress);
 
-  const transferSafeTokens = async (formData) => {
+  const transferSafeTokens = async (metadata) => {
     try {
       if (!safeInstance) {
         toast.error("Safe is not ready", {
@@ -23,10 +23,11 @@ const useTransferSafeTokens = (safeAddress) => {
 
       const interfaceOf = iface.safeTokensInterface;
 
+      console.log("metadata", metadata);
       // data
       const data = interfaceOf.encodeFunctionData("transfer", [
-        formData.token_recipient,
-        formData.token_amount,
+        metadata.token_recipient,
+        metadata.token_amount,
       ]);
 
       const safeTokensAddress = addresses.safeTokensMockAddress;

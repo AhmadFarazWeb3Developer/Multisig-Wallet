@@ -60,15 +60,12 @@ const useExecuteTransferETH = () => {
 
       const receipt = await execTransaction.wait();
 
-      console.log("meta data : ", metadata);
-
-      // Prepare payload for DB
       const payload = {
         tx_id: tx.tx_id,
         tx_hash: txHash,
         metadata,
         operation_name: tx.operation_name,
-        status: receipt.status, // 1 = success, 0 = fail
+        status: receipt.status,
       };
 
       const response = await fetch(

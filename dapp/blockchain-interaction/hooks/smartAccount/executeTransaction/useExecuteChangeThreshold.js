@@ -10,14 +10,14 @@ const useExecuteChangeThreshold = () => {
     safeWriteInstace,
     metadata,
     aggregatedSignature,
-    tx_hash,
-    safeAddress
+    safeAddress,
+    tx
   ) => {
     try {
       const to = safeAddress;
       const value = 0;
       const data = safeSingltonInterface.encodeFunctionData("changeThreshold", [
-        formData.new_threshold2,
+        metadata.new_threshold2,
       ]);
       const operation = 0; // Enum.Operation.Call
       const safeTxGas = 0;
@@ -31,7 +31,7 @@ const useExecuteChangeThreshold = () => {
       console.log("Current Safe nonce:", nonce.toString());
 
       // Recalculate hash with current nonce to verify
-      const currentHash = await safeWriteInstace.getTransactionHash(
+      const txHash = await safeWriteInstace.getTransactionHash(
         to,
         value,
         data,
@@ -44,21 +44,9 @@ const useExecuteChangeThreshold = () => {
         nonce
       );
 
-      console.log("Stored tx_hash:     ", tx_hash);
-      console.log("Recalculated hash:  ", currentHash);
       console.log("Aggregated signature:", utils.hexlify(aggregatedSignature));
 
-      if (currentHash !== tx_hash) {
-        toast.error(
-          "Transaction hash mismatch! The nonce may have changed. Please create a new transaction.",
-          {
-            action: { label: "Close" },
-          }
-        );
-        return;
-      }
-
-      const tx = await safeWriteInstace.execTransaction(
+      const execTransaction = await safeWriteInstace.execTransaction(
         to,
         value,
         data,
@@ -71,10 +59,17 @@ const useExecuteChangeThreshold = () => {
         aggregatedSignature
       );
 
-      const receipt = await tx.wait();
+      const receipt = await execTransaction.wait();
 
+      console.log("meta data : ", metadata);
+
+      // Prepare payload for DB
       const payload = {
-        tx_hash: tx_hash,
+        tx_id: tx.tx_id,
+        tx_hash: txHash,
+        metadata,
+        operation_name: tx.operation_name,
+        status: receipt.status, // 1 = success, 0 = fail
       };
 
       const response = await fetch(
@@ -87,12 +82,13 @@ const useExecuteChangeThreshold = () => {
       );
 
       const getData = await response.json();
+      console.log("get data : ", getData);
 
-      if (receipt && getData.ok) {
-        toast.success(`${metadata.eth_amount} ETH transferred to ${to}`, {
-          action: {
-            label: "Close",
-          },
+      console.log("receppit : ", receipt);
+
+      if (receipt && getData.status === 200) {
+        toast.success(`${metadata.new_threshold2} threshold set!`, {
+          action: { label: "Close" },
         });
       }
 

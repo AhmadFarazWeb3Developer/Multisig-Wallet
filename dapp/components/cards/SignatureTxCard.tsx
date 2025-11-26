@@ -3,7 +3,6 @@ import { toast } from "sonner";
 import { useAppKitAccount } from "@reown/appkit/react";
 import useSignTransaction from "@/blockchain-interaction/hooks/smartAccount/useSignTransaction";
 import { useEffect, useState } from "react";
-import { init } from "next/dist/compiled/webpack/webpack";
 import useGetQueuedTxs from "../../app/hooks/useGetQueuedTxs";
 import useSafeSignatureCount from "@/blockchain-interaction/hooks/smartAccount/useSafeSignatureCount";
 import useSafeInstance from "@/blockchain-interaction/hooks/smartAccount/useSafeInstance";
@@ -88,7 +87,7 @@ export default function SignatureTxCard({ safeAddress }: SignatureTxCardProps) {
       {firstTx ? (
         <div
           key={firstTx.tx_id}
-          className="bg-[#1A1A1A] border border-[#333333] rounded-xl p-4 hover:border-[#eb5e28] transition-all"
+          className="bg-[#1A1A1A] border border-[#333333] rounded-xl p-4 hover:border-[#eb5e28] transition-all w-full"
         >
           <h3 className="text-white font-semibold text-sm tracking-wide">
             {firstTx.operation_name}

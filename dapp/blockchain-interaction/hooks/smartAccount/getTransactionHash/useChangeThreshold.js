@@ -9,18 +9,20 @@ const useChangeThreshold = (safeAddress) => {
   const iface = Interfaces();
   const { safeReadInstance } = useSafeInstance(safeAddress);
 
-  const changeThreshold = async (formData) => {
+  const changeThreshold = async (metadata) => {
     try {
       if (!safeReadInstance) {
         toast.error("Safe is not ready");
         return;
       }
 
-      if (formData.new_threshold2 == "0" || !formData.new_threshold2) {
+      if (!metadata.new_threshold2 == "0" || !metadata.new_threshold2) {
         toast.error("0 or undefined threshold cannot be set");
         return;
       }
       const interfaceOf = iface.safeSingltonInterface;
+
+      console.log("meta data : ", metadata);
 
       // data
       const data = interfaceOf.encodeFunctionData("changeThreshold", [
