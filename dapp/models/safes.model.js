@@ -1,6 +1,25 @@
 import pool from "../lib/db.js";
 import { addOwner, linkOwnerToSafe } from "./owners.model.js";
 
+export async function findOwnerSafe(ownerAddress) {
+  try {
+    const query = `
+      SELECT s.*
+      FROM safes s
+      JOIN safe_owners so ON s.id = so.safe_id
+      JOIN owners o ON o.id = so.owner_id
+      WHERE o.owner_address = $1
+    `;
+
+    const { rows } = await pool.query(query, [ownerAddress]);
+
+    return rows;
+  } catch (error) {
+    console.error("Error fetching safes:", error);
+    throw error;
+  }
+}
+
 export async function getAllSafes() {
   try {
     const result = await pool.query("SELECT * FROM safes ");

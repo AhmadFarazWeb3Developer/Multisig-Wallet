@@ -5,10 +5,13 @@ import { useEffect, useRef } from "react";
 
 import Instances from "../blockchain-interaction/helper/instancesProvider";
 import Interfaces from "../blockchain-interaction/helper/interfaces";
+import { useUiProvider } from "./context/UiProvider";
 
 export default function HomePage() {
   const router = useRouter();
   const canvasRef = useRef(null);
+
+  const { isLoading } = useUiProvider();
 
   useEffect(() => {
     Interfaces();
@@ -59,10 +62,11 @@ export default function HomePage() {
           Welcome to Multisig era, where single-sig isn't enough.
         </p>
         <button
+          disabled={isLoading}
           onClick={() => router.push("/create-smart-account")}
           className="px-6 py-3  text-sm sm:text-lg font-semibold rounded-full bg-[#eb5e28] text-white hover:scale-105 hover:shadow-xl transition-all duration-300 cursor-pointer"
         >
-          Launch Smart Account
+          {isLoading ? "Verifying…" : "Launch Smart Account"}
         </button>
       </section>
     </main>

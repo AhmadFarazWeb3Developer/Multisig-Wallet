@@ -6,6 +6,7 @@ import {
   arbitrum,
   arbitrumSepolia,
   avalancheFuji,
+  defineChain,
   mainnet,
   optimism,
   optimismSepolia,

@@ -62,7 +62,6 @@ export async function addOwner(ownerAddress, ownerName) {
 export async function linkOwnerToSafe(safeId, ownerId) {
   const client = await pool.connect();
   try {
-    // check if this pair already exists
     const existing = await client.query(
       `SELECT 1 FROM safe_owners WHERE safe_id = $1 AND owner_id = $2`,
       [safeId, ownerId]
@@ -79,5 +78,30 @@ export async function linkOwnerToSafe(safeId, ownerId) {
     throw error;
   } finally {
     client.release();
+  }
+}
+
+export async function updateOwnerName(owner_address, owner_name) {
+  console.log("owner ", owner_address);
+  console.log("name ", owner_name);
+  try {
+    const result = await pool.query(
+      `
+      UPDATE owners 
+      SET owner_name = $1 
+      WHERE LOWER(owner_address) = LOWER($2)
+      RETURNING *;
+      `,
+      [owner_name, owner_address]
+    );
+
+    if (result.rowCount === 0) {
+      throw new Error("Owner not found");
+    }
+
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error updating owner name:", error);
+    throw error;
   }
 }

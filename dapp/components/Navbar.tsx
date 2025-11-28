@@ -14,16 +14,17 @@ import {
   Vault,
   Bell,
   BellDot,
-  Menu,
-  MenuIcon,
+  Loader2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ethers } from "ethers";
 import { getNetworkToken } from "../blockchain-interaction/helper/getNetworkToken";
-import { MenuList } from "@mui/material";
+import { useRouter } from "next/navigation";
+import { useUiProvider } from "@/app/context/UiProvider";
 
 export default function Navbar() {
+  const router = useRouter();
   const { open, close } = useAppKit();
   const { address, isConnected } = useAppKitAccount();
   const { caipNetwork, chainId } = useAppKitNetwork();
@@ -38,6 +39,7 @@ export default function Navbar() {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [balance, setBalance] = useState<string>("0.00");
 
+  const { setIsLoading } = useUiProvider();
   const [isNotification, setIsNotification] = useState(true);
 
   useEffect(() => {
@@ -88,6 +90,24 @@ export default function Navbar() {
   useEffect(() => {
     setImageLoaded(false);
   }, [chainId, caipNetwork]);
+
+  useEffect(() => {
+    const verifyOnStart = async () => {
+      setIsLoading(true);
+      if (!address) return;
+      const response = await fetch(
+        `/api/safes/verify-safe/?walletAddress=${encodeURIComponent(address)}`
+      );
+
+      if (!response.ok) {
+        setIsLoading(false);
+        return;
+      } else {
+        router.push("/dashboard");
+      }
+    };
+    verifyOnStart();
+  });
 
   const getNetworkImageUrl = () => {
     if (!chainId) return null;
@@ -140,7 +160,7 @@ export default function Navbar() {
           {isNotification ? (
             <Bell
               strokeWidth={1}
-              className="text-white cursor-pointer h-5 w-5 sm:h-6 sm:w-6"
+              className="text-white cursor-pointer h-4 w-4 sm:h-5 sm:w-5"
             />
           ) : (
             <BellDot
@@ -149,6 +169,7 @@ export default function Navbar() {
             />
           )}
         </div>
+
         <div className="wallet flex items-center gap-1 ">
           {isConnected ? (
             <div className="flex flex-row items-center gap-1 sm:px-2 border border-white/10 rounded-full bg-white/5 backdrop-blur-xl  shadow-lg sm:py-2">
