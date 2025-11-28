@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { CheckCircle, Clock, Loader2 } from "lucide-react";
-import useExecutedTxs from "../../app/hooks/useExecutedTxs";
+import useExecutedTxs from "../../app/hooks/useGetExecutedTxs";
 
 interface ExecutedTransaction {
   id: number;

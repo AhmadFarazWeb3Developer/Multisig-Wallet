@@ -2,7 +2,7 @@ const hre = require("hardhat");
 
 async function main() {
   const [signer] = await hre.ethers.getSigners();
-  const safeAddress = "0xd8f2564230c94c9e11f16afd00e3506303cea080";
+  const safeAddress = "0xc3c78361d977599e4f9f405ca0310724f5908f93";
 
   console.log("Funding Safe from:", signer.address);
   console.log("Safe address:", safeAddress);

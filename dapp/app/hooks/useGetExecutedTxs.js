@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const useExecutedTxs = () => {
+const useGetExecutedTxs = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const getExecutedTxs = async () => {
@@ -31,4 +31,4 @@ const useExecutedTxs = () => {
   return { getExecutedTxs, isLoading };
 };
 
-export default useExecutedTxs;
+export default useGetExecutedTxs;

@@ -21,6 +21,7 @@ import useSafeSignatureCount from "@/blockchain-interaction/hooks/smartAccount/u
 import useSafeInstance from "@/blockchain-interaction/hooks/smartAccount/useSafeInstance";
 import useExecuteTransaction from "../../blockchain-interaction/hooks/smartAccount/useExecuteTransaction";
 import { toast } from "sonner";
+import useGetExecutedTxs from "@/app/hooks/useGetExecutedTxs";
 
 interface PendingTxCardProps {
   safeAddress: String;
@@ -29,6 +30,7 @@ interface PendingTxCardProps {
 export default function PendingTxCard({ safeAddress }: PendingTxCardProps) {
   const [threshold, setThreshold] = useState<string>();
   const { getQueuedTxs, isLoading } = useGetQueuedTxs();
+  const { getExecutedTxs } = useGetExecutedTxs();
   const [pendingTransactions, setPendingTransactions] = useState([]);
   const safeSignatureCount = useSafeSignatureCount();
   const { safeWriteInstace, safeReadInstance } = useSafeInstance(safeAddress);
@@ -36,20 +38,26 @@ export default function PendingTxCard({ safeAddress }: PendingTxCardProps) {
 
   useEffect(() => {
     const init = async () => {
-      const data = await getQueuedTxs();
+      const queuedData = await getQueuedTxs();
       const { threshold, signaturesCount } = await safeSignatureCount(
         safeReadInstance,
-        data
+        queuedData
       );
+      const executedData = await getExecutedTxs();
+      const executedTxIds = executedData.map((tx: any) => tx.tx_id);
+
+      const queuedWithSig = queuedData.map((tx: any, index: number) => ({
+        ...tx,
+        signaturesCount: signaturesCount[index],
+      }));
+
+      const pendingTxs = queuedWithSig.filter(
+        (tx: any) => !executedTxIds.includes(tx.tx_id)
+      );
+
+      setPendingTransactions(pendingTxs);
 
       setThreshold(threshold.toNumber());
-
-      setPendingTransactions(
-        data.map((tx, index) => ({
-          ...tx,
-          signaturesCount: signaturesCount[index],
-        }))
-      );
     };
 
     init();

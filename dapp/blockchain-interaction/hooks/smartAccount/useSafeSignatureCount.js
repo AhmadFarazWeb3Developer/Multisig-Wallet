@@ -9,7 +9,7 @@ const useSafeSignatureCount = () => {
 
     const threshold = await safeInstance.getThreshold();
 
-    const hashes = data.map((tx) => tx.tx_hash);
+    const ids = data.map((tx) => tx.tx_id);
 
     const response = await fetch("/api/transactions/get-sign-transactions", {
       method: "GET",
@@ -17,8 +17,8 @@ const useSafeSignatureCount = () => {
 
     const safe_transaction_signatures = await response.json();
 
-    const signaturesCount = hashes.map((hash) => {
-      return safe_transaction_signatures.filter((sig) => sig.tx_hash === hash)
+    const signaturesCount = ids.map((id) => {
+      return safe_transaction_signatures.filter((sig) => sig.tx_id === id)
         .length;
     });
 

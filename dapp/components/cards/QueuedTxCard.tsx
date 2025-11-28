@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { useAppKitAccount } from "@reown/appkit/react";
 import { useEffect, useState } from "react";
 import useGetQueuedTxs from "../../app/hooks/useGetQueuedTxs";
+import useGetExecutedTxs from "@/app/hooks/useGetExecutedTxs";
 
 interface Transaction {
   tx_id: string;
@@ -22,6 +23,8 @@ interface Transaction {
 export default function QueuedTxCard() {
   const { isConnected, address } = useAppKitAccount();
   const { getQueuedTxs, isLoading } = useGetQueuedTxs();
+  const { getExecutedTxs } = useGetExecutedTxs();
+
   const [queuedTransactions, setQueuedTransactions] = useState<Transaction[]>(
     []
   );
@@ -34,8 +37,15 @@ export default function QueuedTxCard() {
         });
         return;
       }
-      const data = await getQueuedTxs();
-      setQueuedTransactions(data);
+      const queuedData = await getQueuedTxs();
+      const executedData = await getExecutedTxs();
+
+      const executedTxIds = executedData.map((tx: any) => tx.tx_id);
+      const queuedTx = queuedData.filter(
+        (tx: any) => !executedTxIds.includes(tx.tx_id)
+      );
+
+      setQueuedTransactions(queuedTx);
     };
     init();
   }, [isConnected, address]);

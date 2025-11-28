@@ -1,11 +1,12 @@
 import { useAppKitAccount } from "@reown/appkit/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
 const useQueueTransaction = () => {
   const { isConnected, address } = useAppKitAccount();
   const [IsLoading, setIsLoading] = useState(false);
-
+  const router = useRouter();
   const queueTransaction = async (operation, formData) => {
     if (!isConnected || !address) {
       toast.error("Wallet is not connected");
@@ -89,11 +90,13 @@ const useQueueTransaction = () => {
           action: { label: "Close" },
         });
         return;
-      }
+      } else {
+        toast.success("Transaction Queued!", {
+          action: { label: "Close" },
+        });
 
-      toast.success("Transaction Queued!", {
-        action: { label: "Close" },
-      });
+        router.push("/dashboard");
+      }
 
       return result;
     } catch (err) {

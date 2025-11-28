@@ -7,6 +7,8 @@ import SignatureCard from "./cards/SignatureTxCard";
 import PendingTxCard from "./cards/PendingTxCard";
 import ExecutedTxCard from "./cards/ExecutedTxCard";
 import QueuedTxCard from "./cards/QueuedTxCard";
+import useGetQueuedTxs from "@/app/hooks/useGetQueuedTxs";
+import useGetExecutedTxs from "@/app/hooks/useGetExecutedTxs";
 
 type safeAddressInterface = {
   safeAddress: String;
@@ -14,6 +16,33 @@ type safeAddressInterface = {
 
 export default function Transactions({ safeAddress }: safeAddressInterface) {
   const router = useRouter();
+
+  const { getQueuedTxs } = useGetQueuedTxs();
+  const { getExecutedTxs } = useGetExecutedTxs();
+
+  const [executedTxCount, setExecutedTxCount] = useState();
+  const [queuedTxCount, setQueuedTxCount] = useState();
+  const [pendingTxCount, setPendingTxCount] = useState();
+  const [rejectedTxCount, setRejectedTxCount] = useState();
+
+  useEffect(() => {
+    const counts = async () => {
+      const queuedData = await getQueuedTxs();
+      const executedData = await getExecutedTxs();
+
+      const executedTxIds = executedData.map((tx: any) => tx.tx_id);
+
+      const queuedTx = queuedData.filter(
+        (tx: any) => !executedTxIds.includes(tx.tx_id)
+      );
+
+      console.log("main ", queuedTx);
+      setQueuedTxCount(queuedTx.length);
+      setExecutedTxCount(executedData.length);
+    };
+
+    counts();
+  }, [queuedTxCount, executedTxCount]);
 
   const [activeTab, setActiveTab] = useState("queued");
 
@@ -53,7 +82,7 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
                     : "text-[#A0A0A0] hover:text-white"
                 }`}
               >
-                Queued ({1})
+                Queued ({queuedTxCount})
               </button>
 
               <button
@@ -64,7 +93,7 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
                     : "text-[#A0A0A0] hover:text-white"
                 }`}
               >
-                Sign ({1})
+                Sign
               </button>
 
               <button
@@ -75,7 +104,7 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
                     : "text-[#A0A0A0] hover:text-white"
                 }`}
               >
-                Pending ({1})
+                Pending
               </button>
               <button
                 onClick={() => setActiveTab("executed")}
@@ -85,7 +114,7 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
                     : "text-[#A0A0A0] hover:text-white"
                 }`}
               >
-                Executed ({1})
+                Executed ({executedTxCount})
               </button>
               <button
                 onClick={() => setActiveTab("rejected")}
