@@ -55,8 +55,14 @@ export default function PendingTxCard({ safeAddress }: PendingTxCardProps) {
         (tx: any) => !executedTxIds.includes(tx.tx_id)
       );
 
-      setPendingTransactions(pendingTxs);
+      const sortedPendingTxs = pendingTxs.sort(
+        (a: any, b: any) =>
+          new Date(a.queued_at).getTime() - new Date(b.queued_at).getTime()
+      );
 
+      const firstPendingTx = sortedPendingTxs[0] || null;
+
+      setPendingTransactions(firstPendingTx ? [firstPendingTx] : []);
       setThreshold(threshold.toNumber());
     };
 

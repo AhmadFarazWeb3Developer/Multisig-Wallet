@@ -3,14 +3,16 @@ import { ethers } from "ethers";
 import Interfaces from "../../../helper/interfaces";
 import useSafeInstance from "../useSafeInstance";
 import { toast } from "sonner";
+import DeterministicAddresses from "@/blockchain-interaction/helper/deterministicAddresses";
 
 const useMintTokens = (safeAddress) => {
-  const iface = Interfaces();
-  const safeInstance = useSafeInstance(safeAddress);
+  const { safeTokensInterface } = Interfaces();
+  const { safeReadInstance } = useSafeInstance(safeAddress);
+  const { safeTokensMockAddress } = DeterministicAddresses();
 
   const mintTokens = async (formData) => {
     try {
-      if (!safeInstance) {
+      if (!safeReadInstance) {
         toast.error("Safe is not ready");
         return;
       }
@@ -20,15 +22,13 @@ const useMintTokens = (safeAddress) => {
         return;
       }
 
-      const interfaceOf = iface.safeTokensInterface;
-
       // data
-      const data = interfaceOf.encodeFunctionData("mint", [
+      const data = safeTokensInterface.encodeFunctionData("mint", [
         safeAddress,
-        formData.mint_token_amount,
+        ethers.utils.parseUnits(formData.mint_token_amount, 18),
       ]);
 
-      const to = safeAddress;
+      const to = safeTokensMockAddress;
       const value = 0;
       const operation = 0; // Enum.Operation.Call
       const safeTxGas = 0;
@@ -36,10 +36,9 @@ const useMintTokens = (safeAddress) => {
       const gasPrice = 0;
       const gasToken = ethers.constants.AddressZero;
       const refundReceiver = ethers.constants.AddressZero;
-      const nonce = await safeInstance.nonce();
+      const nonce = await safeReadInstance.nonce();
 
-      // transaction hash
-      const txHash = await safeInstance.getTransactionHash(
+      const txHash = await safeReadInstance.getTransactionHash(
         to,
         value,
         data,

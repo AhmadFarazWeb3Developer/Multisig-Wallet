@@ -41,10 +41,15 @@ export default function QueuedTxCard() {
       const executedData = await getExecutedTxs();
 
       const executedTxIds = executedData.map((tx: any) => tx.tx_id);
-      const queuedTx = queuedData.filter(
+      let queuedTx = queuedData.filter(
         (tx: any) => !executedTxIds.includes(tx.tx_id)
       );
+      queuedTx = queuedTx.sort(
+        (a: any, b: any) =>
+          new Date(a.queued_at).getTime() - new Date(b.queued_at).getTime()
+      );
 
+      console.log(queuedTx);
       setQueuedTransactions(queuedTx);
     };
     init();
@@ -115,13 +120,22 @@ function shortAddress(addr: string) {
   return addr.slice(0, 6) + "..." + addr.slice(-4);
 }
 
-function timeAgo(timestamp: string | number | Date) {
+function timeAgo(timestamp?: string) {
+  if (!timestamp) return "unknown";
+
   const date = new Date(timestamp);
+  if (isNaN(date.getTime())) return "unknown";
+
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
+
+  const diffMinutes = Math.floor(diffMs / (1000 * 60));
   const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
 
-  if (diffHours < 1) return `${Math.floor(diffMs / (1000 * 60))}m ago`;
+  if (diffMinutes < 1) return "just now";
+  if (diffHours < 1) return `${diffMinutes}m ago`;
   if (diffHours < 24) return `${diffHours}h ago`;
-  return `${Math.floor(diffHours / 24)}d ago`;
+
+  const diffDays = Math.floor(diffHours / 24);
+  return `${diffDays}d ago`;
 }

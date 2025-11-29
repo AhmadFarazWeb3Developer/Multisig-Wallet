@@ -8,10 +8,11 @@ export async function findOwnerSafe(ownerAddress) {
       FROM safes s
       JOIN safe_owners so ON s.id = so.safe_id
       JOIN owners o ON o.id = so.owner_id
-      WHERE o.owner_address = $1
+      WHERE LOWER(o.owner_address) = LOWER($1)
     `;
 
     const { rows } = await pool.query(query, [ownerAddress]);
+    console.log("rows ", rows);
 
     return rows;
   } catch (error) {

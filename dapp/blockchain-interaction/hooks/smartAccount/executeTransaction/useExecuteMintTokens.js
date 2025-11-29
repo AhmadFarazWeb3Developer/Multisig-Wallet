@@ -2,23 +2,27 @@ import { toast } from "sonner";
 import { ethers, utils } from "ethers";
 import { SAFE_ERRORS } from "../../../helper/safeErrorCodes";
 import Interfaces from "@/blockchain-interaction/helper/interfaces";
+import DeterministicAddresses from "@/blockchain-interaction/helper/deterministicAddresses";
 
 const useExecuteMintTokens = () => {
-  const { safeSingltonInterface } = Interfaces();
+  const { safeTokensInterface } = Interfaces();
+  const { safeTokensMockAddress } = DeterministicAddresses();
 
   const executeMintTokens = async (
     safeWriteInstace,
     metadata,
     aggregatedSignature,
-    tx_hash,
     safeAddress
   ) => {
     try {
-      const to = safeAddress;
+      console.log("safe address : ", safeAddress);
+      console.log("metadata : ", metadata);
+
+      const to = safeTokensMockAddress;
       const value = 0;
-      const data = safeSingltonInterface.encodeFunctionData("mint", [
+      const data = safeTokensInterface.encodeFunctionData("mint", [
         safeAddress,
-        formData.mint_token_amount,
+        ethers.utils.parseUnits(metadata.mint_token_amount, 18),
       ]);
       const operation = 0; // Enum.Operation.Call
       const safeTxGas = 0;
@@ -27,12 +31,10 @@ const useExecuteMintTokens = () => {
       const gasToken = ethers.constants.AddressZero;
       const refundReceiver = ethers.constants.AddressZero;
 
-      // Get current nonce
       const nonce = await safeWriteInstace.nonce();
       console.log("Current Safe nonce:", nonce.toString());
 
-      // Recalculate hash with current nonce to verify
-      const currentHash = await safeWriteInstace.getTransactionHash(
+      const txHash = await safeWriteInstace.getTransactionHash(
         to,
         value,
         data,
@@ -45,19 +47,20 @@ const useExecuteMintTokens = () => {
         nonce
       );
 
-      console.log("Stored tx_hash:     ", tx_hash);
-      console.log("Recalculated hash:  ", currentHash);
+      console.log("current hash : ", txHash);
+
       console.log("Aggregated signature:", utils.hexlify(aggregatedSignature));
 
-      if (currentHash !== tx_hash) {
-        toast.error(
-          "Transaction hash mismatch! The nonce may have changed. Please create a new transaction.",
-          {
-            action: { label: "Close" },
-          }
-        );
-        return;
-      }
+      console.log(
+        "Hash we signed:",
+        "0x749f41f3b0b613f390d71e4bf47f68b665c0e9cbea67b6ed454aa7192ce97118"
+      );
+      console.log("Hash contract will verify:", txHash);
+      console.log(
+        "Match:",
+        txHash ===
+          "0x749f41f3b0b613f390d71e4bf47f68b665c0e9cbea67b6ed454aa7192ce97118"
+      );
 
       const tx = await safeWriteInstace.execTransaction(
         to,
@@ -74,8 +77,10 @@ const useExecuteMintTokens = () => {
 
       const receipt = await tx.wait();
 
+      console.log("receipt : ", receipt);
+
       const payload = {
-        tx_hash: tx_hash,
+        tx_hash: txHash,
       };
 
       const response = await fetch(

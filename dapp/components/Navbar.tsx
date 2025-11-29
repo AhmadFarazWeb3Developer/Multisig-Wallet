@@ -99,7 +99,9 @@ export default function Navbar() {
         `/api/safes/verify-safe/?walletAddress=${encodeURIComponent(address)}`
       );
 
-      if (!response.ok) {
+      const data = await response.json();
+
+      if (!response.ok || !data || data.length === 0) {
         setIsLoading(false);
         return;
       } else {
@@ -107,7 +109,7 @@ export default function Navbar() {
       }
     };
     verifyOnStart();
-  });
+  }, [address, isConnected]);
 
   const getNetworkImageUrl = () => {
     if (!chainId) return null;

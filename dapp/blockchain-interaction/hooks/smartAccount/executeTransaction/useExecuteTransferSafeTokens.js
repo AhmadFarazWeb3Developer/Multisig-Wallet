@@ -22,7 +22,7 @@ const useExecuteTransferSafeTokens = () => {
 
       const to = addresses.safeTokensMockAddress;
       const value = 0;
-      const operation = 0; // Enum.Operation.Call
+      const operation = 0;
       const safeTxGas = 0;
       const baseGas = 0;
       const gasPrice = 0;
@@ -32,7 +32,6 @@ const useExecuteTransferSafeTokens = () => {
       const nonce = await safeInstance.nonce();
       console.log("Current Safe nonce:", nonce.toString());
 
-      // Recalculate hash with current nonce to verify
       const currentHash = await safeWriteInstace.getTransactionHash(
         to,
         value,
@@ -91,11 +90,14 @@ const useExecuteTransferSafeTokens = () => {
       const getData = await response.json();
 
       if (receipt && getData.ok) {
-        toast.success(`${metadata.eth_amount} ETH transferred to ${to}`, {
-          action: {
-            label: "Close",
-          },
-        });
+        toast.success(
+          `${metadata.token_amount} ETH transferred to ${metadata.token_recipient}`,
+          {
+            action: {
+              label: "Close",
+            },
+          }
+        );
       }
 
       return receipt;

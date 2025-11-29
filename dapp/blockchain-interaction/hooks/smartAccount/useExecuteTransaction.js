@@ -33,21 +33,15 @@ const useExecuteTransaction = () => {
       }
     );
 
-    console.log("data  : ", data);
-    console.log("tx  : ", tx);
-
     const { rows } = await response.json();
 
-    console.log("Fetched signatures from DB:", rows);
+    const safeOwners = (await safeWriteInstace.getOwners()).map((o) =>
+      o.toLowerCase()
+    );
 
     const sorted = rows
       .map((row) => {
         const sigBytes = arrayify(row.signature);
-
-        // Extract v, r, s from the signature
-        const r = "0x" + Buffer.from(sigBytes.slice(0, 32)).toString("hex");
-        const s = "0x" + Buffer.from(sigBytes.slice(32, 64)).toString("hex");
-        const v = sigBytes[64];
 
         return {
           owner: row.owner_address.toLowerCase(),
@@ -56,11 +50,24 @@ const useExecuteTransaction = () => {
       })
       .sort((a, b) => (a.owner > b.owner ? 1 : -1));
 
-    console.log("Sorted signatures:", sorted);
-
-    // Concatenate signatures in sorted order
     const aggregatedSignature = utils.concat(sorted.map((x) => x.sig));
-    console.log("Aggregated signature:", utils.hexlify(aggregatedSignature));
+
+    const sortedOwners = sorted.map((x) => x.owner);
+
+    const isOrderedCorrectly = sortedOwners.every(
+      (owner, index) => owner === safeOwners[index]
+    );
+
+    console.log("Safe owners order:", safeOwners);
+    console.log("Sorted signature owners:", sortedOwners);
+
+    if (!isOrderedCorrectly) {
+      console.warn(
+        "Signatures are NOT in the same order as Safe owners. GS026 may occur!"
+      );
+    } else {
+      console.log("Signatures are correctly ordered ✅");
+    }
 
     const currentTxId = tx.tx_id;
     const transaction = data.filter((tx) => {
@@ -77,12 +84,7 @@ const useExecuteTransaction = () => {
     const metadata = transaction[0].metadata;
     const txOpName = transaction[0].operation_name;
 
-    // Verify signers are Safe owners
-    const safeOwners = await safeWriteInstace.getOwners();
-    console.log("Safe owners:", safeOwners);
-
     const ownersInSignatures = sorted.map((x) => x.owner);
-    console.log("Signature owners:", ownersInSignatures);
 
     for (let owner of ownersInSignatures) {
       const isOwner = safeOwners.some(

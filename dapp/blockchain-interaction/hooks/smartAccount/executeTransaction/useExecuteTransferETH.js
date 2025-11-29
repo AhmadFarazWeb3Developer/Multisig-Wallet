@@ -24,11 +24,8 @@ const useExecuteTransferETH = () => {
       const gasToken = ethers.constants.AddressZero;
       const refundReceiver = ethers.constants.AddressZero;
 
-      // Get current nonce
       const nonce = await safeWriteInstance.nonce();
-      console.log("Current Safe nonce:", nonce.toString());
 
-      // Compute the transaction hash
       const txHash = await safeWriteInstance.getTransactionHash(
         to,
         value,
@@ -41,10 +38,7 @@ const useExecuteTransferETH = () => {
         refundReceiver,
         nonce
       );
-      console.log("Transaction hash:", txHash);
-      console.log("Aggregated signature:", utils.hexlify(aggregatedSignature));
 
-      // Execute transaction
       const execTransaction = await safeWriteInstance.execTransaction(
         to,
         value,
@@ -78,9 +72,6 @@ const useExecuteTransferETH = () => {
       );
 
       const getData = await response.json();
-      console.log("get data : ", getData);
-
-      console.log("receppit : ", receipt);
 
       if (receipt && getData.status === 200) {
         toast.success(

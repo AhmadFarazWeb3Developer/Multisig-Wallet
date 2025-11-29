@@ -52,6 +52,7 @@ const useTransferETH = (safeAddress) => {
         refundReceiver,
         nonce
       );
+
       toast.success(`Transaction hash generated successfully! ${txHash}`, {
         action: {
           label: "Close",

@@ -20,6 +20,7 @@ import { formatEther } from "ethers/lib/utils";
 import useSafeInstance from "../blockchain-interaction/hooks/smartAccount/useSafeInstance";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import useInstancesSigner from "@/blockchain-interaction/helper/instancesSigner";
 
 type safeAddressInterface = {
   safeAddress: String;
@@ -33,6 +34,8 @@ type Owners = {
 export default function Home({ safeAddress }: safeAddressInterface) {
   const router = useRouter();
   const { safeReadInstance } = useSafeInstance(safeAddress);
+  const InstancesSigner = useInstancesSigner();
+
   const { walletProvider } = useAppKitProvider("eip155");
 
   const { address, isConnected } = useAppKitAccount();
@@ -145,6 +148,11 @@ export default function Home({ safeAddress }: safeAddressInterface) {
 
         const balance = await safeReadInstance.provider.getBalance(safeAddress);
 
+        const { safeTokensMockInstance } = await InstancesSigner();
+        console.log(
+          "safe tokens : ",
+          formatEther(await safeTokensMockInstance.balanceOf(safeAddress))
+        );
         console.log("balance : ", balance);
 
         const formattedBalance = formatEther(balance);

@@ -4,6 +4,8 @@ import SingletonFactoryArtifact from "../../app/on-chain/artifacts/contracts/Sin
 import SafeArtifact from "../../app/on-chain/artifacts/contracts/Safe.sol/Safe.json";
 import SafeProxyFactoryArtifact from "../../app/on-chain/artifacts/contracts/proxies/SafeProxyFactory.sol/SafeProxyFactory.json";
 import CompatibilityFallbackHandlerArtifact from "../../app/on-chain/artifacts/contracts/handler/CompatibilityFallbackHandler.sol/CompatibilityFallbackHandler.json";
+import SafeTokensMockArtifact from "../../app/on-chain/artifacts/contracts/SafeTokensMock.sol/SafeTokensMock.json";
+
 import DeterministicAddresses from "./deterministicAddresses";
 
 import { useState } from "react";
@@ -18,6 +20,7 @@ const useInstancesSigner = () => {
     safeSingltonAddress,
     safeProxyFactoryAddress,
     fallbackHandlerAddress,
+    safeTokensMockAddress,
   } = DeterministicAddresses();
 
   const InstancesSigner = async () => {
@@ -58,11 +61,18 @@ const useInstancesSigner = () => {
         signer
       );
 
+      const safeTokensMockInstance = new ethers.Contract(
+        safeTokensMockAddress,
+        SafeTokensMockArtifact.abi,
+        signer
+      );
+
       return {
         signer,
         safeSingltonInstance,
         safeProxyFactoryIntance,
         compatibilityFallbackHandlerInstace,
+        safeTokensMockInstance,
       };
     } catch (error) {
       console.log("error in signers : ", error);

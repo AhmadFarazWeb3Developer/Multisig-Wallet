@@ -71,7 +71,13 @@ export default function SignatureTxCard({ safeAddress }: SignatureTxCardProps) {
           )
       );
 
-      setToBeSignedTransactions(notSigned);
+      // Sort oldest first
+      const sortedNotSigned = notSigned.sort(
+        (a: Transaction, b: Transaction) =>
+          new Date(a.queued_at).getTime() - new Date(b.queued_at).getTime()
+      );
+
+      setToBeSignedTransactions(sortedNotSigned);
     };
     init();
   }, [isConnected, address]);
