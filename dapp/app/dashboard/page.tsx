@@ -5,12 +5,14 @@ import SidePanel from "../../components/SidePanel";
 import Home from "@/components/Home";
 import { useAppKitAccount } from "@reown/appkit/react";
 import { Menu, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
   const { address, isConnected } = useAppKitAccount();
   const [component, setComponent] = useState<ReactElement | null>(null);
   const [safeAddress, setSafeAddress] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const router = useRouter();
 
   const showMenuIcon = !isSidebarOpen;
   const showXIcon = isSidebarOpen;
@@ -48,6 +50,20 @@ export default function Dashboard() {
       }
     };
 
+    const verifyOnStart = async () => {
+      if (!address) return;
+      const response = await fetch(
+        `/api/safes/verify-safe/?walletAddress=${encodeURIComponent(address)}`
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data || data.length === 0) {
+        router.push("/");
+      }
+    };
+
+    verifyOnStart();
     fetchConnectedAddressAccounts();
   }, [address, isConnected]);
 

@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 
 import useGetQueuedTxs from "../../app/hooks/useGetQueuedTxs";
+import useRejectTransaction from "../../app/hooks/useRejectTransaction";
 import useSafeSignatureCount from "@/blockchain-interaction/hooks/smartAccount/useSafeSignatureCount";
 import useSafeInstance from "@/blockchain-interaction/hooks/smartAccount/useSafeInstance";
 import useExecuteTransaction from "../../blockchain-interaction/hooks/smartAccount/useExecuteTransaction";
@@ -36,6 +37,7 @@ export default function PendingTxCard({ safeAddress }: PendingTxCardProps) {
   const { safeWriteInstace, safeReadInstance } = useSafeInstance(safeAddress);
   const { executeTransaction, isApproving } =
     useExecuteTransaction(safeAddress);
+  const { rejectTransaction, isRejecting } = useRejectTransaction();
 
   useEffect(() => {
     const init = async () => {
@@ -87,16 +89,20 @@ export default function PendingTxCard({ safeAddress }: PendingTxCardProps) {
     ));
   };
 
-  const handleExecuteTransaction = (tx: any) => {
-    const init = async () => {
-      if (!safeWriteInstace) {
-        toast.error("wait for safe instance");
-        return;
-      }
-      const data = await getQueuedTxs();
-      await executeTransaction(tx, safeWriteInstace, data, safeAddress);
-    };
-    init();
+  const handleExecuteTransaction = async (tx: any) => {
+    // const init = async () => {
+    if (!safeWriteInstace) {
+      toast.error("wait for safe instance");
+      return;
+    }
+    const data = await getQueuedTxs();
+    await executeTransaction(tx, safeWriteInstace, data, safeAddress);
+  };
+  // init();
+  // };
+
+  const handleRejectTransaction = async (tx: any) => {
+    await rejectTransaction(tx);
   };
 
   return (
@@ -156,11 +162,18 @@ export default function PendingTxCard({ safeAddress }: PendingTxCardProps) {
               </button>
 
               <button
+                onClick={() => handleRejectTransaction(tx)}
                 className="flex-1 bg-[#242424] hover:bg-[#303030] text-[#A0A0A0] hover:text-white py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-1.5 border border-[#333333] cursor-pointer"
-                disabled={isApproving}
+                disabled={isRejecting}
               >
-                <XCircle className="size-4" />
-                Reject
+                {isRejecting ? (
+                  <Loader2 size={18} className="animate-spin text-white" />
+                ) : (
+                  <>
+                    <XCircle className="size-4" />
+                    Reject
+                  </>
+                )}
               </button>
             </div>
 

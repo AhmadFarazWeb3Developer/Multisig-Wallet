@@ -60,3 +60,12 @@ export async function handleSafeCreation(safe, owners) {
 
   return safe;
 }
+
+export async function getSafeByAddress(safeAddress) {
+  const result = await pool.query(
+    `SELECT id FROM safes WHERE LOWER(safe_address) = LOWER($1)`,
+    [safeAddress]
+  );
+
+  return result.rows[0];
+}

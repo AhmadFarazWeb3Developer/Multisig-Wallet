@@ -29,15 +29,21 @@ const useSwapOwner = (safeAddress) => {
 
       const owners = await safeReadInstance.getOwners();
 
+      console.log(owners);
+
+      console.log(tx.sender_address);
+
       const index = owners
         .map((o) => o.toLowerCase())
         .indexOf(String(tx.sender_address).trim().toLowerCase());
 
       const SENTINEL = "0x0000000000000000000000000000000000000001";
 
+      console.log(index);
+
       const prevOwner = index === 0 ? SENTINEL : owners[index - 1];
 
-      console.log(tx.sender_address);
+      console.log(prevOwner);
 
       const data = safeSingltonInterface.encodeFunctionData("swapOwner", [
         prevOwner,
@@ -55,7 +61,6 @@ const useSwapOwner = (safeAddress) => {
       const refundReceiver = ethers.constants.AddressZero;
       const nonce = await safeReadInstance.nonce();
 
-      // transaction hash
       const txHash = await safeReadInstance.getTransactionHash(
         to,
         value,

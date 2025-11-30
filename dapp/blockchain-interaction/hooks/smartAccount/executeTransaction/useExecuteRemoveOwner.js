@@ -3,21 +3,35 @@ import { ethers, utils } from "ethers";
 import { SAFE_ERRORS } from "../../../helper/safeErrorCodes";
 import Interfaces from "@/blockchain-interaction/helper/interfaces";
 
-const useExecuteRemoveOwner = () => {
+const useExecuteRemoveOwner = (safeAddress) => {
   const { safeSingltonInterface } = Interfaces();
 
   const executeRemoveOwner = async (
     safeWriteInstace,
     metadata,
-    aggregatedSignature
+    aggregatedSignature,
+    tx
   ) => {
     try {
+      if (!safeWriteInstace) {
+        toast.error("Safe is not ready");
+        return;
+      }
       const to = safeAddress;
       const value = 0;
 
+      const owners = await safeWriteInstace.getOwners();
+
+      const index = owners
+        .map((o) => o.toLowerCase())
+        .indexOf(String(metadata.owner_for_removal).trim().toLowerCase());
+
+      const SENTINEL = "0x0000000000000000000000000000000000000001";
+      const prevOwner = index === 0 ? SENTINEL : owners[index - 1];
+
       const data = safeSingltonInterface.encodeFunctionData("removeOwner", [
-        metadata.prevOwner_for_removal,
-        metadata.newOwner_for_removal,
+        prevOwner,
+        metadata.owner_for_removal,
         metadata.newThreshold_for_removal,
       ]);
       const operation = 0; // Enum.Operation.Call
@@ -27,39 +41,7 @@ const useExecuteRemoveOwner = () => {
       const gasToken = ethers.constants.AddressZero;
       const refundReceiver = ethers.constants.AddressZero;
 
-      // Get current nonce
-      const nonce = await safeWriteInstace.nonce();
-      console.log("Current Safe nonce:", nonce.toString());
-
-      // Recalculate hash with current nonce to verify
-      const currentHash = await safeWriteInstace.getTransactionHash(
-        to,
-        value,
-        data,
-        operation,
-        safeTxGas,
-        baseGas,
-        gasPrice,
-        gasToken,
-        refundReceiver,
-        nonce
-      );
-
-      console.log("Stored tx_hash:     ", tx_hash);
-      console.log("Recalculated hash:  ", currentHash);
-      console.log("Aggregated signature:", utils.hexlify(aggregatedSignature));
-
-      if (currentHash !== tx_hash) {
-        toast.error(
-          "Transaction hash mismatch! The nonce may have changed. Please create a new transaction.",
-          {
-            action: { label: "Close" },
-          }
-        );
-        return;
-      }
-
-      const tx = await safeWriteInstace.execTransaction(
+      const execTransaction = await safeWriteInstace.execTransaction(
         to,
         value,
         data,
@@ -72,25 +54,40 @@ const useExecuteRemoveOwner = () => {
         aggregatedSignature
       );
 
-      const receipt = await tx.wait();
+      const receipt = await execTransaction.wait();
 
       const payload = {
-        tx_hash: tx_hash,
+        tx_id: tx.tx_id,
+        tx_hash: receipt.transactionHash,
+        metadata,
+        operation_name: tx.operation_name,
+        status: receipt.status,
       };
 
-      const response = await fetch(
-        "/api/transactions/store-executed-transaction",
-        {
+      const callApi = async (url, payload) => {
+        const response = await fetch(url, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
-        }
-      );
+        });
 
-      const getData = await response.json();
+        return response.json();
+      };
 
-      if (receipt && getData.ok) {
-        toast.success(`${metadata.eth_amount} ETH transferred to ${to}`, {
+      const [storeExecutedResponse, removeOwnerResponse] = await Promise.all([
+        callApi("/api/transactions/store-executed-transaction", payload),
+        callApi("/api/owners/remove-owner", {
+          remove_owner: metadata.owner_for_removal,
+          safe: safeAddress,
+        }),
+      ]);
+
+      if (
+        receipt &&
+        storeExecutedResponse.status === 200 &&
+        removeOwnerResponse.status === 200
+      ) {
+        toast.success(`${metadata.owner_for_removal} removed!`, {
           action: {
             label: "Close",
           },

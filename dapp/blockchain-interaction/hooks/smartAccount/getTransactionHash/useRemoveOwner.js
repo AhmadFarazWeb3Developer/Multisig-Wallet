@@ -4,57 +4,50 @@ import Interfaces from "../../../helper/interfaces";
 
 import useSafeInstance from "../useSafeInstance";
 import { toast } from "sonner";
-import { isAddress } from "ethers/lib/utils";
 
 const useRemoveOwner = (safeAddress) => {
-  const iface = Interfaces();
-  const safeInstance = useSafeInstance(safeAddress);
+  const { safeSingltonInterface } = Interfaces();
+  const { safeReadInstance } = useSafeInstance(safeAddress);
 
-  const removeOwner = async (formData) => {
+  const removeOwner = async (tx) => {
     try {
-      if (!safeInstance) {
+      if (!safeReadInstance) {
         toast.error("Safe is not ready");
         return;
       }
 
-      if (
-        !formData.prevOwner_for_removal ||
-        !formData.newOwner_for_removal ||
-        !formData.newThreshold_for_removal
-      ) {
+      if (!tx.metadata.newThreshold_for_removal) {
         toast.error("Fill the form before proceeding");
         return;
       }
 
-      if (
-        !isAddress(formData.prevOwner_for_removal) ||
-        !isAddress(formData.newOwner_for_removal)
-      ) {
-        toast.error("owners must be a valid addresses");
-        return;
-      }
+      const owners = await safeReadInstance.getOwners();
 
-      const interfaceOf = iface.safeSingltonInterface;
+      const index = owners
+        .map((o) => o.toLowerCase())
+        .indexOf(String(tx.metadata.owner_for_removal).trim().toLowerCase());
 
-      // data
-      const data = interfaceOf.encodeFunctionData("removeOwner", [
-        formData.prevOwner_for_removal,
-        formData.newOwner_for_removal,
-        formData.newThreshold_for_removal,
+      const SENTINEL = "0x0000000000000000000000000000000000000001";
+      const prevOwner = index === 0 ? SENTINEL : owners[index - 1];
+
+      const data = safeSingltonInterface.encodeFunctionData("removeOwner", [
+        prevOwner,
+        tx.metadata.owner_for_removal,
+        tx.metadata.newThreshold_for_removal,
       ]);
 
       const to = safeAddress;
       const value = 0;
-      const operation = 0; // Enum.Operation.Call
+      const operation = 0;
       const safeTxGas = 0;
       const baseGas = 0;
       const gasPrice = 0;
       const gasToken = ethers.constants.AddressZero;
       const refundReceiver = ethers.constants.AddressZero;
-      const nonce = await safeInstance.nonce();
+      const nonce = await safeReadInstance.nonce();
 
       // transaction hash
-      const txHash = await safeInstance.getTransactionHash(
+      const txHash = await safeReadInstance.getTransactionHash(
         to,
         value,
         data,

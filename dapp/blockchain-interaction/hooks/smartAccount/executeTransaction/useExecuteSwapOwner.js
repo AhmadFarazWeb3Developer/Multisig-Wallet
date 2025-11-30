@@ -67,18 +67,33 @@ const useExecuteSwapOwner = (safeAddress) => {
         status: receipt.status,
       };
 
-      const response = await fetch(
-        "/api/transactions/store-executed-transaction",
-        {
-          method: "POST",
+      const callApi = async (url, method, payload) => {
+        const response = await fetch(url, {
+          method: method,
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
-        }
-      );
+        });
 
-      const getData = await response.json();
+        return response.json();
+      };
 
-      if (receipt && getData.ok) {
+      const [storeExecutedResponse, swapOwnerResponse] = await Promise.all([
+        callApi(
+          "/api/transactions/store-executed-transaction",
+          "POST",
+          payload
+        ),
+        callApi("/api/owners/swap-owner", "PUT", {
+          old_owner_address: tx.sender_address,
+          new_owner_address: tx.metadata.newOwner_for_swap,
+        }),
+      ]);
+
+      if (
+        receipt &&
+        storeExecutedResponse.status === 200 &&
+        swapOwnerResponse.status === 200
+      ) {
         toast.success(
           `${tx.sender_address} Swaped with ${tx.metadata.newOwner_for_swap}`,
           {

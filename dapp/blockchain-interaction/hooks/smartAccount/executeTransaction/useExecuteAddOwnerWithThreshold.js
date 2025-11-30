@@ -50,11 +50,11 @@ const useExecuteAddOwnerWithThreshold = (safeAddress) => {
         status: receipt.status,
       };
 
-      const callApi = async (url, body) => {
+      const callApi = async (url, payload) => {
         const res = await fetch(url, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
+          body: JSON.stringify(payload),
         });
         return res.json();
       };
@@ -62,8 +62,8 @@ const useExecuteAddOwnerWithThreshold = (safeAddress) => {
       const [storeTxRes, addOwnerRes] = await Promise.all([
         callApi("/api/transactions/store-executed-transaction", payload),
         callApi("/api/owners/add-owner", {
+          safe: safeAddress,
           owner_address: metadata.newOwner_with_threshold,
-          owner_name: "optional",
         }),
       ]);
 

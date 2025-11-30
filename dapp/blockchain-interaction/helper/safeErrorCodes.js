@@ -27,7 +27,8 @@ export const SAFE_ERRORS = {
   // Execution Related
   GS200: "Safe transaction failed",
   GS201: "Invalid operation type (must be CALL or DELEGATECALL)",
-  GS202: "Cannot estimate gas — transaction will fail",
+  GS202:
+    "Cannot remove the last owner — a Safe must always have at least one owner.",
   GS203: "Incorrect gas payment setup",
   GS204: "Gas price mismatch",
   GS205: "Transaction signature verification failed",

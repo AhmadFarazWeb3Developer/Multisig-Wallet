@@ -151,3 +151,38 @@ export async function getExecutedTransactions() {
     throw error;
   }
 }
+
+export async function getRejectedTransactions() {
+  try {
+    const result = await pool.query("SELECT * FROM rejected_transactions");
+
+    return result.rows;
+  } catch (error) {
+    console.error("Error fetching transactions:", error);
+    throw error;
+  }
+}
+
+export async function storeRejectedTransaction(
+  tx_id,
+  operation_name,
+  sender_address,
+  rejected_by,
+  metadata
+) {
+  const client = await pool.connect();
+
+  try {
+    const result = await client.query(
+      `INSERT INTO rejected_transactions
+       (tx_id, operation_name, sender_address, rejected_by, metadata)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING *`,
+      [tx_id, operation_name, sender_address, rejected_by, metadata]
+    );
+
+    return result.rows[0];
+  } finally {
+    client.release();
+  }
+}

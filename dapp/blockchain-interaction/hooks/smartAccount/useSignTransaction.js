@@ -75,7 +75,7 @@ const useSignTransaction = (safeAddress) => {
           txHash = await addOwnerWithThreshold(tx.metadata);
           break;
         case "Remove Owner":
-          txHash = await removeOwner(tx.metadata);
+          txHash = await removeOwner(tx);
           break;
         case "Set Guard":
           console.log(tx.metadata);

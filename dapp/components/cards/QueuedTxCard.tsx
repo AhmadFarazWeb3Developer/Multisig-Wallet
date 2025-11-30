@@ -4,28 +4,14 @@ import { useAppKitAccount } from "@reown/appkit/react";
 import { useEffect, useState } from "react";
 import useGetQueuedTxs from "../../app/hooks/useGetQueuedTxs";
 import useGetExecutedTxs from "@/app/hooks/useGetExecutedTxs";
-
-interface Transaction {
-  tx_id: string;
-  operation_name: string;
-  operation_description: string;
-  sender_address: string;
-  sender_name: string;
-  queued_at: string;
-  metadata: {
-    eth_amount?: string;
-    eth_recipient?: string;
-    token_amount?: string;
-    token_recipient?: string;
-  };
-}
+import { QueuedTxIface } from "../interfaces/Transactions";
 
 export default function QueuedTxCard() {
   const { isConnected, address } = useAppKitAccount();
   const { getQueuedTxs, isLoading } = useGetQueuedTxs();
   const { getExecutedTxs } = useGetExecutedTxs();
 
-  const [queuedTransactions, setQueuedTransactions] = useState<Transaction[]>(
+  const [queuedTransactions, setQueuedTransactions] = useState<QueuedTxIface[]>(
     []
   );
 
@@ -76,31 +62,8 @@ export default function QueuedTxCard() {
             key={tx.tx_id}
             className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 bg-[#1A1A1A] rounded-xl border border-[#333333] hover:border-[#eb5e28] hover:bg-[#222222] transition-all shadow-sm "
           >
-            <div className="flex flex-col sm:flex-row sm:items-center sm:gap-6 w-full">
-              <div className="flex flex-col">
-                <h4 className="text-white font-semibold text-sm">
-                  {tx.operation_name}
-                </h4>
-                <span className="text-[#A0A0A0] text-[12px] mt-0.5">
-                  {tx.operation_description}
-                </span>
-              </div>
-
-              {/* Middle: amounts */}
-              <div className="flex flex-col sm:flex-row sm:gap-4 mt-2 sm:mt-0 text-[11px] text-[#888]">
-                {tx.metadata.eth_amount && tx.metadata.eth_recipient && (
-                  <span>
-                    ETH: {tx.metadata.eth_amount} →{" "}
-                    {shortAddress(tx.metadata.eth_recipient)}
-                  </span>
-                )}
-                {tx.metadata.token_amount && tx.metadata.token_recipient && (
-                  <span>
-                    Token: {tx.metadata.token_amount} →{" "}
-                    {shortAddress(tx.metadata.token_recipient)}
-                  </span>
-                )}
-              </div>
+            <div className="flex flex-col sm:flex-row sm:gap-4 mt-2 sm:mt-0 text-[11px] text-[#888]">
+              {renderMetadata(tx.metadata)}
             </div>
 
             <div className="flex flex-col sm:items-end mt-3 sm:mt-0 text-[11px] text-[#888]">
@@ -114,6 +77,71 @@ export default function QueuedTxCard() {
       </div>
     </div>
   );
+}
+
+function renderMetadata(metadata: QueuedTxIface["metadata"]) {
+  const elements = [];
+
+  if (metadata.eth_amount && metadata.eth_recipient) {
+    elements.push(
+      <span key="eth">
+        ETH: {metadata.eth_amount} → {shortAddress(metadata.eth_recipient)}
+      </span>
+    );
+  }
+
+  if (metadata.token_amount && metadata.token_recipient) {
+    elements.push(
+      <span key="token">
+        Token: {metadata.token_amount} →{" "}
+        {shortAddress(metadata.token_recipient)}
+      </span>
+    );
+  }
+
+  if (metadata.newOwner_for_swap) {
+    elements.push(
+      <span key="swapOwner">
+        Swap Owner → {shortAddress(metadata.newOwner_for_swap)}
+      </span>
+    );
+  }
+
+  if (metadata.newOwner_with_threshold) {
+    elements.push(
+      <span key="newOwnerWithThreshold">
+        New Owner (with threshold) →{" "}
+        {shortAddress(metadata.newOwner_with_threshold)}
+      </span>
+    );
+  }
+
+  if (metadata.new_threshold1) {
+    elements.push(
+      <span key="threshold1">New Threshold 1 → {metadata.new_threshold1}</span>
+    );
+  }
+
+  if (metadata.new_threshold2) {
+    elements.push(
+      <span key="threshold2">New Threshold 2 → {metadata.new_threshold2}</span>
+    );
+  }
+
+  if (metadata.guardAddress) {
+    elements.push(
+      <span key="guard">Guard → {shortAddress(metadata.guardAddress)}</span>
+    );
+  }
+  if (metadata.owner_for_removal) {
+    elements.push(
+      <span key="newOwner_for_removal">
+        Remove Owner → {shortAddress(metadata.owner_for_removal)}
+      </span>
+    );
+  }
+
+  return elements.length > 0 ? elements : <span>—</span>;
 }
 
 function shortAddress(addr: string) {

@@ -43,13 +43,15 @@ export async function getSafesByOwner(ownerAddress) {
   }
 }
 
-export async function addOwner(ownerAddress, ownerName) {
+export async function addOwner(ownerAddress) {
   const client = await pool.connect();
   try {
     const result = await client.query(
-      `INSERT INTO owners (owner_address, owner_name) VALUES ($1, $2) RETURNING *`,
-      [ownerAddress, ownerName]
+      `INSERT INTO owners (owner_address, owner_name)
+       VALUES ($1, $2) RETURNING id, owner_address, owner_name`,
+      [ownerAddress.toLowerCase(), "optional"]
     );
+
     return result.rows[0];
   } catch (error) {
     console.error("Error adding owner:", error);
@@ -82,8 +84,6 @@ export async function linkOwnerToSafe(safeId, ownerId) {
 }
 
 export async function updateOwnerName(owner_address, owner_name) {
-  console.log("owner ", owner_address);
-  console.log("name ", owner_name);
   try {
     const result = await pool.query(
       `
@@ -102,6 +102,53 @@ export async function updateOwnerName(owner_address, owner_name) {
     return result.rows[0];
   } catch (error) {
     console.error("Error updating owner name:", error);
+    throw error;
+  }
+}
+
+export async function swapOwnerAddress(old_owner_address, new_owner_address) {
+  try {
+    const query = `
+      UPDATE owners 
+      SET owner_address = $1,
+          owner_name = $2
+      WHERE LOWER(owner_address) = LOWER($3)
+      RETURNING *;
+    `;
+
+    const result = await pool.query(query, [
+      new_owner_address,
+      "optional",
+      old_owner_address,
+    ]);
+
+    if (result.rowCount === 0) {
+      throw new Error("Owner not found");
+    }
+
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error updating owner:", error);
+    throw error;
+  }
+}
+export async function removeOwner(remove_owner) {
+  try {
+    const query = `
+      DELETE FROM owners 
+      WHERE LOWER(owner_address) = LOWER($1)
+      RETURNING *;
+    `;
+
+    const result = await pool.query(query, [remove_owner]);
+
+    if (result.rowCount === 0) {
+      throw new Error("Owner not found");
+    }
+
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error updating owner:", error);
     throw error;
   }
 }

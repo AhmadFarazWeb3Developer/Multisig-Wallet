@@ -212,7 +212,6 @@ const useExecuteTransaction = (safeAddress) => {
     if (txOpName === "Swap Owner") {
       try {
         setIsApproving(true);
-
         await executeSwapOwner(
           safeWriteInstace,
           metadata,

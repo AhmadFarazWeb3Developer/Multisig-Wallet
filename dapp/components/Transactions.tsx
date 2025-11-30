@@ -7,8 +7,10 @@ import SignatureCard from "./cards/SignatureTxCard";
 import PendingTxCard from "./cards/PendingTxCard";
 import ExecutedTxCard from "./cards/ExecutedTxCard";
 import QueuedTxCard from "./cards/QueuedTxCard";
+import RejectedTxCard from "./cards/RejectedTxCard";
 import useGetQueuedTxs from "@/app/hooks/useGetQueuedTxs";
 import useGetExecutedTxs from "@/app/hooks/useGetExecutedTxs";
+import useGetRejectedTxs from "@/app/hooks/useGetRejectedTxs";
 
 type safeAddressInterface = {
   safeAddress: String;
@@ -19,6 +21,7 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
 
   const { getQueuedTxs } = useGetQueuedTxs();
   const { getExecutedTxs } = useGetExecutedTxs();
+  const { getRejectedTxs } = useGetRejectedTxs();
 
   const [executedTxCount, setExecutedTxCount] = useState();
   const [queuedTxCount, setQueuedTxCount] = useState();
@@ -29,14 +32,17 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
     const counts = async () => {
       const queuedData = await getQueuedTxs();
       const executedData = await getExecutedTxs();
+      const rejectedData = await getRejectedTxs();
 
       const executedTxIds = executedData.map((tx: any) => tx.tx_id);
+      const rejectedTxIds = rejectedData.map((tx: any) => tx.tx_id);
 
       const queuedTx = queuedData.filter(
         (tx: any) => !executedTxIds.includes(tx.tx_id)
       );
 
       setQueuedTxCount(queuedTx.length);
+      setRejectedTxCount(rejectedTxIds.length);
       setExecutedTxCount(executedData.length);
     };
 
@@ -123,7 +129,7 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
                     : "text-[#A0A0A0] hover:text-white"
                 }`}
               >
-                Rejected ({1})
+                Rejected ({rejectedTxCount})
               </button>
             </div>
 
@@ -140,10 +146,7 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
 
               {activeTab === "executed" && <ExecutedTxCard />}
 
-              {/* {activeTab === "rejected" &&
-                rejectedTransactions.map((tx) => (
-                  <TransactionCard key={tx.id} tx={tx} />
-                ))} */}
+              {activeTab === "rejected" && <RejectedTxCard />}
             </div>
           </div>
         </div>

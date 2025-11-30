@@ -6,35 +6,10 @@ import { useEffect, useState } from "react";
 import useGetQueuedTxs from "../../app/hooks/useGetQueuedTxs";
 import useSafeSignatureCount from "@/blockchain-interaction/hooks/smartAccount/useSafeSignatureCount";
 import useSafeInstance from "@/blockchain-interaction/hooks/smartAccount/useSafeInstance";
-
+import useGetExecutedTxs from "@/app/hooks/useGetExecutedTxs";
+import { SignTxIfac } from "../interfaces/Transactions";
 interface SignatureTxCardProps {
   safeAddress: String;
-}
-
-interface Transaction {
-  tx_id: string;
-  operation_name: string;
-  operation_description: string;
-  sender_address: string;
-  sender_name: string;
-  queued_at: string;
-  metadata: {
-    eth_amount?: string;
-    eth_recipient?: string;
-    token_amount?: string;
-    token_recipient?: string;
-    mint_token_amount?: string;
-    newOwner_with_threshold?: string;
-    new_threshold1?: string;
-    prevOwner_for_removal?: string;
-    newOwner_for_removal?: string;
-    newThreshold_for_removal?: string;
-    prevOwner_for_swap?: string;
-    oldOwner_for_swap?: string;
-    newOwner_for_swap?: string;
-    new_threshold2?: string;
-    guard_address?: string;
-  };
 }
 
 export default function SignatureTxCard({ safeAddress }: SignatureTxCardProps) {
@@ -44,6 +19,7 @@ export default function SignatureTxCard({ safeAddress }: SignatureTxCardProps) {
     []
   );
   const { getQueuedTxs, isLoading } = useGetQueuedTxs();
+  const { getExecutedTxs } = useGetExecutedTxs();
   const safeSignatureCount = useSafeSignatureCount();
   const { safeReadInstance } = useSafeInstance(safeAddress);
 
@@ -56,14 +32,22 @@ export default function SignatureTxCard({ safeAddress }: SignatureTxCardProps) {
         return;
       }
 
-      const data = await getQueuedTxs();
+      const queuedData = await getQueuedTxs();
+      const executedData = await getExecutedTxs();
+
       const { safe_transaction_signatures } = await safeSignatureCount(
         safeReadInstance,
-        data
+        queuedData
       );
 
-      const notSigned = data.filter(
-        (tx: Transaction) =>
+      const executedTxIds = executedData.map((tx: any) => tx.tx_id);
+
+      const pendingTxs = queuedData.filter(
+        (tx: SignTxIfac) => !executedTxIds.includes(tx.tx_id)
+      );
+
+      const notSigned = pendingTxs.filter(
+        (tx: SignTxIfac) =>
           !safe_transaction_signatures.some(
             (sig) =>
               sig.tx_id === tx.tx_id &&
@@ -71,11 +55,12 @@ export default function SignatureTxCard({ safeAddress }: SignatureTxCardProps) {
           )
       );
 
-      // Sort oldest first
       const sortedNotSigned = notSigned.sort(
-        (a: Transaction, b: Transaction) =>
+        (a: SignTxIfac, b: SignTxIfac) =>
           new Date(a.queued_at).getTime() - new Date(b.queued_at).getTime()
       );
+
+      console.log(sortedNotSigned);
 
       setToBeSignedTransactions(sortedNotSigned);
     };

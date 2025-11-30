@@ -42,11 +42,8 @@ const useQueueTransaction = () => {
         ...(formData.new_threshold1 && {
           new_threshold1: formData.new_threshold1,
         }),
-        ...(formData.prevOwner_for_removal && {
-          prevOwner_for_removal: formData.prevOwner_for_removal,
-        }),
-        ...(formData.newOwner_for_removal && {
-          newOwner_for_removal: formData.newOwner_for_removal,
+        ...(formData.owner_for_removal && {
+          owner_for_removal: formData.owner_for_removal,
         }),
         ...(formData.newThreshold_for_removal && {
           newThreshold_for_removal: formData.newThreshold_for_removal,
