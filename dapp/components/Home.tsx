@@ -23,7 +23,7 @@ import { toast } from "sonner";
 import useInstancesSigner from "@/blockchain-interaction/helper/instancesSigner";
 
 type safeAddressInterface = {
-  safeAddress: String;
+  safeAddress: string;
 };
 
 type Owners = {
@@ -45,6 +45,8 @@ export default function Home({ safeAddress }: safeAddressInterface) {
   const [editedName, setEditedName] = useState("");
   const [safeOwners, setSafeOwners] = useState<Owners[]>([]);
   const [safeETH, setSafeETH] = useState<string>("0");
+  const [safetokens, setSafeTokens] = useState<string>("0");
+
   const [threshold, setThreshold] = useState<String | null>();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -114,11 +116,12 @@ export default function Home({ safeAddress }: safeAddressInterface) {
   };
 
   useEffect(() => {
-    if (!safeAddress || !safeReadInstance) return;
+    if (!safeAddress || !safeReadInstance!) return;
     if (!isConnected || !walletProvider) return;
     const fetchOwners = async () => {
       try {
         const blockchainOwners: string[] = await safeReadInstance.getOwners();
+        const { safeTokensMockInstance } = await InstancesSigner();
 
         const response = await fetch("api/owners/", {
           method: "GET",
@@ -146,20 +149,19 @@ export default function Home({ safeAddress }: safeAddressInterface) {
 
         const threshold: string = await safeReadInstance.getThreshold();
 
+        if (!safeTokensMockInstance) {
+          toast.error("Safe Token Intance not exists");
+          return;
+        }
+
         const balance = await safeReadInstance.provider.getBalance(safeAddress);
-
-        const { safeTokensMockInstance } = await InstancesSigner();
-        console.log(
-          "safe tokens : ",
-          formatEther(await safeTokensMockInstance.balanceOf(safeAddress))
-        );
-        console.log("balance : ", balance);
-
-        const formattedBalance = formatEther(balance);
+        const tokens = await safeTokensMockInstance.balanceOf(safeAddress);
 
         setSafeOwners(formattedOwners);
+
         setThreshold(threshold);
-        setSafeETH(formattedBalance);
+        setSafeTokens(formatEther(tokens));
+        setSafeETH(formatEther(balance));
       } catch (err) {
         console.error("Error fetching owners:", err);
       }
@@ -171,14 +173,41 @@ export default function Home({ safeAddress }: safeAddressInterface) {
   return (
     <main className="flex flex-col max-w-3xl gap-4 sm:gap-6 p-4 ">
       <div className="flex flex-col sm:flex-row  w-full">
-        <div className="bg-gradient-to-br from-[#242424] to-[#1A1A1A] border border-[#333333] rounded-t-md   sm:rounded-l-md sm:rounded-tr-none sm:rounded-br-md py-4 px-2 sm:p-6 shadow-lg w-full">
-          <p className="text-[#A0A0A0] text-sm font-semibold mb-2">
-            Total Locked Value
-          </p>
-          <h3 className="text-white text-2xl sm:text-5xl font-bold mb-1">
-            {safeETH || "0"}
-            <span className="text-xl sm:text-3xl text-[#A0A0A0]">ETH</span>
-          </h3>
+        <div
+          className="w-full bg-gradient-to-br  from-[#242424] to-[#1A1A1A] 
+     border border-[#333333]  rounded-t-md   sm:rounded-tr-none  sm:rounded-l-md sm:rounded-br-md rounded-xl p-6 shadow-lg flex flex-col gap-5"
+        >
+          <div className="flex flex-col gap-1">
+            <p className="text-[#A0A0A0] text-sm font-semibold tracking-wide">
+              Total Locked Value
+            </p>
+
+            <div className="flex items-baseline gap-2">
+              <h3 className="text-white text-4xl sm:text-5xl font-bold leading-tight">
+                {safeETH || "0"}
+              </h3>
+              <span className="text-[#A0A0A0] text-lg sm:text-2xl font-semibold">
+                ETH
+              </span>
+            </div>
+          </div>
+
+          <div className="h-px bg-[#333333] w-full"></div>
+
+          <div className="flex flex-col gap-1">
+            <p className="text-[#A0A0A0] text-sm font-semibold tracking-wide">
+              Total Safws Tokens
+            </p>
+
+            <div className="flex items-baseline gap-2">
+              <h3 className="text-white text-4xl sm:text-5xl font-bold leading-tight">
+                {safetokens || "0"}
+              </h3>
+              <span className="text-[#A0A0A0] text-lg sm:text-2xl font-semibold">
+                Safws
+              </span>
+            </div>
+          </div>
         </div>
 
         <div className="flex flex-row justify-center sm:w-1/3 sm:h-10 sm:rounded-r-md">

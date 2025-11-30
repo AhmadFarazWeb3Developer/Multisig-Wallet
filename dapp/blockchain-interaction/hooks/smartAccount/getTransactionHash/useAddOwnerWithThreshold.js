@@ -7,37 +7,34 @@ import { toast } from "sonner";
 import { isAddress } from "ethers/lib/utils";
 
 const useAddOwnerWithThreshold = (safeAddress) => {
-  const iface = Interfaces();
+  const { safeSingltonInterface } = Interfaces();
   const { safeReadInstance } = useSafeInstance(safeAddress);
 
-  const addOwnerWithThreshold = async (formData) => {
+  const addOwnerWithThreshold = async (metadata) => {
     try {
       if (!safeReadInstance) {
         toast.error("Safe is not ready");
         return;
       }
 
-      if (!formData.newOwner_with_threshold || !formData.new_threshold1) {
+      if (!metadata.newOwner_with_threshold || !metadata.new_threshold1) {
         toast.error("Fill the form before proceeding");
         return;
       }
 
-      if (!isAddress(formData.newOwner_with_threshold)) {
+      if (!isAddress(metadata.newOwner_with_threshold)) {
         toast.error("owner must be a valid address");
         return;
       }
 
-      const interfaceOf = iface.safeSingltonInterface;
-
-      // data
-      const data = interfaceOf.encodeFunctionData("addOwnerWithThreshold", [
-        formData.newOwner_with_threshold,
-        formData.new_threshold1,
-      ]);
+      const data = safeSingltonInterface.encodeFunctionData(
+        "addOwnerWithThreshold",
+        [metadata.newOwner_with_threshold, metadata.new_threshold1]
+      );
 
       const to = safeAddress;
       const value = 0;
-      const operation = 0; // Enum.Operation.Call
+      const operation = 0;
       const safeTxGas = 0;
       const baseGas = 0;
       const gasPrice = 0;

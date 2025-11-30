@@ -3,21 +3,22 @@ import { ethers, utils } from "ethers";
 import { SAFE_ERRORS } from "../../../helper/safeErrorCodes";
 import Interfaces from "@/blockchain-interaction/helper/interfaces";
 import DeterministicAddresses from "@/blockchain-interaction/helper/deterministicAddresses";
+import { parseUnits } from "ethers/lib/utils";
 
 const useExecuteTransferSafeTokens = () => {
-  const { safeSingltonInterface } = Interfaces();
+  const { safeTokensInterface } = Interfaces();
   const addresses = DeterministicAddresses();
 
   const executeTransferSafeTokens = async (
     safeWriteInstace,
     metadata,
     aggregatedSignature,
-    tx_hash
+    tx
   ) => {
     try {
-      const data = safeSingltonInterface.encodeFunctionData("transfer", [
+      const data = safeTokensInterface.encodeFunctionData("transfer", [
         metadata.token_recipient,
-        metadata.token_amount,
+        parseUnits(metadata.token_amount, 18),
       ]);
 
       const to = addresses.safeTokensMockAddress;
@@ -29,37 +30,12 @@ const useExecuteTransferSafeTokens = () => {
       const gasToken = ethers.constants.AddressZero;
       const refundReceiver = ethers.constants.AddressZero;
 
-      const nonce = await safeInstance.nonce();
+      const nonce = await safeWriteInstace.nonce();
       console.log("Current Safe nonce:", nonce.toString());
 
-      const currentHash = await safeWriteInstace.getTransactionHash(
-        to,
-        value,
-        data,
-        operation,
-        safeTxGas,
-        baseGas,
-        gasPrice,
-        gasToken,
-        refundReceiver,
-        nonce
-      );
-
-      console.log("Stored tx_hash:     ", tx_hash);
-      console.log("Recalculated hash:  ", currentHash);
       console.log("Aggregated signature:", utils.hexlify(aggregatedSignature));
 
-      if (currentHash !== tx_hash) {
-        toast.error(
-          "Transaction hash mismatch! The nonce may have changed. Please create a new transaction.",
-          {
-            action: { label: "Close" },
-          }
-        );
-        return;
-      }
-
-      const tx = await safeWriteInstace.execTransaction(
+      const execTransaction = await safeWriteInstace.execTransaction(
         to,
         value,
         data,
@@ -72,10 +48,16 @@ const useExecuteTransferSafeTokens = () => {
         aggregatedSignature
       );
 
-      const receipt = await tx.wait();
+      const receipt = await execTransaction.wait();
+
+      console.log(" receipt ", receipt);
 
       const payload = {
-        tx_hash: tx_hash,
+        tx_id: tx.tx_id,
+        tx_hash: receipt.transactionHash,
+        metadata,
+        operation_name: tx.operation_name,
+        status: receipt.status,
       };
 
       const response = await fetch(
@@ -89,7 +71,8 @@ const useExecuteTransferSafeTokens = () => {
 
       const getData = await response.json();
 
-      if (receipt && getData.ok) {
+      console.log("response  : ", getData);
+      if (receipt && getData.status === 200) {
         toast.success(
           `${metadata.token_amount} ETH transferred to ${metadata.token_recipient}`,
           {

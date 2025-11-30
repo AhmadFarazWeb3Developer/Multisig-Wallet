@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { ethers, utils } from "ethers";
+import { ethers } from "ethers";
 import { SAFE_ERRORS } from "../../../helper/safeErrorCodes";
 import Interfaces from "@/blockchain-interaction/helper/interfaces";
 
@@ -7,61 +7,28 @@ const useExecuteAddOwnerWithThreshold = () => {
   const { safeSingltonInterface } = Interfaces();
 
   const executeAddOwnerWithThreshold = async (
-    safeWriteInstace,
+    safeWriteInstance,
     metadata,
     aggregatedSignature,
-    tx_hash,
-    safeAddress
+    safeAddress,
+    tx
   ) => {
     try {
       const to = safeAddress;
       const value = 0;
-
       const data = safeSingltonInterface.encodeFunctionData(
         "addOwnerWithThreshold",
         [metadata.newOwner_with_threshold, metadata.new_threshold1]
       );
 
-      const operation = 0; // Enum.Operation.Call
+      const operation = 0;
       const safeTxGas = 0;
       const baseGas = 0;
       const gasPrice = 0;
       const gasToken = ethers.constants.AddressZero;
       const refundReceiver = ethers.constants.AddressZero;
 
-      // Get current nonce
-      const nonce = await safeWriteInstace.nonce();
-      console.log("Current Safe nonce:", nonce.toString());
-
-      // Recalculate hash with current nonce to verify
-      const currentHash = await safeWriteInstace.getTransactionHash(
-        to,
-        value,
-        data,
-        operation,
-        safeTxGas,
-        baseGas,
-        gasPrice,
-        gasToken,
-        refundReceiver,
-        nonce
-      );
-
-      console.log("Stored tx_hash:     ", tx_hash);
-      console.log("Recalculated hash:  ", currentHash);
-      console.log("Aggregated signature:", utils.hexlify(aggregatedSignature));
-
-      if (currentHash !== tx_hash) {
-        toast.error(
-          "Transaction hash mismatch! The nonce may have changed. Please create a new transaction.",
-          {
-            action: { label: "Close" },
-          }
-        );
-        return;
-      }
-
-      const tx = await safeWriteInstace.execTransaction(
+      const execTransaction = await safeWriteInstance.execTransaction(
         to,
         value,
         data,
@@ -74,29 +41,38 @@ const useExecuteAddOwnerWithThreshold = () => {
         aggregatedSignature
       );
 
-      const receipt = await tx.wait();
+      const receipt = await execTransaction.wait();
 
       const payload = {
-        tx_hash: tx_hash,
+        tx_id: tx.tx_id,
+        tx_hash: receipt.transactionHash,
+        metadata,
+        operation_name: tx.operation_name,
+        status: receipt.status,
       };
 
-      const response = await fetch(
-        "/api/transactions/store-executed-transaction",
-        {
+      const callApi = async (url, body) => {
+        const res = await fetch(url, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }
-      );
-
-      const getData = await response.json();
-
-      if (receipt && getData.ok) {
-        toast.success(`${metadata.eth_amount} ETH transferred to ${to}`, {
-          action: {
-            label: "Close",
-          },
+          body: JSON.stringify(body),
         });
+        return res.json();
+      };
+
+      const [storeTxRes, addOwnerRes] = await Promise.all([
+        callApi("/api/transactions/store-executed-transaction", payload),
+        callApi("/api/owners/add-owner", {
+          owner_address: metadata.newOwner_with_threshold,
+          owner_name: "optional",
+        }),
+      ]);
+
+      if (receipt && storeTxRes.status === 200 && addOwnerRes.status === 200) {
+        toast.success(
+          `${metadata.newOwner_with_threshold} added as owner with new threshold ${metadata.new_threshold1}`,
+          { action: { label: "Close" } }
+        );
       }
 
       return receipt;
@@ -110,7 +86,7 @@ const useExecuteAddOwnerWithThreshold = () => {
         error?.data ||
         error?.reason;
 
-      console.log("Error data:", data);
+      console.error("Execution error data:", data);
 
       if (data) {
         if (typeof data === "string" && data.startsWith("0x08c379a0")) {
@@ -128,18 +104,13 @@ const useExecuteAddOwnerWithThreshold = () => {
         }
       }
 
-      console.error("Execution error:", error);
-      console.error("Captured error code:", capturedErrorCode);
-
       const errorMessage =
         SAFE_ERRORS[capturedErrorCode] ||
         capturedErrorCode ||
         "Transaction execution failed";
 
       toast.error(`Execution failed: ${errorMessage}`, {
-        action: {
-          label: "Close",
-        },
+        action: { label: "Close" },
       });
 
       throw error;

@@ -7,45 +7,41 @@ import { toast } from "sonner";
 import { isAddress } from "ethers/lib/utils";
 
 const useSetGuard = (safeAddress) => {
-  const iface = Interfaces();
-  const safeInstance = useSafeInstance(safeAddress);
+  const { safeSingltonInterface } = Interfaces();
+  const { safeReadInstance } = useSafeInstance(safeAddress);
 
-  const setGuard = async (formData) => {
+  const setGuard = async (metadata) => {
     try {
-      if (!safeInstance) {
+      if (!safeReadInstance) {
         toast.error("Safe is not ready");
         return;
       }
 
-      if (!formData.guardAddress) {
+      if (!metadata.guard_address) {
         toast.error("Fill the form before proceeding");
         return;
       }
 
-      if (!isAddress(formData.guardAddress)) {
+      if (!isAddress(metadata.guard_address)) {
         toast.error("guard must be a valid address");
         return;
       }
 
-      const interfaceOf = iface.safeSingltonInterface;
-
-      // data
-      const data = interfaceOf.encodeFunctionData("setGuard", [
-        formData.guardAddress,
+      const data = safeSingltonInterface.encodeFunctionData("setGuard", [
+        metadata.guard_address,
       ]);
 
       const to = safeAddress;
       const value = 0;
-      const operation = 0; // Enum.Operation.Call
+      const operation = 0;
       const safeTxGas = 0;
       const baseGas = 0;
       const gasPrice = 0;
       const gasToken = ethers.constants.AddressZero;
       const refundReceiver = ethers.constants.AddressZero;
-      const nonce = await safeInstance.nonce();
+      const nonce = await safeReadInstance.nonce();
 
-      // transaction hash
-      const txHash = await safeInstance.getTransactionHash(
+      const txHash = await safeReadInstance.getTransactionHash(
         to,
         value,
         data,

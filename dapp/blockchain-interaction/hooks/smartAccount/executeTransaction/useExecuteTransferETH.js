@@ -4,15 +4,12 @@ import { SAFE_ERRORS } from "../../../helper/safeErrorCodes";
 import { useState } from "react";
 
 const useExecuteTransferETH = () => {
-  const [isApproving, setIsApproving] = useState(false);
-
   const executeTransferETH = async (
     safeWriteInstance,
     metadata,
     aggregatedSignature,
     tx
   ) => {
-    setIsApproving(true);
     try {
       const to = metadata.eth_recipient;
       const value = ethers.utils.parseEther(metadata.eth_amount.toString());
@@ -23,21 +20,6 @@ const useExecuteTransferETH = () => {
       const gasPrice = 0;
       const gasToken = ethers.constants.AddressZero;
       const refundReceiver = ethers.constants.AddressZero;
-
-      const nonce = await safeWriteInstance.nonce();
-
-      const txHash = await safeWriteInstance.getTransactionHash(
-        to,
-        value,
-        data,
-        operation,
-        safeTxGas,
-        baseGas,
-        gasPrice,
-        gasToken,
-        refundReceiver,
-        nonce
-      );
 
       const execTransaction = await safeWriteInstance.execTransaction(
         to,
@@ -56,7 +38,7 @@ const useExecuteTransferETH = () => {
 
       const payload = {
         tx_id: tx.tx_id,
-        tx_hash: txHash,
+        tx_hash: receipt.transactionHash,
         metadata,
         operation_name: tx.operation_name,
         status: receipt.status,
@@ -119,12 +101,10 @@ const useExecuteTransferETH = () => {
       });
 
       throw error;
-    } finally {
-      setIsApproving(false);
     }
   };
 
-  return { executeTransferETH, isApproving };
+  return executeTransferETH;
 };
 
 export default useExecuteTransferETH;

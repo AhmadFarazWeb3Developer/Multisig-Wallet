@@ -25,7 +25,7 @@ const useSignTransaction = (safeAddress) => {
   const mintTokens = useMintTokens(safeAddress);
   const swapOwner = useSwapOwner(safeAddress);
 
-  const [isSigning, setIsSigning] = useState(false); // <- loading state
+  const [isSigning, setIsSigning] = useState(false);
 
   const submitSignature = async (tx_id, sender_address, signature) => {
     const payload = {
@@ -55,7 +55,7 @@ const useSignTransaction = (safeAddress) => {
   };
 
   const signTransaction = async (tx, sender_address) => {
-    setIsSigning(true); // start loading
+    setIsSigning(true);
     try {
       const { signer } = await InstancesSigner();
       if (!signer) {
@@ -78,6 +78,7 @@ const useSignTransaction = (safeAddress) => {
           txHash = await removeOwner(tx.metadata);
           break;
         case "Set Guard":
+          console.log(tx.metadata);
           txHash = await setGuard(tx.metadata);
           break;
         case "Change Threshold":

@@ -10,14 +10,14 @@ const useExecuteSetGuard = () => {
     safeWriteInstace,
     metadata,
     aggregatedSignature,
-    tx_hash,
-    safeAddress
+    safeAddress,
+    tx
   ) => {
     try {
       const to = safeAddress;
       const value = 0;
       const data = safeSingltonInterface.encodeFunctionData("setGuard", [
-        metadata.guardAddress,
+        metadata.guard_address,
       ]);
       const operation = 0; // Enum.Operation.Call
       const safeTxGas = 0;
@@ -30,35 +30,7 @@ const useExecuteSetGuard = () => {
       const nonce = await safeWriteInstace.nonce();
       console.log("Current Safe nonce:", nonce.toString());
 
-      // Recalculate hash with current nonce to verify
-      const currentHash = await safeWriteInstace.getTransactionHash(
-        to,
-        value,
-        data,
-        operation,
-        safeTxGas,
-        baseGas,
-        gasPrice,
-        gasToken,
-        refundReceiver,
-        nonce
-      );
-
-      console.log("Stored tx_hash:     ", tx_hash);
-      console.log("Recalculated hash:  ", currentHash);
-      console.log("Aggregated signature:", utils.hexlify(aggregatedSignature));
-
-      if (currentHash !== tx_hash) {
-        toast.error(
-          "Transaction hash mismatch! The nonce may have changed. Please create a new transaction.",
-          {
-            action: { label: "Close" },
-          }
-        );
-        return;
-      }
-
-      const tx = await safeWriteInstace.execTransaction(
+      const execTransaction = await safeWriteInstace.execTransaction(
         to,
         value,
         data,
@@ -71,10 +43,14 @@ const useExecuteSetGuard = () => {
         aggregatedSignature
       );
 
-      const receipt = await tx.wait();
+      const receipt = await execTransaction.wait();
 
       const payload = {
-        tx_hash: tx_hash,
+        tx_id: tx.tx_id,
+        tx_hash: receipt.transactionHash,
+        metadata,
+        operation_name: tx.operation_name,
+        status: receipt.status,
       };
 
       const response = await fetch(
@@ -88,8 +64,8 @@ const useExecuteSetGuard = () => {
 
       const getData = await response.json();
 
-      if (receipt && getData.ok) {
-        toast.success(`Guard set to ${metadata.guardAddress}`, {
+      if (receipt && getData.status === 200) {
+        toast.success(`Guard set to ${metadata.guard_address}`, {
           action: {
             label: "Close",
           },

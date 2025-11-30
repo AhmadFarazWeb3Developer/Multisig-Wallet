@@ -5,10 +5,6 @@ export async function PUT(req) {
     const body = await req.json();
     const { owner_address, owner_name } = body;
 
-    console.log(owner_address);
-    console.log(owner_name);
-    console.log("API HIT🔥");
-
     if (!owner_address || !owner_name) {
       return Response.json(
         { error: "address and name are required" },

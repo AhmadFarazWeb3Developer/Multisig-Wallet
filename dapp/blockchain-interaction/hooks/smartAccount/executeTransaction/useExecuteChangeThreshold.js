@@ -19,7 +19,7 @@ const useExecuteChangeThreshold = () => {
       const data = safeSingltonInterface.encodeFunctionData("changeThreshold", [
         metadata.new_threshold2,
       ]);
-      const operation = 0; // Enum.Operation.Call
+      const operation = 0;
       const safeTxGas = 0;
       const baseGas = 0;
       const gasPrice = 0;
@@ -29,20 +29,6 @@ const useExecuteChangeThreshold = () => {
       // Get current nonce
       const nonce = await safeWriteInstace.nonce();
       console.log("Current Safe nonce:", nonce.toString());
-
-      // Recalculate hash with current nonce to verify
-      const txHash = await safeWriteInstace.getTransactionHash(
-        to,
-        value,
-        data,
-        operation,
-        safeTxGas,
-        baseGas,
-        gasPrice,
-        gasToken,
-        refundReceiver,
-        nonce
-      );
 
       console.log("Aggregated signature:", utils.hexlify(aggregatedSignature));
 
@@ -63,13 +49,12 @@ const useExecuteChangeThreshold = () => {
 
       console.log("meta data : ", metadata);
 
-      // Prepare payload for DB
       const payload = {
         tx_id: tx.tx_id,
-        tx_hash: txHash,
+        tx_hash: receipt.transactionHash,
         metadata,
         operation_name: tx.operation_name,
-        status: receipt.status, // 1 = success, 0 = fail
+        status: receipt.status,
       };
 
       const response = await fetch(

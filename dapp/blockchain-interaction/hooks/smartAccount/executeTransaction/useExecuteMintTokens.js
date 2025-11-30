@@ -1,8 +1,9 @@
 import { toast } from "sonner";
-import { ethers, utils } from "ethers";
+import { ethers } from "ethers";
 import { SAFE_ERRORS } from "../../../helper/safeErrorCodes";
 import Interfaces from "@/blockchain-interaction/helper/interfaces";
 import DeterministicAddresses from "@/blockchain-interaction/helper/deterministicAddresses";
+import { parseUnits } from "ethers/lib/utils";
 
 const useExecuteMintTokens = () => {
   const { safeTokensInterface } = Interfaces();
@@ -12,57 +13,25 @@ const useExecuteMintTokens = () => {
     safeWriteInstace,
     metadata,
     aggregatedSignature,
-    safeAddress
+    safeAddress,
+    tx
   ) => {
     try {
-      console.log("safe address : ", safeAddress);
-      console.log("metadata : ", metadata);
-
       const to = safeTokensMockAddress;
       const value = 0;
+
       const data = safeTokensInterface.encodeFunctionData("mint", [
         safeAddress,
-        ethers.utils.parseUnits(metadata.mint_token_amount, 18),
+        parseUnits(metadata.mint_token_amount, 18),
       ]);
-      const operation = 0; // Enum.Operation.Call
+      const operation = 0;
       const safeTxGas = 0;
       const baseGas = 0;
       const gasPrice = 0;
       const gasToken = ethers.constants.AddressZero;
       const refundReceiver = ethers.constants.AddressZero;
 
-      const nonce = await safeWriteInstace.nonce();
-      console.log("Current Safe nonce:", nonce.toString());
-
-      const txHash = await safeWriteInstace.getTransactionHash(
-        to,
-        value,
-        data,
-        operation,
-        safeTxGas,
-        baseGas,
-        gasPrice,
-        gasToken,
-        refundReceiver,
-        nonce
-      );
-
-      console.log("current hash : ", txHash);
-
-      console.log("Aggregated signature:", utils.hexlify(aggregatedSignature));
-
-      console.log(
-        "Hash we signed:",
-        "0x749f41f3b0b613f390d71e4bf47f68b665c0e9cbea67b6ed454aa7192ce97118"
-      );
-      console.log("Hash contract will verify:", txHash);
-      console.log(
-        "Match:",
-        txHash ===
-          "0x749f41f3b0b613f390d71e4bf47f68b665c0e9cbea67b6ed454aa7192ce97118"
-      );
-
-      const tx = await safeWriteInstace.execTransaction(
+      const execTransaction = await safeWriteInstace.execTransaction(
         to,
         value,
         data,
@@ -75,12 +44,14 @@ const useExecuteMintTokens = () => {
         aggregatedSignature
       );
 
-      const receipt = await tx.wait();
-
-      console.log("receipt : ", receipt);
+      const receipt = await execTransaction.wait();
 
       const payload = {
-        tx_hash: txHash,
+        tx_id: tx.tx_id,
+        tx_hash: receipt.transactionHash,
+        metadata,
+        operation_name: tx.operation_name,
+        status: receipt.status,
       };
 
       const response = await fetch(
@@ -94,11 +65,9 @@ const useExecuteMintTokens = () => {
 
       const getData = await response.json();
 
-      if (receipt && getData.ok) {
+      if (receipt && getData.status === 200) {
         toast.success(`${metadata.mint_token_amount} tokens minted!`, {
-          action: {
-            label: "Close",
-          },
+          action: { label: "Close" },
         });
       }
 
@@ -131,18 +100,13 @@ const useExecuteMintTokens = () => {
         }
       }
 
-      console.error("Execution error:", error);
-      console.error("Captured error code:", capturedErrorCode);
-
       const errorMessage =
         SAFE_ERRORS[capturedErrorCode] ||
         capturedErrorCode ||
         "Transaction execution failed";
 
       toast.error(`Execution failed: ${errorMessage}`, {
-        action: {
-          label: "Close",
-        },
+        action: { label: "Close" },
       });
 
       throw error;

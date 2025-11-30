@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { Contract, ethers } from "ethers";
 
 import SingletonFactoryArtifact from "../../app/on-chain/artifacts/contracts/SingletonFactory.sol/SingletonFactory.json";
 import SafeArtifact from "../../app/on-chain/artifacts/contracts/Safe.sol/Safe.json";
@@ -27,11 +27,23 @@ const useInstancesSigner = () => {
     try {
       if (!isConnected) {
         setError("Wallet not connected");
-        return;
+        return {
+          signer: undefined,
+          safeSingltonInstance: undefined,
+          safeProxyFactoryIntance: undefined,
+          compatibilityFallbackHandlerInstace: undefined,
+          safeTokensMockInstance: undefined,
+        };
       }
       if (!walletProvider) {
         setError("Provider not available");
-        return;
+        return {
+          signer: undefined,
+          safeSingltonInstance: undefined,
+          safeProxyFactoryIntance: undefined,
+          compatibilityFallbackHandlerInstace: undefined,
+          safeTokensMockInstance: undefined,
+        };
       }
 
       const provider = new ethers.providers.Web3Provider(walletProvider);
@@ -75,7 +87,14 @@ const useInstancesSigner = () => {
         safeTokensMockInstance,
       };
     } catch (error) {
-      console.log("error in signers : ", error);
+      setError("error in signers : ", error);
+      return {
+        signer: undefined,
+        safeSingltonInstance: undefined,
+        safeProxyFactoryIntance: undefined,
+        compatibilityFallbackHandlerInstace: undefined,
+        safeTokensMockInstance: undefined,
+      };
     }
   };
 

@@ -8,9 +8,12 @@ import useExecuteMintTokens from "../smartAccount/executeTransaction/useExecuteM
 import useExecuteTransferSafeTokens from "../smartAccount/executeTransaction/useExecuteTransferSafeTokens";
 import useExecuteChangeThreshold from "../smartAccount/executeTransaction/useExecuteChangeThreshold";
 import { toast } from "sonner";
+import { useState } from "react";
 
 const useExecuteTransaction = () => {
-  const { executeTransferETH, isApproving } = useExecuteTransferETH();
+  const [isApproving, setIsApproving] = useState(false);
+
+  const executeTransferETH = useExecuteTransferETH();
   const executeAddOwnerWithThreshold = useExecuteAddOwnerWithThreshold();
   const executeRemoveOwner = useExecuteRemoveOwner();
   const executeSetGuard = useExecuteSetGuard();
@@ -66,7 +69,7 @@ const useExecuteTransaction = () => {
         "Signatures are NOT in the same order as Safe owners. GS026 may occur!"
       );
     } else {
-      console.log("Signatures are correctly ordered ✅");
+      console.log("Signatures are correctly ordered ");
     }
 
     const currentTxId = tx.tx_id;
@@ -100,33 +103,50 @@ const useExecuteTransaction = () => {
 
     console.log("All signature owners verified ✓");
 
-    // Execute based on operation type
     if (txOpName === "Transfer ETH") {
-      await executeTransferETH(
-        safeWriteInstace,
-        metadata,
-        aggregatedSignature,
-        tx
-      );
+      try {
+        setIsApproving(false);
+        await executeTransferETH(
+          safeWriteInstace,
+          metadata,
+          aggregatedSignature,
+          tx
+        );
+      } catch (error) {
+      } finally {
+        setIsApproving(false);
+      }
     }
 
     if (txOpName === "Transfer Safe Tokens") {
-      await executeTransferSafeTokens(
-        safeWriteInstace,
-        metadata,
-        aggregatedSignature,
-        tx
-      );
+      try {
+        setIsApproving(true);
+        await executeTransferSafeTokens(
+          safeWriteInstace,
+          metadata,
+          aggregatedSignature,
+          tx
+        );
+      } catch (error) {
+      } finally {
+        setIsApproving(false);
+      }
     }
 
     if (txOpName === "Add Owner with Threshold") {
-      await executeAddOwnerWithThreshold(
-        safeWriteInstace,
-        metadata,
-        aggregatedSignature,
-        safeAddress,
-        tx
-      );
+      try {
+        setIsApproving(true);
+        await executeAddOwnerWithThreshold(
+          safeWriteInstace,
+          metadata,
+          aggregatedSignature,
+          safeAddress,
+          tx
+        );
+      } catch (error) {
+      } finally {
+        setIsApproving(false);
+      }
     }
 
     if (txOpName === "Remove Owner") {
@@ -140,33 +160,52 @@ const useExecuteTransaction = () => {
     }
 
     if (txOpName === "Change Threshold") {
-      await executeChangeThreshold(
-        safeWriteInstace,
-        metadata,
-        aggregatedSignature,
-        safeAddress,
-        tx
-      );
+      try {
+        setIsApproving(true);
+        await executeChangeThreshold(
+          safeWriteInstace,
+          metadata,
+          aggregatedSignature,
+          safeAddress,
+          tx
+        );
+      } catch (error) {
+      } finally {
+        setIsApproving(false);
+      }
     }
 
     if (txOpName === "Set Guard") {
-      await executeSetGuard(
-        safeWriteInstace,
-        metadata,
-        aggregatedSignature,
-        safeAddress,
-        tx
-      );
+      try {
+        setIsApproving(true);
+        await executeSetGuard(
+          safeWriteInstace,
+          metadata,
+          aggregatedSignature,
+          safeAddress,
+          tx
+        );
+      } catch (error) {
+      } finally {
+        setIsApproving(false);
+      }
     }
 
     if (txOpName === "Mint Tokens") {
-      await executeMintTokens(
-        safeWriteInstace,
-        metadata,
-        aggregatedSignature,
-        safeAddress,
-        tx
-      );
+      try {
+        setIsApproving(true);
+
+        await executeMintTokens(
+          safeWriteInstace,
+          metadata,
+          aggregatedSignature,
+          safeAddress,
+          tx
+        );
+      } catch (error) {
+      } finally {
+        setIsApproving(false);
+      }
     }
 
     if (txOpName === "Swap Owner") {

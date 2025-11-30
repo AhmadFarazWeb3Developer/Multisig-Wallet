@@ -6,7 +6,7 @@ import useSafeInstance from "../useSafeInstance";
 import { toast } from "sonner";
 
 const useChangeThreshold = (safeAddress) => {
-  const iface = Interfaces();
+  const { safeSingltonInterface } = Interfaces();
   const { safeReadInstance } = useSafeInstance(safeAddress);
 
   const changeThreshold = async (metadata) => {
@@ -16,22 +16,21 @@ const useChangeThreshold = (safeAddress) => {
         return;
       }
 
-      if (!metadata.new_threshold2 == "0" || !metadata.new_threshold2) {
+      if (metadata.new_threshold2 == "0" || !metadata.new_threshold2) {
         toast.error("0 or undefined threshold cannot be set");
         return;
       }
-      const interfaceOf = iface.safeSingltonInterface;
 
       console.log("meta data : ", metadata);
 
       // data
-      const data = interfaceOf.encodeFunctionData("changeThreshold", [
-        formData.new_threshold2,
+      const data = safeSingltonInterface.encodeFunctionData("changeThreshold", [
+        metadata.new_threshold2,
       ]);
 
       const to = safeAddress;
       const value = 0;
-      const operation = 0; // Enum.Operation.Call
+      const operation = 0;
       const safeTxGas = 0;
       const baseGas = 0;
       const gasPrice = 0;
@@ -39,7 +38,6 @@ const useChangeThreshold = (safeAddress) => {
       const refundReceiver = ethers.constants.AddressZero;
       const nonce = await safeReadInstance.nonce();
 
-      // transaction hash
       const txHash = await safeReadInstance.getTransactionHash(
         to,
         value,
@@ -52,6 +50,8 @@ const useChangeThreshold = (safeAddress) => {
         refundReceiver,
         nonce
       );
+
+      console.log(txHash);
 
       toast.success(`Transaction hash generated successfully! ${txHash}`, {
         action: {

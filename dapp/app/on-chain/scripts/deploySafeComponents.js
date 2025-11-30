@@ -8,7 +8,6 @@ async function deploySafeComponents() {
 
   const SingletonFactory = await ethers.getContractFactory("SingletonFactory");
   const singletonFactory = await SingletonFactory.deploy();
-
   await singletonFactory.waitForDeployment();
   const singletonFactoryAddress = await singletonFactory.getAddress();
 
@@ -16,6 +15,11 @@ async function deploySafeComponents() {
   const safeTokens = await SafeTokensMock.deploy();
   await safeTokens.waitForDeployment();
   const safeTokensAddress = await safeTokens.getAddress();
+
+  const SimpleGuard = await ethers.getContractFactory("SimpleGuard");
+  const simpleGuard = await SimpleGuard.deploy();
+  await simpleGuard.waitForDeployment();
+  const simpleGuardAddress = await simpleGuard.getAddress();
 
   const Safe = await ethers.getContractFactory("Safe");
   const SafeProxyFactory = await ethers.getContractFactory("SafeProxyFactory");
@@ -73,6 +77,7 @@ async function deploySafeComponents() {
     "SafeModule#SafeProxyFactory": proxyFactoryAddress,
     "SafeModule#FallbackHandler": handlerAddress,
     "SafeModule#SafeTokensMock": safeTokensAddress,
+    "SafeModule#SimpleGuard": simpleGuardAddress,
   };
 
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
