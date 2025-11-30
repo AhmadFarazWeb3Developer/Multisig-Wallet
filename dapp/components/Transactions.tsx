@@ -36,7 +36,6 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
         (tx: any) => !executedTxIds.includes(tx.tx_id)
       );
 
-      console.log("main ", queuedTx);
       setQueuedTxCount(queuedTx.length);
       setExecutedTxCount(executedData.length);
     };

@@ -2,25 +2,35 @@ import { toast } from "sonner";
 import { ethers, utils } from "ethers";
 import { SAFE_ERRORS } from "../../../helper/safeErrorCodes";
 import Interfaces from "@/blockchain-interaction/helper/interfaces";
+import useSafeInstance from "../useSafeInstance";
 
-const useExecuteSwapOwner = () => {
+const useExecuteSwapOwner = (safeAddress) => {
   const { safeSingltonInterface } = Interfaces();
+  const { safeReadInstance } = useSafeInstance(safeAddress);
 
   const executeSwapOwner = async (
     safeWriteInstace,
     metadata,
     aggregatedSignature,
-    tx_hash,
-    safeAddress
+    tx
   ) => {
     try {
       const to = safeAddress;
       const value = 0;
 
+      const owners = await safeReadInstance.getOwners();
+
+      const index = owners
+        .map((o) => o.toLowerCase())
+        .indexOf(String(tx.sender_address).trim().toLowerCase());
+
+      const SENTINEL = "0x0000000000000000000000000000000000000001";
+      const prevOwner = index === 0 ? SENTINEL : owners[index - 1];
+
       const data = safeSingltonInterface.encodeFunctionData("swapOwner", [
-        metadata.prevOwner_for_swap,
-        metadata.oldOwner_for_swap,
-        metadata.newOwner_for_swap,
+        prevOwner,
+        tx.sender_address,
+        tx.metadata.newOwner_for_swap,
       ]);
 
       const operation = 0; // Enum.Operation.Call
@@ -34,35 +44,7 @@ const useExecuteSwapOwner = () => {
       const nonce = await safeWriteInstace.nonce();
       console.log("Current Safe nonce:", nonce.toString());
 
-      // Recalculate hash with current nonce to verify
-      const currentHash = await safeWriteInstace.getTransactionHash(
-        to,
-        value,
-        data,
-        operation,
-        safeTxGas,
-        baseGas,
-        gasPrice,
-        gasToken,
-        refundReceiver,
-        nonce
-      );
-
-      console.log("Stored tx_hash:     ", tx_hash);
-      console.log("Recalculated hash:  ", currentHash);
-      console.log("Aggregated signature:", utils.hexlify(aggregatedSignature));
-
-      if (currentHash !== tx_hash) {
-        toast.error(
-          "Transaction hash mismatch! The nonce may have changed. Please create a new transaction.",
-          {
-            action: { label: "Close" },
-          }
-        );
-        return;
-      }
-
-      const tx = await safeWriteInstace.execTransaction(
+      const execTransaction = await safeWriteInstace.execTransaction(
         to,
         value,
         data,
@@ -75,10 +57,14 @@ const useExecuteSwapOwner = () => {
         aggregatedSignature
       );
 
-      const receipt = await tx.wait();
+      const receipt = await execTransaction.wait();
 
       const payload = {
-        tx_hash: tx_hash,
+        tx_id: tx.tx_id,
+        tx_hash: receipt.transactionHash,
+        metadata,
+        operation_name: tx.operation_name,
+        status: receipt.status,
       };
 
       const response = await fetch(
@@ -93,11 +79,14 @@ const useExecuteSwapOwner = () => {
       const getData = await response.json();
 
       if (receipt && getData.ok) {
-        toast.success(`${metadata.eth_amount} ETH transferred to ${to}`, {
-          action: {
-            label: "Close",
-          },
-        });
+        toast.success(
+          `${tx.sender_address} Swaped with ${tx.metadata.newOwner_for_swap}`,
+          {
+            action: {
+              label: "Close",
+            },
+          }
+        );
       }
 
       return receipt;

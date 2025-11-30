@@ -55,15 +55,11 @@ const useQueueTransaction = () => {
           new_threshold2: formData.new_threshold2,
         }),
         ...(formData.guardAddress && { guard_address: formData.guardAddress }),
+
         ...(formData.mint_token_amount && {
           mint_token_amount: formData.mint_token_amount,
         }),
-        ...(formData.prevOwner_for_swap && {
-          prevOwner_for_swap: formData.prevOwner_for_swap,
-        }),
-        ...(formData.oldOwner_for_swap && {
-          oldOwner_for_swap: formData.oldOwner_for_swap,
-        }),
+
         ...(formData.newOwner_for_swap && {
           newOwner_for_swap: formData.newOwner_for_swap,
         }),

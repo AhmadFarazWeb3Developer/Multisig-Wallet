@@ -10,7 +10,6 @@ const useExecuteChangeThreshold = () => {
     safeWriteInstace,
     metadata,
     aggregatedSignature,
-    safeAddress,
     tx
   ) => {
     try {

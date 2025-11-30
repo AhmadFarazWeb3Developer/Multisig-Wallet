@@ -34,7 +34,8 @@ export default function PendingTxCard({ safeAddress }: PendingTxCardProps) {
   const [pendingTransactions, setPendingTransactions] = useState([]);
   const safeSignatureCount = useSafeSignatureCount();
   const { safeWriteInstace, safeReadInstance } = useSafeInstance(safeAddress);
-  const { executeTransaction, isApproving } = useExecuteTransaction();
+  const { executeTransaction, isApproving } =
+    useExecuteTransaction(safeAddress);
 
   useEffect(() => {
     const init = async () => {

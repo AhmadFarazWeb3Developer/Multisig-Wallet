@@ -7,19 +7,23 @@ import useExecuteSetGuard from "../smartAccount/executeTransaction/useExecuteSet
 import useExecuteMintTokens from "../smartAccount/executeTransaction/useExecuteMintTokens";
 import useExecuteTransferSafeTokens from "../smartAccount/executeTransaction/useExecuteTransferSafeTokens";
 import useExecuteChangeThreshold from "../smartAccount/executeTransaction/useExecuteChangeThreshold";
+import useExecuteSwapOwner from "../smartAccount/executeTransaction/useExecuteSwapOwner";
+
 import { toast } from "sonner";
 import { useState } from "react";
 
-const useExecuteTransaction = () => {
+const useExecuteTransaction = (safeAddress) => {
   const [isApproving, setIsApproving] = useState(false);
 
-  const executeTransferETH = useExecuteTransferETH();
-  const executeAddOwnerWithThreshold = useExecuteAddOwnerWithThreshold();
-  const executeRemoveOwner = useExecuteRemoveOwner();
-  const executeSetGuard = useExecuteSetGuard();
-  const executeMintTokens = useExecuteMintTokens();
-  const executeTransferSafeTokens = useExecuteTransferSafeTokens();
-  const executeChangeThreshold = useExecuteChangeThreshold();
+  const executeTransferETH = useExecuteTransferETH(safeAddress);
+  const executeAddOwnerWithThreshold =
+    useExecuteAddOwnerWithThreshold(safeAddress);
+  const executeRemoveOwner = useExecuteRemoveOwner(safeAddress);
+  const executeSetGuard = useExecuteSetGuard(safeAddress);
+  const executeMintTokens = useExecuteMintTokens(safeAddress);
+  const executeTransferSafeTokens = useExecuteTransferSafeTokens(safeAddress);
+  const executeChangeThreshold = useExecuteChangeThreshold(safeAddress);
+  const executeSwapOwner = useExecuteSwapOwner(safeAddress);
 
   const executeTransaction = async (
     tx,
@@ -140,7 +144,6 @@ const useExecuteTransaction = () => {
           safeWriteInstace,
           metadata,
           aggregatedSignature,
-          safeAddress,
           tx
         );
       } catch (error) {
@@ -154,7 +157,6 @@ const useExecuteTransaction = () => {
         safeWriteInstace,
         metadata,
         aggregatedSignature,
-        safeAddress,
         tx
       );
     }
@@ -166,7 +168,6 @@ const useExecuteTransaction = () => {
           safeWriteInstace,
           metadata,
           aggregatedSignature,
-          safeAddress,
           tx
         );
       } catch (error) {
@@ -209,6 +210,19 @@ const useExecuteTransaction = () => {
     }
 
     if (txOpName === "Swap Owner") {
+      try {
+        setIsApproving(true);
+
+        await executeSwapOwner(
+          safeWriteInstace,
+          metadata,
+          aggregatedSignature,
+          tx
+        );
+      } catch (error) {
+      } finally {
+        setIsApproving(false);
+      }
     }
   };
 

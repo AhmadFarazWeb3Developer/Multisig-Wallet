@@ -9,9 +9,7 @@ const useExecuteRemoveOwner = () => {
   const executeRemoveOwner = async (
     safeWriteInstace,
     metadata,
-    aggregatedSignature,
-    tx_hash,
-    safeAddress
+    aggregatedSignature
   ) => {
     try {
       const to = safeAddress;

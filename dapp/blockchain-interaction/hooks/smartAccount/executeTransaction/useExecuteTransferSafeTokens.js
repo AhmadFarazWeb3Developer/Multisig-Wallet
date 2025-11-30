@@ -5,7 +5,7 @@ import Interfaces from "@/blockchain-interaction/helper/interfaces";
 import DeterministicAddresses from "@/blockchain-interaction/helper/deterministicAddresses";
 import { parseUnits } from "ethers/lib/utils";
 
-const useExecuteTransferSafeTokens = () => {
+const useExecuteTransferSafeTokens = (safeAddress) => {
   const { safeTokensInterface } = Interfaces();
   const addresses = DeterministicAddresses();
 

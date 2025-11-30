@@ -3,14 +3,13 @@ import { ethers, utils } from "ethers";
 import { SAFE_ERRORS } from "../../../helper/safeErrorCodes";
 import Interfaces from "@/blockchain-interaction/helper/interfaces";
 
-const useExecuteSetGuard = () => {
+const useExecuteSetGuard = (safeAddress) => {
   const { safeSingltonInterface } = Interfaces();
 
   const executeSetGuard = async (
     safeWriteInstace,
     metadata,
     aggregatedSignature,
-    safeAddress,
     tx
   ) => {
     try {

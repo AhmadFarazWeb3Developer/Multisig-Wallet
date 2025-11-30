@@ -7,41 +7,42 @@ import { toast } from "sonner";
 import { isAddress } from "ethers/lib/utils";
 
 const useSwapOwner = (safeAddress) => {
-  const iface = Interfaces();
-  const safeInstance = useSafeInstance(safeAddress);
+  const { safeSingltonInterface } = Interfaces();
+  const { safeReadInstance } = useSafeInstance(safeAddress);
 
-  const swapOwner = async (formData) => {
+  const swapOwner = async (tx) => {
     try {
-      if (!safeInstance) {
+      if (!safeReadInstance) {
         toast.error("Safe is not ready");
         return;
       }
 
-      if (
-        !formData.prevOwner_for_swap ||
-        !formData.oldOwner_for_swap ||
-        !formData.newOwner_for_swap
-      ) {
+      if (!tx.metadata.newOwner_for_swap) {
         toast.error("Fill the form before proceeding");
         return;
       }
 
-      if (
-        !isAddress(formData.prevOwner_for_swap) ||
-        !isAddress(formData.oldOwner_for_swap) ||
-        !isAddress(formData.newOwner_for_swap)
-      ) {
+      if (!isAddress(tx.metadata.newOwner_for_swap)) {
         toast.error("owners must be a valid addresses");
         return;
       }
 
-      const interfaceOf = iface.safeSingltonInterface;
+      const owners = await safeReadInstance.getOwners();
 
-      // data
-      const data = interfaceOf.encodeFunctionData("swapOwner", [
-        formData.prevOwner_for_swap,
-        formData.oldOwner_for_swap,
-        formData.newOwner_for_swap,
+      const index = owners
+        .map((o) => o.toLowerCase())
+        .indexOf(String(tx.sender_address).trim().toLowerCase());
+
+      const SENTINEL = "0x0000000000000000000000000000000000000001";
+
+      const prevOwner = index === 0 ? SENTINEL : owners[index - 1];
+
+      console.log(tx.sender_address);
+
+      const data = safeSingltonInterface.encodeFunctionData("swapOwner", [
+        prevOwner,
+        tx.sender_address,
+        tx.metadata.newOwner_for_swap,
       ]);
 
       const to = safeAddress;
@@ -52,10 +53,10 @@ const useSwapOwner = (safeAddress) => {
       const gasPrice = 0;
       const gasToken = ethers.constants.AddressZero;
       const refundReceiver = ethers.constants.AddressZero;
-      const nonce = await safeInstance.nonce();
+      const nonce = await safeReadInstance.nonce();
 
       // transaction hash
-      const txHash = await safeInstance.getTransactionHash(
+      const txHash = await safeReadInstance.getTransactionHash(
         to,
         value,
         data,

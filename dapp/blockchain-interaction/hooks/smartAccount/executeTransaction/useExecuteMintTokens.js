@@ -5,7 +5,7 @@ import Interfaces from "@/blockchain-interaction/helper/interfaces";
 import DeterministicAddresses from "@/blockchain-interaction/helper/deterministicAddresses";
 import { parseUnits } from "ethers/lib/utils";
 
-const useExecuteMintTokens = () => {
+const useExecuteMintTokens = (safeAddress) => {
   const { safeTokensInterface } = Interfaces();
   const { safeTokensMockAddress } = DeterministicAddresses();
 
@@ -13,7 +13,7 @@ const useExecuteMintTokens = () => {
     safeWriteInstace,
     metadata,
     aggregatedSignature,
-    safeAddress,
+
     tx
   ) => {
     try {

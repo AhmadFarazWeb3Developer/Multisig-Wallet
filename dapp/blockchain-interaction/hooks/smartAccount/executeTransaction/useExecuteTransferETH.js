@@ -3,7 +3,7 @@ import { ethers, utils } from "ethers";
 import { SAFE_ERRORS } from "../../../helper/safeErrorCodes";
 import { useState } from "react";
 
-const useExecuteTransferETH = () => {
+const useExecuteTransferETH = (safeAddress) => {
   const executeTransferETH = async (
     safeWriteInstance,
     metadata,

@@ -88,7 +88,7 @@ const useSignTransaction = (safeAddress) => {
           txHash = await mintTokens(tx.metadata);
           break;
         case "Swap Owner":
-          txHash = await swapOwner(tx.metadata);
+          txHash = await swapOwner(tx);
           break;
         default:
           throw new Error("Unknown operation");

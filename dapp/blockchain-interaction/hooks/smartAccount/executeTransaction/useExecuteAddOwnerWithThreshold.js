@@ -3,14 +3,13 @@ import { ethers } from "ethers";
 import { SAFE_ERRORS } from "../../../helper/safeErrorCodes";
 import Interfaces from "@/blockchain-interaction/helper/interfaces";
 
-const useExecuteAddOwnerWithThreshold = () => {
+const useExecuteAddOwnerWithThreshold = (safeAddress) => {
   const { safeSingltonInterface } = Interfaces();
 
   const executeAddOwnerWithThreshold = async (
     safeWriteInstance,
     metadata,
     aggregatedSignature,
-    safeAddress,
     tx
   ) => {
     try {
