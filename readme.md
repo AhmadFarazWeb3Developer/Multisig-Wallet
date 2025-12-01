@@ -37,6 +37,17 @@ The smart contracts powering this DApp are **battle-tested** using:
 - Optimism Sepolia
 - zkSync
 
+## Developed With
+
+- Next.js 16+
+- PostgreSQL and Supabase for data storage
+- Tailwind CSS
+- Shadcn/UI for UI components and toasts
+- Reown AppKit for multi-wallet connection
+- Ethers.js for blockchain interaction
+- Hardhat for smart contract deployment
+- Foundry for smart contract testing
+
 ## Features
 
 ### 1) Hero Section
