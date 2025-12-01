@@ -1,24 +1,31 @@
-import { Key, Plus, Loader2 } from "lucide-react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Key, Loader2, Inbox } from "lucide-react";
 import { toast } from "sonner";
 import { useAppKitAccount } from "@reown/appkit/react";
 import useSignTransaction from "@/blockchain-interaction/hooks/smartAccount/useSignTransaction";
-import { useEffect, useState } from "react";
 import useGetQueuedTxs from "../../app/hooks/useGetQueuedTxs";
 import useSafeSignatureCount from "@/blockchain-interaction/hooks/smartAccount/useSafeSignatureCount";
 import useSafeInstance from "@/blockchain-interaction/hooks/smartAccount/useSafeInstance";
 import useGetExecutedTxs from "@/app/hooks/useGetExecutedTxs";
+import useGetRejectedTxs from "@/app/hooks/useGetRejectedTxs";
 import { SignTxIfac } from "../interfaces/Transactions";
+
 interface SignatureTxCardProps {
+  setSignTxCount: Dispatch<SetStateAction<string>>;
   safeAddress: String;
 }
 
-export default function SignatureTxCard({ safeAddress }: SignatureTxCardProps) {
+export default function SignatureTxCard({
+  setSignTxCount,
+  safeAddress,
+}: SignatureTxCardProps) {
   const { signTransaction, isSigning } = useSignTransaction(safeAddress);
   const { isConnected, address } = useAppKitAccount();
-  const [toBeSignedTransactions, setToBeSignedTransactions] = useState<any[]>(
-    []
-  );
+  const [toBeSignedTransactions, setToBeSignedTransactions] = useState<
+    SignTxIfac[]
+  >([]);
   const { getQueuedTxs, isLoading } = useGetQueuedTxs();
+  const { getRejectedTxs } = useGetRejectedTxs();
   const { getExecutedTxs } = useGetExecutedTxs();
   const safeSignatureCount = useSafeSignatureCount();
   const { safeReadInstance } = useSafeInstance(safeAddress);
@@ -34,6 +41,7 @@ export default function SignatureTxCard({ safeAddress }: SignatureTxCardProps) {
 
       const queuedData = await getQueuedTxs();
       const executedData = await getExecutedTxs();
+      const rejectedData = await getRejectedTxs();
 
       const { safe_transaction_signatures } = await safeSignatureCount(
         safeReadInstance,
@@ -41,9 +49,11 @@ export default function SignatureTxCard({ safeAddress }: SignatureTxCardProps) {
       );
 
       const executedTxIds = executedData.map((tx: any) => tx.tx_id);
+      const rejectedTxIds = rejectedData.map((tx: any) => tx.tx_id);
 
       const pendingTxs = queuedData.filter(
-        (tx: SignTxIfac) => !executedTxIds.includes(tx.tx_id)
+        (tx: SignTxIfac) =>
+          !executedTxIds.includes(tx.tx_id) && !rejectedTxIds.includes(tx.tx_id)
       );
 
       const notSigned = pendingTxs.filter(
@@ -73,9 +83,15 @@ export default function SignatureTxCard({ safeAddress }: SignatureTxCardProps) {
 
   const firstTx = toBeSignedTransactions[0];
 
+  useEffect(() => {
+    if (firstTx) {
+      setSignTxCount("1");
+    }
+  }, [firstTx]);
+
   return (
     <div className="space-y-3 flex items-center flex-col w-full">
-      {firstTx ? (
+      {firstTx && (
         <div
           key={firstTx.tx_id}
           className="bg-[#1A1A1A] border border-[#333333] rounded-xl p-4 hover:border-[#eb5e28] transition-all w-full"
@@ -132,21 +148,27 @@ export default function SignatureTxCard({ safeAddress }: SignatureTxCardProps) {
             </button>
           </div>
         </div>
-      ) : (
-        !isLoading && (
-          <p className="text-[#A0A0A0] text-sm">
-            No queued transactions found.
-          </p>
-        )
+      )}
+
+      {isLoading && (
+        <div className="flex items-center gap-2 text-[#eb5e28] text-sm pt-4">
+          <Loader2 className="animate-spin" size={16} /> Loading transactions
+          for signing...{" "}
+        </div>
+      )}
+
+      {!isLoading && toBeSignedTransactions.length === 0 && (
+        <div className=" flex flex-row gap-2  items-center justify-center pt-4">
+          <Inbox size={20} strokeWidth={1} className="text-[#A0A0A0]" />
+          <p className="text-[#A0A0A0] text-sm">No transactions for signing.</p>
+        </div>
       )}
     </div>
   );
 }
 
 function formatKey(key: string) {
-  return key
-    .replace(/_/g, " ") // replace underscores with spaces
-    .replace(/\b\w/g, (c) => c.toUpperCase()); // capitalize each word
+  return key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 function timeAgo(timestamp: string | number | Date) {

@@ -1,15 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
-import {
-  Trash2,
-  UserPlus,
-  Settings,
-  Rocket,
-  Plus,
-  Minus,
-  RocketIcon,
-} from "lucide-react";
-import { useAppKitAccount } from "@reown/appkit/react";
+import { useState } from "react";
+import { Trash2, UserPlus, Settings, Rocket, Plus, Minus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import useCreateSmartAccount from "../../blockchain-interaction/hooks/Proxy/useCreateSmartAccount";
 import { toast } from "sonner";

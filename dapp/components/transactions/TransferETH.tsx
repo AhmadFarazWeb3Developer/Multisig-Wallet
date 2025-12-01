@@ -1,12 +1,6 @@
 "use client";
 
-import React, {
-  useState,
-  SetStateAction,
-  Dispatch,
-  ChangeEvent,
-  useEffect,
-} from "react";
+import React, { useState, SetStateAction, Dispatch, useEffect } from "react";
 
 type FormProps = {
   setForm: Dispatch<

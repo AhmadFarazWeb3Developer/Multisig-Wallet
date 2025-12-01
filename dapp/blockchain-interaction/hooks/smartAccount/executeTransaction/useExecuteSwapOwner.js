@@ -40,10 +40,6 @@ const useExecuteSwapOwner = (safeAddress) => {
       const gasToken = ethers.constants.AddressZero;
       const refundReceiver = ethers.constants.AddressZero;
 
-      // Get current nonce
-      const nonce = await safeWriteInstace.nonce();
-      console.log("Current Safe nonce:", nonce.toString());
-
       const execTransaction = await safeWriteInstace.execTransaction(
         to,
         value,

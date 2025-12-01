@@ -30,7 +30,7 @@ export const SAFE_ERRORS = {
   GS202:
     "Cannot remove the last owner — a Safe must always have at least one owner.",
   GS203: "Incorrect gas payment setup",
-  GS204: "Gas price mismatch",
+  GS204: "No duplicate owners allowed.",
   GS205: "Transaction signature verification failed",
   GS206: "EOA owner signature missing",
   GS300: "Invalid fallback handler address",

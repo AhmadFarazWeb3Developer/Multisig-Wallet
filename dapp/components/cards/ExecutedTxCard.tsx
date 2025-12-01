@@ -1,44 +1,25 @@
 "use client";
-import { useEffect, useState } from "react";
-import { CheckCircle, Clock, Loader2 } from "lucide-react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { CheckCircle, Clock, Inbox, Loader2 } from "lucide-react";
 import useExecutedTxs from "../../app/hooks/useGetExecutedTxs";
+import { ExecutedTxIfac } from "../interfaces/Transactions";
 
-interface ExecutedTransaction {
-  id: number;
-  tx_id: string;
-  tx_hash: string;
-  operation_name: string;
-  status: number;
-  executed_at: string;
-  metadata: {
-    eth_amount?: string;
-    eth_recipient?: string;
-    token_amount?: string;
-    token_recipient?: string;
-    mint_token_amount?: string;
-    newOwner_with_threshold?: string;
-    new_threshold1?: string;
-    prevOwner_for_removal?: string;
-    newOwner_for_removal?: string;
-    newThreshold_for_removal?: string;
-    prevOwner_for_swap?: string;
-    oldOwner_for_swap?: string;
-    newOwner_for_swap?: string;
-    new_threshold2?: string;
-    guard_address?: string;
-  };
-}
-
-export default function ExecutedTxCard() {
+type ExecutedTxCardProps = {
+  setExecutedTxCount: Dispatch<SetStateAction<string>>;
+};
+export default function ExecutedTxCard({
+  setExecutedTxCount,
+}: ExecutedTxCardProps) {
   const { getExecutedTxs, isLoading } = useExecutedTxs();
   const [executedTransactions, setExecutedTransactions] = useState<
-    ExecutedTransaction[]
+    ExecutedTxIfac[]
   >([]);
 
   useEffect(() => {
     const fetchTxs = async () => {
       const data = await getExecutedTxs();
       setExecutedTransactions(data);
+      setExecutedTxCount(data.length);
     };
     fetchTxs();
   }, []);
@@ -86,16 +67,19 @@ export default function ExecutedTxCard() {
       ))}
 
       {isLoading && (
-        <div className="flex items-center gap-2 text-[#eb5e28] text-sm">
+        <div className="flex items-center gap-2 text-[#eb5e28] text-sm pt-4">
           <Loader2 className="animate-spin" size={16} />
           <span>Loading executed transactions...</span>
         </div>
       )}
 
       {executedTransactions.length === 0 && !isLoading && (
-        <p className="text-[#A0A0A0] text-sm">
-          No executed transactions found.
-        </p>
+        <div className=" flex flex-row gap-2  items-center justify-center pt-4">
+          <Inbox size={20} strokeWidth={1} className="text-[#A0A0A0]" />
+          <p className="text-[#A0A0A0] text-sm">
+            No executed transactions found.
+          </p>
+        </div>
       )}
     </div>
   );

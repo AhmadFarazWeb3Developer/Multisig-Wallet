@@ -17,10 +17,9 @@ import {
   Loader2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { ethers } from "ethers";
 import { getNetworkToken } from "../blockchain-interaction/helper/getNetworkToken";
-import { useRouter } from "next/navigation";
 import { useUiProvider } from "@/app/context/UiProvider";
 
 export default function Navbar() {

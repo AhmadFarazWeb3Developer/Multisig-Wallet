@@ -15,8 +15,14 @@ export async function POST(req) {
     });
 
     return Response.json({ status: 200, data: result });
-  } catch (error) {
-    console.error("Error storing executed transaction:", error);
-    return Response.json({ status: 500, error: "Failed to store transaction" });
+  } catch (err) {
+    console.error("Error storing executed transaction:", err);
+    return Response.json(
+      {
+        error: "Failed store executed transaction",
+        details: err.message,
+      },
+      { status: 500 }
+    );
   }
 }

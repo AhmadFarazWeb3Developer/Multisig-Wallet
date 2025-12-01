@@ -17,7 +17,10 @@ export async function POST(req) {
   } catch (error) {
     console.error("Error storing rejected tx:", error);
     return Response.json(
-      { error: "Failed to store rejected transaction" },
+      {
+        error: "Failed to store rejected transaction",
+        details: err.message,
+      },
       { status: 500 }
     );
   }

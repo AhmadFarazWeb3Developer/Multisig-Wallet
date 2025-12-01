@@ -23,10 +23,11 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
   const { getExecutedTxs } = useGetExecutedTxs();
   const { getRejectedTxs } = useGetRejectedTxs();
 
-  const [executedTxCount, setExecutedTxCount] = useState();
-  const [queuedTxCount, setQueuedTxCount] = useState();
-  const [pendingTxCount, setPendingTxCount] = useState();
-  const [rejectedTxCount, setRejectedTxCount] = useState();
+  const [executedTxCount, setExecutedTxCount] = useState("0");
+  const [queuedTxCount, setQueuedTxCount] = useState("0");
+  const [signTxCount, setSignTxCount] = useState("0");
+  const [pendingTxCount, setPendingTxCount] = useState("0");
+  const [rejectedTxCount, setRejectedTxCount] = useState("0");
 
   useEffect(() => {
     const counts = async () => {
@@ -47,14 +48,15 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
     };
 
     counts();
-  }, [queuedTxCount, executedTxCount]);
+  }, [
+    queuedTxCount,
+    signTxCount,
+    pendingTxCount,
+    executedTxCount,
+    rejectedTxCount,
+  ]);
 
   const [activeTab, setActiveTab] = useState("queued");
-
-  useEffect(() => {
-    const init = async () => {};
-    init();
-  }, [activeTab]);
 
   return (
     <main className="min-h-screen  w-full  bg-[#0e0e0e] p-3 sm:p-6">
@@ -98,7 +100,7 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
                     : "text-[#A0A0A0] hover:text-white"
                 }`}
               >
-                Sign
+                Sign ({signTxCount})
               </button>
 
               <button
@@ -109,7 +111,7 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
                     : "text-[#A0A0A0] hover:text-white"
                 }`}
               >
-                Pending
+                Pending ({pendingTxCount})
               </button>
               <button
                 onClick={() => setActiveTab("executed")}
@@ -133,20 +135,32 @@ export default function Transactions({ safeAddress }: safeAddressInterface) {
               </button>
             </div>
 
-            <div className="flex items-center  flex-col w-full ">
-              {activeTab === "queued" && <QueuedTxCard />}
+            <div className="flex items-center flex-col w-full ">
+              {activeTab === "queued" && (
+                <QueuedTxCard setQueuedTxCount={setQueuedTxCount} />
+              )}
 
               {activeTab === "signatures" && (
-                <SignatureCard safeAddress={safeAddress} />
+                <SignatureCard
+                  setSignTxCount={setSignTxCount}
+                  safeAddress={safeAddress}
+                />
               )}
 
               {activeTab === "pending" && (
-                <PendingTxCard safeAddress={safeAddress} />
+                <PendingTxCard
+                  setPendingTxCount={setPendingTxCount}
+                  safeAddress={safeAddress}
+                />
               )}
 
-              {activeTab === "executed" && <ExecutedTxCard />}
+              {activeTab === "executed" && (
+                <ExecutedTxCard setExecutedTxCount={setExecutedTxCount} />
+              )}
 
-              {activeTab === "rejected" && <RejectedTxCard />}
+              {activeTab === "rejected" && (
+                <RejectedTxCard setRejectedTxCount={setRejectedTxCount} />
+              )}
             </div>
           </div>
         </div>

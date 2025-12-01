@@ -9,7 +9,7 @@ export async function GET() {
 
     return Response.json(
       {
-        error: "Failed to fetch safes",
+        error: "Failed to fetch owners",
         details: error.message,
       },
       { status: 500 }

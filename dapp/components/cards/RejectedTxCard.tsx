@@ -1,11 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { XCircle, Clock, Loader2 } from "lucide-react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { XCircle, Clock, Loader2, Inbox } from "lucide-react";
 import { RejectedTxIface } from "../interfaces/Transactions";
 import useGetRejectedTxs from "@/app/hooks/useGetRejectedTxs";
 
-export default function RejectedTxCard() {
+type RejectedTxCardProps = {
+  setRejectedTxCount: Dispatch<SetStateAction<string>>;
+};
+export default function RejectedTxCard({
+  setRejectedTxCount,
+}: RejectedTxCardProps) {
   const [rejectedTransactions, setRejectedTransactions] = useState<
     RejectedTxIface[]
   >([]);
@@ -15,6 +20,7 @@ export default function RejectedTxCard() {
     const init = async () => {
       const data = await getRejectedTxs();
       setRejectedTransactions(data);
+      setRejectedTxCount(data.length);
     };
     init();
   }, []);
@@ -35,20 +41,12 @@ export default function RejectedTxCard() {
     ));
   };
 
-  if (!rejectedTransactions || rejectedTransactions.length === 0) {
-    return (
-      <div className="rounded-xl border border-gray-700 bg-[#1A1A1A] shadow p-4 text-gray-400 text-center">
-        No rejected transactions found.
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-4 w-full flex flex-col">
+    <div className="space-y-3 flex items-center flex-col w-full ">
       {rejectedTransactions.map((tx) => (
         <div
           key={tx.tx_id}
-          className="bg-[#1A1A1A] border border-[#333333] rounded-xl p-4 hover:border-[#EF4444] transition-all"
+          className="bg-[#1A1A1A] border border-[#333333] rounded-xl p-4 hover:border-[#EF4444] transition-all w-full"
         >
           <div className="flex items-center gap-2 border-b border-[#333333] pb-2 mb-3">
             <span className="text-red-500 text-lg">
@@ -106,8 +104,18 @@ export default function RejectedTxCard() {
       ))}
 
       {isLoading && (
-        <div className="flex items-center gap-2 text-red-500 text-sm">
-          <Loader2 className="animate-spin" size={16} />
+        <div className="flex items-center gap-2 text-red-500 text-sm pt-4">
+          <Loader2 className="animate-spin" size={16} /> Loading rejected
+          transactions...{" "}
+        </div>
+      )}
+
+      {!isLoading && rejectedTransactions.length === 0 && (
+        <div className=" flex flex-row gap-2  items-center justify-center pt-4">
+          <Inbox size={20} strokeWidth={1} className="text-[#A0A0A0]" />
+          <p className="text-[#A0A0A0] text-sm">
+            No rejected transactions found.
+          </p>
         </div>
       )}
     </div>

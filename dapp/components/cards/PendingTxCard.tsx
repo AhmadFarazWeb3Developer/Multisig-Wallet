@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
-  Bell,
-  Users,
   Shield,
   CheckCircle,
   XCircle,
@@ -10,10 +8,9 @@ import {
   UserPlus,
   UserMinus,
   Settings,
-  Key,
   ArrowRightLeft,
-  Plus,
   Loader2,
+  Inbox,
 } from "lucide-react";
 
 import useGetQueuedTxs from "../../app/hooks/useGetQueuedTxs";
@@ -23,31 +20,41 @@ import useSafeInstance from "@/blockchain-interaction/hooks/smartAccount/useSafe
 import useExecuteTransaction from "../../blockchain-interaction/hooks/smartAccount/useExecuteTransaction";
 import { toast } from "sonner";
 import useGetExecutedTxs from "@/app/hooks/useGetExecutedTxs";
+import useGetRejectedTxs from "@/app/hooks/useGetRejectedTxs";
 
 interface PendingTxCardProps {
+  setPendingTxCount: Dispatch<SetStateAction<string>>;
   safeAddress: String;
 }
 
-export default function PendingTxCard({ safeAddress }: PendingTxCardProps) {
+export default function PendingTxCard({
+  setPendingTxCount,
+  safeAddress,
+}: PendingTxCardProps) {
   const [threshold, setThreshold] = useState<string>();
-  const { getQueuedTxs, isLoading } = useGetQueuedTxs();
-  const { getExecutedTxs } = useGetExecutedTxs();
   const [pendingTransactions, setPendingTransactions] = useState([]);
-  const safeSignatureCount = useSafeSignatureCount();
   const { safeWriteInstace, safeReadInstance } = useSafeInstance(safeAddress);
   const { executeTransaction, isApproving } =
     useExecuteTransaction(safeAddress);
   const { rejectTransaction, isRejecting } = useRejectTransaction();
+  const safeSignatureCount = useSafeSignatureCount();
+
+  const { getQueuedTxs, isLoading } = useGetQueuedTxs();
+  const { getExecutedTxs } = useGetExecutedTxs();
+  const { getRejectedTxs } = useGetRejectedTxs();
 
   useEffect(() => {
     const init = async () => {
       const queuedData = await getQueuedTxs();
+      const executedData = await getExecutedTxs();
+      const rejectedData = await getRejectedTxs();
+
       const { threshold, signaturesCount } = await safeSignatureCount(
         safeReadInstance,
         queuedData
       );
-      const executedData = await getExecutedTxs();
       const executedTxIds = executedData.map((tx: any) => tx.tx_id);
+      const rejectedTxIds = rejectedData.map((tx: any) => tx.tx_id);
 
       const queuedWithSig = queuedData.map((tx: any, index: number) => ({
         ...tx,
@@ -55,7 +62,8 @@ export default function PendingTxCard({ safeAddress }: PendingTxCardProps) {
       }));
 
       const pendingTxs = queuedWithSig.filter(
-        (tx: any) => !executedTxIds.includes(tx.tx_id)
+        (tx: any) =>
+          !executedTxIds.includes(tx.tx_id) && !rejectedTxIds.includes(tx.tx_id)
       );
 
       const sortedPendingTxs = pendingTxs.sort(
@@ -64,7 +72,9 @@ export default function PendingTxCard({ safeAddress }: PendingTxCardProps) {
       );
 
       const firstPendingTx = sortedPendingTxs[0] || null;
-
+      if (firstPendingTx) {
+        setPendingTxCount("1");
+      }
       setPendingTransactions(firstPendingTx ? [firstPendingTx] : []);
       setThreshold(threshold.toNumber());
     };
@@ -90,7 +100,6 @@ export default function PendingTxCard({ safeAddress }: PendingTxCardProps) {
   };
 
   const handleExecuteTransaction = async (tx: any) => {
-    // const init = async () => {
     if (!safeWriteInstace) {
       toast.error("wait for safe instance");
       return;
@@ -98,8 +107,6 @@ export default function PendingTxCard({ safeAddress }: PendingTxCardProps) {
     const data = await getQueuedTxs();
     await executeTransaction(tx, safeWriteInstace, data, safeAddress);
   };
-  // init();
-  // };
 
   const handleRejectTransaction = async (tx: any) => {
     await rejectTransaction(tx);
@@ -193,13 +200,19 @@ export default function PendingTxCard({ safeAddress }: PendingTxCardProps) {
         ))}
 
       {isLoading && (
-        <div className="flex items-center gap-2 text-[#eb5e28] text-sm">
-          <Loader2 className="animate-spin" size={16} />
+        <div className="flex items-center gap-2 text-[#eb5e28] text-sm  pt-4">
+          <Loader2 className="animate-spin" size={16} /> Loading pending
+          transactions...{" "}
         </div>
       )}
 
       {pendingTransactions.length === 0 && !isLoading && (
-        <p className="text-[#A0A0A0] text-sm">No queued transactions found.</p>
+        <div className=" flex flex-row gap-2  items-center justify-center pt-4">
+          <Inbox size={20} strokeWidth={1} className="text-[#A0A0A0]" />
+          <p className="text-[#A0A0A0] text-sm">
+            No pending transactions found.
+          </p>
+        </div>
       )}
     </div>
   );

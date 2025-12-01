@@ -10,6 +10,12 @@ export async function GET(req) {
 
     return Response.json(signatures, { status: 200 });
   } catch (err) {
-    return Response.json({ status: 500, error: err.message });
+    return Response.json(
+      {
+        error: "Failed get single hash signatures",
+        details: err.message,
+      },
+      { status: 500 }
+    );
   }
 }

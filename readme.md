@@ -77,7 +77,13 @@ _Interface to propose and submit a new transaction from the wallet._
 ![Transactions queued](screenshots/tx-queued.png)
 _Detailed list of queued transactions executed from the wallet._
 ![Transactions Sign](screenshots/tx-sign.png)
-_Detailed list of to be signed transactions executed from the wallet._
+_Detailed of transaction to be signed, executed from the wallet._
+![Transactions Pending](screenshots/tx-pending.png)
+_Detailed of pending transaction, which is already signed from the wallets._
+![Transactions Executed](screenshots/tx-executed.png)
+_Detailed list of executed transaction._
+![Transactions Rejected](screenshots/tx-rejected.png)
+_Detailed list of rejected transactions._
 
 ---
 
@@ -85,8 +91,8 @@ _Detailed list of to be signed transactions executed from the wallet._
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/multi-owner-wallet-dapp.git
-cd multi-owner-wallet-dapp
+git clone https://github.com/AhmadFarazWeb3Developer/Multisig-Wallet.git
+cd dapp
 
 # Install dependencies
 npm install

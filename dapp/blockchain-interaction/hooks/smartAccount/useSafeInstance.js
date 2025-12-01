@@ -2,11 +2,10 @@ import { useMemo } from "react";
 import { ethers } from "ethers";
 import SafeAbi from "../../../app/on-chain/artifacts/contracts/Safe.sol/Safe.json";
 import { getProviderByChainId } from "../../helper/getProviderByChainId";
-import { useAppKitProvider, useAppKitAccount } from "@reown/appkit/react";
+import { useAppKitProvider } from "@reown/appkit/react";
 
 export default function useSafeInstance(safeAddress) {
   const { walletProvider } = useAppKitProvider("eip155");
-  const { isConnected } = useAppKitAccount();
 
   const provider = useMemo(() => {
     return getProviderByChainId(31337);

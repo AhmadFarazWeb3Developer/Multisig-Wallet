@@ -65,9 +65,6 @@ const useExecuteTransaction = (safeAddress) => {
       (owner, index) => owner === safeOwners[index]
     );
 
-    console.log("Safe owners order:", safeOwners);
-    console.log("Sorted signature owners:", sortedOwners);
-
     if (!isOrderedCorrectly) {
       console.warn(
         "Signatures are NOT in the same order as Safe owners. GS026 may occur!"

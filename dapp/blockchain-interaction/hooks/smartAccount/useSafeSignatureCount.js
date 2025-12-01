@@ -11,7 +11,7 @@ const useSafeSignatureCount = () => {
 
     const ids = data.map((tx) => tx.tx_id);
 
-    const response = await fetch("/api/transactions/get-sign-transactions", {
+    const response = await fetch("/api/transactions/get-signed-transactions", {
       method: "GET",
     });
 

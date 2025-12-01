@@ -7,6 +7,13 @@ export async function GET(req) {
     const result = await getSafesByOwner(ownerAddress);
     return Response.json(result, { status: 200 });
   } catch (err) {
-    return Response.json({ status: 500, error: err.message });
+    console.error("Error in POST /api/get-safes-by-owner:", err);
+    return Response.json(
+      {
+        error: "Failed to get owner from safe ",
+        details: err.message,
+      },
+      { status: 500 }
+    );
   }
 }

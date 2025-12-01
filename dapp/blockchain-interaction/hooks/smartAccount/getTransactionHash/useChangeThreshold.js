@@ -21,8 +21,6 @@ const useChangeThreshold = (safeAddress) => {
         return;
       }
 
-      console.log("meta data : ", metadata);
-
       // data
       const data = safeSingltonInterface.encodeFunctionData("changeThreshold", [
         metadata.new_threshold2,
@@ -50,8 +48,6 @@ const useChangeThreshold = (safeAddress) => {
         refundReceiver,
         nonce
       );
-
-      console.log(txHash);
 
       toast.success(`Transaction hash generated successfully! ${txHash}`, {
         action: {

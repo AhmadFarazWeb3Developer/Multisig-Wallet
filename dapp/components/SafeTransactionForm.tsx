@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-
+import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
 
 import CustomSelect from "./CustomSelect";
@@ -13,7 +12,6 @@ import AddOwnerWithThreshold from "./transactions/AddOwnerWithThreshold";
 import RemoveOwner from "./transactions/RemoveOwner";
 import MintTokens from "./transactions/MintTokens";
 import SwapOwner from "./transactions/SwapOwner";
-
 import useQueueTransaction from "../app/hooks/useQueueTransaction";
 
 type safeAddressInterface = {

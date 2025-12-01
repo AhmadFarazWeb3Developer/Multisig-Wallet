@@ -19,7 +19,7 @@ export async function GET(req) {
     console.error("Error in GET /api/safes/verify-safe:", error);
     return Response.json(
       {
-        error: "Failed to fetch safes",
+        error: "Failed to verify safe",
         details: error.message,
       },
       { status: 500 }

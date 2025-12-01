@@ -16,7 +16,7 @@ export async function PUT(req) {
 
     return Response.json({ success: true, updated }, { status: 200 });
   } catch (error) {
-    console.error("Error in PUT /api/owners/update-name:", error);
+    console.error("Error in PUT /api/owners/update-owner-name:", error);
     return Response.json(
       { error: "Failed to update owner name" },
       { status: 500 }

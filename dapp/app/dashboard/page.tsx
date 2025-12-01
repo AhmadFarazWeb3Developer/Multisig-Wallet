@@ -43,8 +43,6 @@ export default function Dashboard() {
         const data = await res.json();
 
         setSafeAddress(data[0]?.safe_address);
-
-        console.log("Owner data:", data);
       } catch (err) {
         console.error("Fetch error:", err);
       }

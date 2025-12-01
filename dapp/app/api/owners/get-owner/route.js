@@ -9,6 +9,13 @@ export async function GET(req) {
 
     return Response.json(owner, { status: 200 });
   } catch (err) {
-    return Response.json({ status: 500, error: err.message });
+    console.error("Error in POST /api/get-owner:", error);
+    return Response.json(
+      {
+        error: "Failed to get owner",
+        details: err.message,
+      },
+      { status: 500 }
+    );
   }
 }

@@ -13,7 +13,7 @@ export async function POST(req) {
 
     return Response.json(
       {
-        error: "Failed to update owner",
+        error: "Failed to remove owner",
         details: error.message,
       },
       { status: 500 }

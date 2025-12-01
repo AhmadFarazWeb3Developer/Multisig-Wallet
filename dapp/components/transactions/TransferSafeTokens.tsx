@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, Dispatch, SetStateAction, useEffect } from "react";
-import { Send } from "lucide-react";
 
 type FormProps = {
   setForm: Dispatch<

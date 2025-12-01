@@ -14,7 +14,7 @@ export async function PUT(req) {
     console.error("Error in PUT /api/swap-owner:", error);
     return Response.json(
       {
-        error: "Failed to update owner",
+        error: "Failed to swap owner",
         details: error.message,
       },
       { status: 500 }

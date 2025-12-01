@@ -7,6 +7,12 @@ export async function POST(req) {
     const result = await handleSafeCreation(safe, owners);
     return Response.json(result, { status: 200 });
   } catch (err) {
-    return Response.json({ status: 500, error: err.message });
+    return Response.json(
+      {
+        error: "Failed to create safe",
+        details: err.message,
+      },
+      { status: 500 }
+    );
   }
 }

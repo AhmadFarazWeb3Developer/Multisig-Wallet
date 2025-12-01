@@ -39,11 +39,7 @@ const useSwapOwner = (safeAddress) => {
 
       const SENTINEL = "0x0000000000000000000000000000000000000001";
 
-      console.log(index);
-
       const prevOwner = index === 0 ? SENTINEL : owners[index - 1];
-
-      console.log(prevOwner);
 
       const data = safeSingltonInterface.encodeFunctionData("swapOwner", [
         prevOwner,

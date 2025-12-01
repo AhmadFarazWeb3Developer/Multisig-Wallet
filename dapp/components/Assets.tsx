@@ -132,8 +132,6 @@ export default function Assets() {
   const [activeTab, setActiveTab] = useState<"tokens" | "nfts">("tokens");
   const [tokens, setTokens] = useState(tokensData);
 
-  const [logoUrls, setLogoUrls] = useState<string[]>([]);
-
   const apiKey = process.env.NEXT_PUBLIC_LOGODEV_API_KEY;
   if (!apiKey) throw new Error("NEXT_LOGODEV_API_KEY is not set");
 

@@ -22,7 +22,6 @@ const useTransferSafeTokens = (safeAddress) => {
         return;
       }
 
-      console.log("metadata", metadata);
       // data
       const data = safeTokensInterface.encodeFunctionData("transfer", [
         metadata.token_recipient,

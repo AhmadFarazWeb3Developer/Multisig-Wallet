@@ -6,6 +6,12 @@ export async function GET() {
 
     return Response.json(transactions, { status: 200 });
   } catch (err) {
-    return Response.json({ status: 500, error: err.message });
+    return Response.json(
+      {
+        error: "Failed get executed transactions",
+        details: err.message,
+      },
+      { status: 500 }
+    );
   }
 }

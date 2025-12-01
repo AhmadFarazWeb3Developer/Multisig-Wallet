@@ -1,13 +1,13 @@
 import { HomeIcon, ArrowDownUp, Circle, Copy } from "lucide-react";
 import React, { ReactElement, useState, Dispatch, SetStateAction } from "react";
+import { toast } from "sonner";
 import Home from "./Home";
 import Transactions from "./Transactions";
 import Assets from "./Assets";
-import { toast } from "sonner";
 
 type SidePanelProps = {
   setComponent: Dispatch<SetStateAction<ReactElement | null>>;
-  safeAddress: String;
+  safeAddress: string;
   setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
 };
 
@@ -35,9 +35,30 @@ export default function SidePanel({
               Account Address
             </p>
             <div className=" flex flex-row gap-4">
-              <p className="text-white text-sm font-mono">
-                {`${safeAddress?.slice(0, 6)}...${safeAddress?.slice(-6)}`}
-              </p>
+              {safeAddress ? (
+                <p className="text-white text-sm font-mono">
+                  {`${safeAddress?.slice(0, 6)}...${safeAddress?.slice(-6)}`}
+                </p>
+              ) : (
+                <div className="flex gap-1 items-center">
+                  <div
+                    className="w-1 h-1 rounded-full bg-gray-400 animate-bounce"
+                    style={{ animationDelay: "0ms" }}
+                  />
+                  <div
+                    className="w-1 h-1 rounded-full bg-gray-400 animate-bounce"
+                    style={{ animationDelay: "150ms" }}
+                  />
+                  <div
+                    className="w-1 h-1 rounded-full bg-gray-400 animate-bounce"
+                    style={{ animationDelay: "300ms" }}
+                  />
+                  <div
+                    className="w-1 h-1 rounded-full bg-gray-400 animate-bounce"
+                    style={{ animationDelay: "450ms" }}
+                  />
+                </div>
+              )}
 
               <button
                 onClick={() => {

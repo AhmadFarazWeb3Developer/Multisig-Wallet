@@ -25,12 +25,6 @@ const useExecuteChangeThreshold = () => {
       const gasToken = ethers.constants.AddressZero;
       const refundReceiver = ethers.constants.AddressZero;
 
-      // Get current nonce
-      const nonce = await safeWriteInstace.nonce();
-      console.log("Current Safe nonce:", nonce.toString());
-
-      console.log("Aggregated signature:", utils.hexlify(aggregatedSignature));
-
       const execTransaction = await safeWriteInstace.execTransaction(
         to,
         value,

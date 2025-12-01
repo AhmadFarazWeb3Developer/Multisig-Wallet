@@ -30,6 +30,12 @@ export async function POST(req) {
       );
     }
 
-    return Response.json({ status: 500, error: err.message }, { status: 500 });
+    return Response.json(
+      {
+        error: "Failed sign transactions",
+        details: err.message,
+      },
+      { status: 500 }
+    );
   }
 }
