@@ -1,4 +1,7 @@
-# Multi Signatures Smart Contract Wallet DApp
+# Multi Signatures Wallet DApp
+
+![Hero Section](screenshots/hero.png)
+_Landing section showcasing the DApp._
 
 A **full-stack smart contract wallet** built on the **Gnosis Safe protocol**, enabling users to create and manage **multi-owner wallets** with customizable thresholds for secure transaction execution.
 
