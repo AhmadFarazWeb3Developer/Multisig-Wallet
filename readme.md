@@ -79,14 +79,14 @@ _NFTS_
 
 ---
 
-### 5) Add New Transaction
+### 4) Add New Transaction
 
 ![Add Transaction](screenshots/tx-new.png)
 _Interface to propose and submit a new transaction from the wallet._
 
 ---
 
-### 4) Transactions Details
+### 5) Transactions Details
 
 ![Transactions queued](screenshots/tx-queued.png)
 _Detailed list of queued transactions executed from the wallet._
